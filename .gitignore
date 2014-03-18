@@ -15,7 +15,9 @@
 /JavaWork/Demo/WebContent/page
 /JavaWork/Demo/WebContent/META-INF
 /JavaWork/Demo/WebContent/WEB-INF/classes
-
+/apache-tomcat-7.0.52
+/BlazeDs
+/NavicatforMySQL
 # Package Files #
 *.jar
 *.war
