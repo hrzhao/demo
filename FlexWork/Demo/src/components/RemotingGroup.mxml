@@ -1,0 +1,63 @@
+<?xml version="1.0" encoding="utf-8"?>
+<s:Group xmlns:fx="http://ns.adobe.com/mxml/2009" 
+		 xmlns:s="library://ns.adobe.com/flex/spark" 
+		 xmlns:mx="library://ns.adobe.com/flex/mx" width="400" height="300"
+		 creationComplete="group1_creationCompleteHandler(event)"
+		 >
+	<fx:Script>
+		<![CDATA[
+			import mx.events.FlexEvent;
+			import mx.rpc.events.FaultEvent;
+			import mx.rpc.events.ResultEvent;
+			import mx.rpc.remoting.RemoteObject;
+			private var ro2:mx.rpc.remoting.RemoteObject;
+			protected function ro_resultHandler(event:ResultEvent):void
+			{
+				// TODO Auto-generated method stub
+				lbl_result.text = event.result.toString(); 
+				
+			}
+			
+			protected function ro_faultHandler(event:FaultEvent):void
+			{
+				// TODO Auto-generated method stub
+				lbl_result.text = event.message.toString();
+			}
+			
+			protected function button1_clickHandler(event:MouseEvent):void
+			{
+				// TODO Auto-generated method stub
+				ro.getHello();
+				
+			}
+			
+			protected function button2_clickHandler(event:MouseEvent):void
+			{
+				// TODO Auto-generated method stub
+				ro2.getList();
+			}
+			
+			
+			protected function group1_creationCompleteHandler(event:FlexEvent):void
+			{
+				// TODO Auto-generated method stub
+				ro2 = new mx.rpc.remoting.RemoteObject("adminDestination");
+				ro2.addEventListener(ResultEvent.RESULT,ro_resultHandler);
+				ro2.addEventListener(FaultEvent.FAULT,ro_faultHandler);
+				
+			}
+			
+		]]>
+	</fx:Script>
+	<fx:Declarations>
+		<!-- 将非可视元素（例如服务、值对象）放在此处 -->
+		<s:RemoteObject id="ro" destination="helloWorld" result="ro_resultHandler(event)" fault="ro_faultHandler(event)"/>
+	</fx:Declarations>
+	<s:layout>
+		<s:VerticalLayout/>
+	</s:layout>
+	<s:Button label="Call" click="button1_clickHandler(event)" />
+	<s:Button label="Message" click="button2_clickHandler(event)"/>
+	<s:TextArea id="lbl_result" text="hello HRZhao" width="80%" height="90%"/>
+	
+</s:Group>
