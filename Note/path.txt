@@ -1,0 +1,50 @@
+upload		D:\WorkSpace\RDemo\RDemoService\web\upload
+\\upload	C:\inetpub\wwwroot\upload
+""		D:\WorkSpace\RDemo\RDemoService\web
+
+D:\WorkSpace\RDemo\RDemoService\web\upload**upload
+C:\inetpub\wwwroot\upload**/upload
+C:\inetpub\wwwroot\upload**\\upload
+D:\WorkSpace\RDemo\RDemoService\web**_
+D:\WorkSpace\RDemo\RDemoService\**~/
+
+>>>>>>
+	Namespace
+FlexBuilder 会读取以下文件，再依据对应的命名空间，找到相应的文件，对后找到对应的类的源代码
+C:\Program Files (x86)\Apache Flex\Flex4.11.0\frameworks\flex-config.xml
+
+      <namespaces>
+         <namespace>
+            <uri>http://ns.adobe.com/mxml/2009</uri>
+            <manifest>mxml-2009-manifest.xml</manifest>
+         </namespace>
+         <namespace>
+            <uri>library://ns.adobe.com/flex/spark</uri>
+            <manifest>spark-manifest.xml</manifest>
+         </namespace>
+         <namespace>
+            <uri>library://ns.adobe.com/flex/mx</uri>
+            <manifest>mx-manifest.xml</manifest>
+         </namespace>
+         <namespace>
+            <uri>http://www.adobe.com/2006/mxml</uri>
+            <manifest>mxml-manifest.xml</manifest>
+         </namespace>
+         <namespace>
+            <uri>http://flex.apache.org/ns</uri>
+            <manifest>apache-manifest.xml</manifest>
+         </namespace>
+         <namespace>
+            <uri>http://flex.apache.org/experimental/ns</uri>
+            <manifest>experimental-manifest.xml</manifest>
+         </namespace>     
+      </namespaces>
+
+>>>>>>>>>>>>>>
+Apache Flex SDK can be compiled for any version of the Flash Player from 10.2 to 11.5
+
+PostCodeFormatter and PostCodeValidator
+VectorList and VectorCollection
+TLF (Text Layout Framework)
+Can use Java 7 to compile SDK
+SDK installer	recommended way http://flex.apache.org/installer.html

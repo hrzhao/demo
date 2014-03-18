@@ -1,0 +1,25 @@
+C:\Program Files\TortoiseGit\bin\TortoiseGitPlink.exe
+
+Create a new repository on the command line
+
+touch README.md
+git init
+git add README.md
+git commit -m "first commit"
+git remote add origin https://github.com/rong17173/test.git
+git push -u origin master
+
+Push an existing repository from the command line
+
+git remote add origin https://github.com/rong17173/test.git
+git push -u origin master
+
+git push https://rong17173:password@github.com/rong17173/test.git
+
+git config --unset user.name
+
+git remote remove origin
+
+git fetch origin master
+
+git pull origin master

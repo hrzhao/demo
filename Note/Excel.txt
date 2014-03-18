@@ -1,0 +1,69 @@
+>>>>Flex端
+	MTNOH.AppFx.ExportSelector
+		parseXlsxComplete()
+	MTNOH.AppFx.utils.RemoteObjectExt("...Sys.util.ExcelExporter")
+		call()
+
+>>>>C#端
+MTNOH.AppData.Sys.util.ExcelExporter
+	网站根物理路径	System.AppDomain.CurrentDomain.BaseDirectory		
+	ExcelIO eio = new ExcelIO();
+	eio.CreateExcelSheets(List<string>sheelname);
+	eio.WriteHeaders(0,  List<List<string>> headerTxts);
+	eio.FillContents(0, List<List<string>> contents, formatString);
+	eio.SaveAndClose(rootPath + fPath);
+
+>>>>C#有关EXCEL类
+	
+	AppData.Private.util
+		ExcelExporter [RemotingService]
+		ExcelExporter [RemotingService]
+	AppData.Private.Common
+		ExportHander:IHttpHandler
+		ExportExcel
+	AppData.common.util
+		ExcelFieldAttribute
+		ExcelIO
+
+
+>>>>>>ExportToExcelFromTable
+Excel导出
+AppData.Private.Common.ExportExcel
+
+AppData.NC.Common.ExportExcel
+
+	AppData.Private.Entity
+		ImportUserInfo
+	MTNOH.AppData.WorkFlow.Upload
+		UploadExcel [RemotingService]
+		
+	MTNOH.AppData.WorkFlow.Core
+		CoreUtil
+	MTNOH.AppData.Sys.util
+		ExcelExporter [RemotingService]
+>>>>>>>>>>>>>>>>>>>>>
+using Microsoft.Office.Interop.Excel;  
+using Microsoft.Office.Core;  
+引用COM，包括：Microsoft.Excel.x.0.Object.Library，Microsoft.Office.x.0.Object.Library
+
+	private Microsoft.Office.Interop.Excel.Application ExcelRS;  
+        private Microsoft.Office.Interop.Excel.Workbook RSbook;  
+        private Microsoft.Office.Interop.Excel.Worksheet RSsheet;  
+
+
+>>>>>>>>>>>>>>>>>>>>>>
+Aspose.Cells.Cells
+Aspose.Cells.Cell
+	Cell.StringValue
+	Cell.Formula
+
+mx.utils..ObjectProxy
+
+ArrayCollection
+
+>>>>>>>>>>>>>>>>>>>>>>>>>
+	NopBasic\src\MTNOH\NopBasic\controls\ReportControl.mxml
+	Report\src\plugin\ResourceReport.mxml
+	
+
+

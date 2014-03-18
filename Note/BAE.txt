@@ -1,0 +1,15 @@
+您的token是 
+28.ce937c250128880033274abadbe2261a.2592000.1393056508.1778896929-1040221
+请拷贝这个token，并且输入到cli中
+
+在bae app publish --local之后
+
+把你应用中的.baeapp文件中的lang_type: java改成lang_type: java-tomcat
+把/usr/bin/bae_build中的java-tomcat)中的bae_run java start改成bae_run java-tomcat start
+
+WaterM
+https://git.duapp.com/appid431cv8cpdh
+
+在 .git/config 文件中加入
+[http]
+	postBuffer = 524288000

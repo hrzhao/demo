@@ -1,0 +1,26 @@
+>>>>>>>>>>>
+声明事件
+<fx:Metadata>
+	[Event(name="userAccept", type="flash.events.Event")]
+</fx:Metadata>
+
+<mx:AdvancedDataGrid dataProvider="{dp}"
+		height="250"
+		sortExpertMode="false"
+		/>
+
+${DOCUMENTS}\FlexWork\output
+${DOCUMENTS}\MTNOHWeb\WEB-INF\flex\services-config.xml
+
+
+详细信息：
+[RPC Fault faultString="Send failed" faultCode="Client.Error.MessageSend" faultDetail="Channel.Connect.Failed error NetConnection.Call.Failed: HTTP: Status 500: url: 'http://localhost/mtnoh/Gateway.aspx'"]
+
+
+http://www.blogjava.net/usherlight/archive/2006/03/01/32944.html
+http://chenjumin.iteye.com/blog/422113
+
+ASP.net公共语言运行库(Common Language Runtime，简称CLR)
+
+
+>>>>>>>>>>>>>>>>

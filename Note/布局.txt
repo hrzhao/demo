@@ -1,0 +1,10 @@
+布局常用标签：  
+a) left right top bottom可以设置本容器或组件外部间隔，适用与所以组件以及容器。 
+b) paddingTop paddingLeft paddingRight paddingBottom设置容器内组件与容器边缘的 位置。  c) layout：可能的值有 "horizontal"、 "vertical"或 "absolute"。 
+d) horizontalAlign: 可能的值有 "left"、 "center"或 "right"。   
+   verticalAlign: 可能的值有 "top"、 "middle"或 "bottom"。
+
+<controls:MTViewStack id="contentViewStack"/>主界面控件
+
+周二工作，熟悉顶部栏及右侧任务栏的设计
+	了解模块加载原理

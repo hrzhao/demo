@@ -1,0 +1,142 @@
+
+驱动精灵硬件检测报告			版本:2013.11.29.1512(7.0.1129.1512)
+====================================================================================================
+
+硬件概要
+ 
+CPU:		英特尔 Core i5-3230M (双核)
+主板:		戴尔 08PPR2 (Intel HM77 (Panther Point))
+内存:		8 GBytes
+显卡:		英特尔 HD Graphics 4000
+		NVIDIA（英伟达） GeForce GT 640M
+硬盘:		希捷 ST500LT012-9WS142
+显示器:		AU Optronics B140XW03 V0
+网卡:		Intel Centrino Wireless-N 2230 BGN 2x2 HMC WiFi/Bluetooth Adapter [戴尔]
+声卡:		英特尔 Panther Point PCH - High Definition Audio Controller [C1]
+
+处理器信息
+ 
+处理器:		Intel(R) Core(TM) i5-3230M CPU @ 2.60GHz
+运行速度:		2600.0 MHz
+核心/线程:		双核, 四线程
+核心代号:		Ivy Bridge-MB PGA SV
+功耗:		35.0 W
+插座:		rPGA988B
+一级缓存:		指令: 32 KBytes, Data: 32 KBytes
+二级缓存:		集成: 256 KBytes
+三级缓存:		3 MB
+特性:		MMX　SSE　SSE-2　SSE-3　SSSE-3　SSE4.1　SSE4.2　AVX　EMT64　VT　EIST　TM1　TM2　Turbo Boost
+
+主板信息
+ 
+主板厂商:		戴尔
+主板型号:		戴尔 08PPR2
+芯片组:		英特尔 HM77 (Panther Point)
+主板插槽:		4xPCI Express x1, 1xPCI Express x4, 1xPCI Express x16
+USB支持:		v3.0
+PCI-E支持:		v3.0
+BIOS版本:		A18
+BIOS日期:		06/18/2013
+
+内存信息(总计:8 GBytes)
+ 
+内存条1：
+内存大小:		4096 MB
+内存类型:		DDR3 SDRAM
+制造商:		Hynix (现代)
+制造日期:		24年第周
+ 
+内存条2：
+内存大小:		4096 MB
+内存类型:		DDR3 SDRAM
+制造商:		Micron Tech.
+制造日期:		19年第周
+
+显卡信息
+ 
+显卡1：
+显卡芯片:		英特尔 HD Graphics 4000
+显存大小:		2112 MB
+显卡型号:		Intel Ivy Bridge-MB GT2 - Integrated Graphics Controller [E1/L1/N0/P0] [戴尔]
+显卡BIOS版本:		2130 PC 14.34  12/23/2011  01:15:27
+频率:		350.0 MHz
+ 
+显卡2：
+显卡芯片:		NVIDIA（英伟达） GeForce GT 640M
+显存大小:		2048 MB
+显卡型号:		nVidia GeForce GT 640M [戴尔]
+显卡BIOS版本:		2130 PC 14.34  12/23/2011  01:15:27
+
+显示器信息
+ 
+显示器:		AU Optronics B140XW03 V0
+生产日期:		2011年第周
+信号输入方式:		Digital
+屏幕水平尺寸:		31 cm
+屏幕垂直尺寸:		17 cm
+屏幕对角尺寸:		14英寸
+
+存储信息
+ 
+存储器1：
+控制器:		Serial ATA 3Gb/s
+型号:		希捷 ST500LT012-9WS142
+容量:		476,940 MB (500 GB)
+转速:		5400 RPM
+缓存:		16384 KB
+NCQ功能:		支持, Max. Depth: 32
+S.M.A.R.T.:		存在, Active
+48bit LBA:		支持, Active
+ 
+存储器2：
+型号:		TSSTcorp DVD+-RW SN-208DN
+
+网卡信息
+ 
+网卡1：
+硬件名称:		Intel Centrino Wireless-N 2230 BGN 2x2 HMC WiFi/Bluetooth Adapter [戴尔]
+MAC地址:		68-17-29-9D-9F-09
+最大带宽:		72 Mbps
+ 
+网卡2：
+硬件名称:		Qualcomm/Atheros AR8161/8165 PCI-E 千兆以太网 Controller
+MAC地址:		5C-F9-DD-61-62-30
+最大带宽:		1000 Mbps
+
+声卡信息
+ 
+解码器:		英特尔 Panther Point PCH - High Definition Audio Controller [C1]
+硬件名称:		Conexant
+
+电池信息
+ 
+电池型号:		戴尔
+电池制造商:		SDI
+化学性质:		锂电池
+设计容量:		48840 mWh
+完全充电容量:		48840 mWh
+损耗率:		0.0 %
+
+USB设备
+ 
+USB设备1：
+厂商:		Generic
+设备名称:		USB2.0-CRW
+USB版本:		2.00
+驱动描述:		瑞昱 USB 2.0 Card Reader
+驱动描述:		瑞昱 USB 2.0 Card Reader
+ 
+USB设备2：
+厂商:		无
+设备名称:		无
+USB版本:		2.00
+驱动描述:		英特尔(R) Centrino(R) Wireless Bluetooth(R) 4.0 + High Speed Adapter
+驱动描述:		英特尔(R) Centrino(R) Wireless Bluetooth(R) 4.0 + High Speed Adapter
+ 
+USB设备3：
+厂商:		雷柏
+设备名称:		雷柏 5G Wireless Device
+USB版本:		1.10
+驱动描述:		USB Composite Device
+驱动描述:		USB Composite Device
+
