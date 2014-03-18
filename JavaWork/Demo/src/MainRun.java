@@ -1,6 +1,5 @@
-import hrzhao.services.UserService;
 import hrzhao.utils.WeChatHelper;
-
+//from bedroom
 public class MainRun {
 
 	public MainRun() {
