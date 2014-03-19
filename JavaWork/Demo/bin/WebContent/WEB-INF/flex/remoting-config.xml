@@ -1,0 +1,34 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<service id="remoting-service" 
+    class="flex.messaging.services.RemotingService">
+
+    <adapters>
+        <adapter-definition id="java-object" class="flex.messaging.services.remoting.adapters.JavaAdapter" default="true"/>
+    </adapters>
+
+    <default-channels>
+        <channel ref="my-amf"/>
+    </default-channels>
+    <destination id="helloWorld">
+   		<properties>
+   			<source>hrzhao.services.HelloWorld</source>
+   			<include-methods>
+   			 	<method name="getHello"/>
+   			</include-methods>
+   		</properties> 
+    </destination>
+    <destination id="userService">
+    	<properties>
+    		<source>hrzhao.services.UserService</source>
+    		<include-methods>
+    			<method name="checkUser"/>
+    		</include-methods>
+    	</properties>
+    </destination>
+    <destination id="adminDestination">
+  		<properties>
+  			<source>hrzhao.services.AdminService</source>
+  		</properties>  
+    </destination>
+
+</service>
