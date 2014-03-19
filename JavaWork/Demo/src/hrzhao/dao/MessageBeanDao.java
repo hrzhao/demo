@@ -9,7 +9,7 @@ import hrzhao.ConnectionHelper;
 import hrzhao.beans.MessageBean;
 
 public class MessageBeanDao {
-	public MessageBean messageBean;
+//	public MessageBean messageBean;
 
 	public MessageBeanDao() {
 		// TODO Auto-generated constructor stub
@@ -48,6 +48,7 @@ public class MessageBeanDao {
 		return null;
 	}
 	public ArrayList<MessageBean> getMessageList(){
+		
 		return null;
 	}
 

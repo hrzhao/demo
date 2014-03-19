@@ -20,3 +20,20 @@ CREATE TABLE `NewTable` (
 PRIMARY KEY (`id`)
 )
 ;
+
+CREATE TABLE `customer` (
+`id`  int NOT NULL AUTO_INCREMENT ,
+`name`  varchar(255) CHARACTER SET utf8 COLLATE utf8_general_ci NOT NULL ,
+`realname`  varchar(255) CHARACTER SET utf8 COLLATE utf8_general_ci NOT NULL ,
+`type`  int NOT NULL ,
+`building`  varchar(255) CHARACTER SET utf8 COLLATE utf8_general_ci NULL ,
+`room`  varchar(255) CHARACTER SET utf8 COLLATE utf8_general_ci NULL ,
+`address`  varchar(255) CHARACTER SET utf8 COLLATE utf8_general_ci NULL ,
+`intime`  int NOT NULL ,
+`phone`  varchar(255) CHARACTER SET utf8 COLLATE utf8_general_ci NULL ,
+`sex`  char(2) CHARACTER SET utf8 COLLATE utf8_general_ci NULL ,
+PRIMARY KEY (`id`)
+)
+;
+	`
+

@@ -70,7 +70,6 @@ public class EnteranceServlet extends HttpServlet {
 		response.setContentType("application/xml");
 		response.setCharacterEncoding("UTF-8");
 		PrintWriter out = response.getWriter();
-		DebugHelper.log("dopost", "dopost");
 		try {
 			// 1、获取用户发送的信息
 			StringBuffer sb = new StringBuffer(100);
