@@ -1,0 +1,8 @@
+CREATE TABLE `config` (
+`id`  int NOT NULL AUTO_INCREMENT ,
+`name`  varchar(255) CHARACTER SET utf8 COLLATE utf8_general_ci NOT NULL UNIQUE,
+`value`  varchar(255) CHARACTER SET utf8 COLLATE utf8_general_ci NULL ,
+PRIMARY KEY (`id`)
+)
+;
+insert into `config`(`name`,`value`) values('token','ewaterman_token_1990');
