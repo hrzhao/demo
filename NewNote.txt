@@ -1,0 +1,91 @@
+-----------------------------------------------------------------------------
+今天在个人电脑上安装VMware,并在VMware上安装了ubuntu,并且自动安装了MySQL Server.启动ubuntu并登录后，MySQL自动启动。
+用secureCRT登录到ubuntu系统后，通过下面命令创建一个新用户luomiou
+$mysql -uroot -p121212
+mysql>use mysql;
+mysql>grant all privileges on *.* to 'luomiou'@'%' identified by '121212';
+但是我从vista上的SQLyog企业版登录，报标题的那个错误“错误码:2003 不能连接到 MySQL 服务器在  (10061)”，于是我在网上搜索，发现碰到这个问题的人还不少，但尝试了好些人给的办法，都没有办法解决。只好去看看MySQL的配制文件了，结果找到了/etc/mysql/my.cnf这个文件，幸好我的英文还没有全部还给老师，基本看懂了里边配置的意思，发现里边有一个配置：
+# Instead of skip-networking the default is now to listen only on
+# localhost which is more compatible and is not less secure.
+bind-address           = 127.0.0.1
+这里的意思就是默认只能是本机进入ＭySQL,不能从其它机器登进。于是我把
+bind-address           = 127.0.0.1这一行注释掉了，保存
+#bind-address           = 127.0.0.1
+现在重新启动MySQL:
+$sudo /etc/init.d/mysql restart
+再回到vista上的SQLyog重新登录，可以登录进去了。。YES--!!!
+ 
+另外，如果在windows安装mysql，但是从其它系统访问不了，那么关掉运行mysql的windows系统的防火墙，有可能就可以访问了。
+---------------------------------------------------------------------------------
+#Error 2003
+grant all privileges on *.* to 'luomiou'@'%' identified by '121212';
+apt-get install mysql-server
+vi /etc/mysql/my.cnf
+>>>>>#bind-address = 127.0.0.1
+#Error 1130
+>mysql -u root -p
+>update user set host='%' where host='localhost';
+>flush privileges;
+
+-------------------------------------------------------------------------------
+cp apache-tomcat-7.0.50.tar.gz /usr/local/
+cd /usr/local/
+tar zxvf apache-tomcat-7.0.50.tar.gz /usr/local/tomcat
+mkdir tomcat
+ll
+tar zxvf apache-tomcat-7.0.50.tar.gz /usr/local/tomcat
+tar zxvf apache-tomcat-7.0.50.tar.gz /usr/local/tomcat/
+tar zxvf apache-tomcat-7.0.50.tar.gz
+ll
+rm -rf tomcat/
+rm -rf apache-tomcat-7.0.50 jdk-7u9-linux-x64.gz 
+ll
+tar zxvf apache-tomcat-7.0.50.tar.gz 
+ll
+rm -rf apache-tomcat-7.0.50.tar.gz
+
+-----------------------------------
+# set java environment
+export JAVA_HOME=/usr/local/java/jdk1.7.0_51
+export JRE_HOME=$JAVA_HOME/jre
+export CLASSPATH=.;$JAVA_HOME/lib;$JRE_HOME/lib;$CLASS_PATH
+export PATH=$JAVA_HOME/bin;$JRE_HOME/bin;$PATH
+
+vi /etc/profile
+# set java environment
+export JAVA_HOME=/usr/local/java/jdk1.7.0_51
+export JRE_HOME=$JAVA_HOME/jre
+export CLASSPATH=.:$JAVA_HOME/lib:$JRE_HOME/lib:$CLASS_PATH
+export PATH=$JAVA_HOME/bin:$JRE_HOME/biN:$PATH
+
+vi /etc/rc.local
+	#startup tomcat
+
+
+vi /etc/init.d/tomcat8
+
+#!/bin/bash
+# Tomcat auto-start
+# description: Auto-starts tomcat
+# processname: tomcat
+# pidfile: /var/run/tomcat.pid
+case $1 in
+start)
+      sh /usr/local/tomcat/bin/startup.sh
+        ;;
+stop)
+        sh /usr/local/tomcat/bin/shutdown.sh
+        ;;
+restart)
+        sh /usr/local/tomcat/bin/shutdown.sh
+        sh /usr/local/tomcat/bin/startup.sh
+        ;;
+esac
+exit 0
+	/usr/local/tomcat/bin/startup.sh
+
+
+
+----------------------------
+成功后，添加到系统自服务：update-rc.d  –f  tomcat  defaults
+删除自启动：udpate-rc.d –f tomcat remove. 

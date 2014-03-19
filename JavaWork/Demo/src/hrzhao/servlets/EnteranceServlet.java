@@ -1,7 +1,7 @@
 package hrzhao.servlets;
 
 import hrzhao.DebugHelper;
-import hrzhao.beans.RequestBean;
+import hrzhao.beans.MessageBean;
 import hrzhao.utils.WeChatHelper;
 
 import java.io.IOException;
@@ -79,15 +79,15 @@ public class EnteranceServlet extends HttpServlet {
 			}
 			
 			// 2、解析用户的信息
-			JAXBContext jc = JAXBContext.newInstance(RequestBean.class);
+			JAXBContext jc = JAXBContext.newInstance(MessageBean.class);
 			Unmarshaller u = jc.createUnmarshaller();
-			RequestBean reqBean = (RequestBean) u.unmarshal(new StringReader(sb.toString()));
+			MessageBean reqBean = (MessageBean) u.unmarshal(new StringReader(sb.toString()));
 			// 3、判定用户是否发的是地理位置的PO，并查询天气
 //			String content = getContent(reqBean);
 			String content = "这是来息aliyun的消息";
 			DebugHelper.log("reqBean.content",reqBean.getContent());
 			// 4、创建一个回复消息
-			jc = JAXBContext.newInstance(RequestBean.class);
+			jc = JAXBContext.newInstance(MessageBean.class);
 			Marshaller m = jc.createMarshaller();
 			m.setProperty(Marshaller.JAXB_FORMATTED_OUTPUT, Boolean.TRUE);
 			m.setProperty(CharacterEscapeHandler.class.getName(), new CharacterEscapeHandler() {
@@ -98,7 +98,7 @@ public class EnteranceServlet extends HttpServlet {
 				}
 			});
 			m.setProperty(Marshaller.JAXB_FRAGMENT, Boolean.TRUE);
-			RequestBean respBean = createRespBean(reqBean, content);
+			MessageBean respBean = createRespBean(reqBean, content);
 			m.marshal(respBean, out);
 			out.flush();
 		} catch (JAXBException e) {
@@ -120,8 +120,8 @@ public class EnteranceServlet extends HttpServlet {
 	 * @param content
 	 * @return
 	 */
-	private RequestBean createRespBean(RequestBean reqBean, String content) {
-		RequestBean respBean = new RequestBean();
+	private MessageBean createRespBean(MessageBean reqBean, String content) {
+		MessageBean respBean = new MessageBean();
 		respBean.setFromUserName(reqBean.getToUserName());
 		respBean.setToUserName(reqBean.getFromUserName());
 		respBean.setMsgType("text");

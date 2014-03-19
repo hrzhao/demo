@@ -6,3 +6,17 @@ PRIMARY KEY (`id`)
 )
 ;
 insert into `config`(`name`,`value`) values('token','ewaterman_token_1990');
+
+
+CREATE TABLE `NewTable` (
+`id`  int NOT NULL AUTO_INCREMENT ,
+`toUserName`  varchar(255) CHARACTER SET utf8 COLLATE utf8_general_ci NOT NULL UNIQUE,
+`fromUserName`  varchar(255) CHARACTER SET utf8 COLLATE utf8_general_ci NOT NULL UNIQUE,
+`createTime`  int NOT NULL ,
+`msgType`  varchar(50) CHARACTER SET utf8 COLLATE utf8_general_ci NOT NULL,
+`content`  text CHARACTER SET utf8 COLLATE utf8_general_ci NULL ,
+`msgId`  bigint NOT NULL,
+`innerType`  int NOT NULL,
+PRIMARY KEY (`id`)
+)
+;

@@ -6,19 +6,23 @@ import javax.xml.bind.annotation.XmlRootElement;
 import com.sun.xml.txw2.annotation.XmlCDATA;
 
 @XmlRootElement(name = "xml")
-public class RequestBean {
+public class MessageBean {
 	private String toUserName;
 	private String fromUserName;
 	private Long createTime;
 	private String msgType;
 	private String content;
-
-	private Double location_X;
-	private Double location_Y;
-	private Integer scale;
-	private String label;
-
+	
 	private Long msgId;
+
+	private int innerType;
+	public int getInnerType() {
+		return innerType;
+	}
+
+	public void setInnerType(int innerType) {
+		this.innerType = innerType;
+	}
 
 	public String getToUserName() {
 		return toUserName;
@@ -67,43 +71,6 @@ public class RequestBean {
 	@XmlElement(name = "Content")
 	public void setContent(String content) {
 		this.content = content;
-	}
-
-	public Double getLocation_X() {
-		return location_X;
-	}
-
-	@XmlElement(name = "Location_X")
-	public void setLocation_X(Double location_X) {
-		this.location_X = location_X;
-	}
-
-	public Double getLocation_Y() {
-		return location_Y;
-	}
-
-	@XmlElement(name = "Location_Y")
-	public void setLocation_Y(Double location_Y) {
-		this.location_Y = location_Y;
-	}
-
-	public Integer getScale() {
-		return scale;
-	}
-
-	@XmlElement(name = "Scale")
-	public void setScale(Integer scale) {
-		this.scale = scale;
-	}
-
-	public String getLabel() {
-		return label;
-	}
-
-	@XmlCDATA
-	@XmlElement(name = "Label")
-	public void setLabel(String label) {
-		this.label = label;
 	}
 
 	public Long getMsgId() {

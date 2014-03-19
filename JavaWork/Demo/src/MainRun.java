@@ -1,4 +1,4 @@
-import hrzhao.beans.RequestBean;
+import hrzhao.beans.MessageBean;
 
 import java.io.StringReader;
 
@@ -36,9 +36,9 @@ public class MainRun {
 				"</xml>";
 		JAXBContext jc;
 		try {
-			jc = JAXBContext.newInstance(RequestBean.class);
+			jc = JAXBContext.newInstance(MessageBean.class);
 			Unmarshaller u = jc.createUnmarshaller();
-			RequestBean reqBean = (RequestBean) u.unmarshal(new StringReader(source));
+			MessageBean reqBean = (MessageBean) u.unmarshal(new StringReader(source));
 			System.out.println(reqBean);
 		} catch (JAXBException e) {
 			// TODO Auto-generated catch block
