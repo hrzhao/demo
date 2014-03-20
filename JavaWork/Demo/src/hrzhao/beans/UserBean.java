@@ -4,16 +4,16 @@ public class UserBean {
 	public int id;
 	public String username;
 	public String password;
-	public String uid;
+	public String realname;
 	public UserBean() {
 		// TODO Auto-generated constructor stub
 	}
-	public UserBean(int id, String username, String password, String uid) {
+	public UserBean(int id, String username, String password, String realname) {
 		super();
 		this.id = id;
 		this.username = username;
 		this.password = password;
-		this.uid = uid;
+		this.realname = realname;
 	}
 	
 	public int getId() {
@@ -34,11 +34,11 @@ public class UserBean {
 	public void setPassword(String password) {
 		this.password = password;
 	}
-	public String getUid() {
-		return uid;
+	public String getrealname() {
+		return realname;
 	}
-	public void setUid(String uid) {
-		this.uid = uid;
+	public void setrealname(String realname) {
+		this.realname = realname;
 	}
 
 }

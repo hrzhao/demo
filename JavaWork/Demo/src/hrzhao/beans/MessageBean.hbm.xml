@@ -1,0 +1,26 @@
+<?xml version="1.0"?>
+<!DOCTYPE hibernate-mapping PUBLIC
+        "-//Hibernate/Hibernate Mapping DTD 3.0//EN"
+        "http://www.hibernate.org/dtd/hibernate-mapping-3.0.dtd">
+
+<hibernate-mapping
+        package="hrzhao.beans"
+        >
+
+    <class name="MessageBean" table="message">
+
+        <id name="id">
+            <generator class="increment"/>
+        </id>
+        <property name="toUserName" column="toUserName" type="string"/>
+        <property name="fromUserName" column="fromUserName" type="string"/>
+        <property name="createTime" column="createTime" type="timestamp"/>
+        <property name="msgType" column="msgType" type="string"/>
+        <property name="content" column="content" type="text"/>
+        <property name="msgId" column="msgId" type="long"/>
+        <property name="innerType" column="innerType" type="int"/>
+        <!-- 
+         -->
+    </class>
+
+</hibernate-mapping>

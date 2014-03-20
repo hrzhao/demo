@@ -2,7 +2,7 @@ package hrzhao.services;
 
 import hrzhao.ResultObject;
 import hrzhao.beans.UserBean;
-import hrzhao.dao.UserDao;
+import hrzhao.dao.UserBeanDao;
 
 public class UserService {
 
@@ -10,7 +10,7 @@ public class UserService {
 		// TODO Auto-generated constructor stub
 	}
 	public ResultObject checkUser(String username,String password){
-		UserDao userDao = new UserDao();
+		UserBeanDao userDao = new UserBeanDao();
 		UserBean userBean = userDao.getUser(username);
 		ResultObject rso = new ResultObject("fail", null);
 		if(userBean != null){

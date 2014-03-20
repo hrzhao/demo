@@ -1,15 +1,22 @@
 package hrzhao.beans;
 
+import hrzhao.adapter.TimestampAdapter;
+
+import java.util.Date;
+
 import javax.xml.bind.annotation.XmlElement;
 import javax.xml.bind.annotation.XmlRootElement;
+import javax.xml.bind.annotation.adapters.XmlJavaTypeAdapter;
 
 import com.sun.xml.txw2.annotation.XmlCDATA;
 
+
 @XmlRootElement(name = "xml")
 public class MessageBean {
+	private int id;
 	private String toUserName;
 	private String fromUserName;
-	private Long createTime;
+	private Date createTime;
 	private String msgType;
 	private String content;
 	
@@ -44,12 +51,13 @@ public class MessageBean {
 		this.fromUserName = fromUserName;
 	}
 
-	public Long getCreateTime() {
+	public Date getCreateTime() {
 		return createTime;
 	}
 
 	@XmlElement(name = "CreateTime")
-	public void setCreateTime(Long createTime) {
+	@XmlJavaTypeAdapter(value = TimestampAdapter.class)
+	public void setCreateTime(Date createTime) {
 		this.createTime = createTime;
 	}
 
@@ -80,6 +88,14 @@ public class MessageBean {
 	@XmlElement(name = "MsgId")
 	public void setMsgId(Long msgId) {
 		this.msgId = msgId;
+	}
+
+	public int getId() {
+		return id;
+	}
+
+	public void setId(int id) {
+		this.id = id;
 	}
 
 }

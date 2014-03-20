@@ -1,0 +1,27 @@
+<?xml version="1.0"?>
+<!DOCTYPE hibernate-mapping PUBLIC
+        "-//Hibernate/Hibernate Mapping DTD 3.0//EN"
+        "http://www.hibernate.org/dtd/hibernate-mapping-3.0.dtd">
+
+<hibernate-mapping
+        package="hrzhao.beans"
+        >
+
+    <class name="CustomerBean" table="customer">
+
+        <id name="id">
+            <generator class="increment"/>
+        </id>
+        <property name="name" column="name" type="string"/>
+        <property name="realname" column="realname" type="string"/>
+        <property name="type" column="type" type="int"/>
+        <property name="building" column="building" type="string"/>
+        <property name="room" column="room" type="string"/>
+        <property name="address" column="address" type="string"/>
+        <property name="intime" column="intime" type="timestamp"/>
+        <property name="phone" column="phone" type="string"/>
+        <property name="sex" column="sex" type="string"/>
+        <property name="lasttime" column="lasttime" type="timestamp"/>
+    </class>
+
+</hibernate-mapping>

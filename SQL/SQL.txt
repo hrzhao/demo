@@ -35,5 +35,35 @@ CREATE TABLE `customer` (
 PRIMARY KEY (`id`)
 )
 ;
-	`
+CREATE TABLE `order` (
+	`id` int NOT NULL AUTO_INCREMENT,
+	`number` varchar(255) NOT NUll UNIQUE,
+	`intime` int NOT NULL,
+	`workerid` int NULL,
+	`customerid` int NOT NULL,
+	`remark` text,
+	primary key(`id`)
+)Engine=InnoDB DEFAULT CHARSET=utf8;
+Create Table `orderlist`(
+	`id` int NOT NULL AUTO_INCREMENT,
+	`orderid` int NOT NULL,
+	`amount` int NOT NUll,
+	primary key(`id`)
+)Engine=InnoDB DEFAULT CHARSET=utf8;
+CREATE TABLE `user` (
+  `id` int(11) NOT NULL AUTO_INCREMENT,
+  `username` varchar(255) NOT NULL,
+  `password` char(32) NOT NULL,
+  `uid` varchar(255) DEFAULT NULL,
+  PRIMARY KEY (`id`)
+) ENGINE=InnoDB AUTO_INCREMENT=3 DEFAULT CHARSET=utf8 ;
+
+
+-----------
+alter database testdb default character set = gb2312;
+alter table ip_to_country default character set = gb2312; 
+alter table ip_to_country modify country_name varchar(50) character set gb2312;
+
+-----------
+
 

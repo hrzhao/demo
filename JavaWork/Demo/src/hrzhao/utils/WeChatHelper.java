@@ -1,6 +1,6 @@
 package hrzhao.utils;
 
-import hrzhao.Config;
+import hrzhao.ConfigHelper;
 
 import java.util.ArrayList;
 import java.util.Collections;
@@ -12,7 +12,7 @@ public class WeChatHelper {
 	}
 	public static Boolean checkSafe(String timestamp,String nonce,String signature){
 		ArrayList<String> arr = new ArrayList<String>();
-		String token = Config.getConfig("token");
+		String token = ConfigHelper.getConfig("token");
 		arr.add(token);
 		arr.add(timestamp);
 		arr.add(nonce);
