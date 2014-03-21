@@ -1,13 +1,17 @@
 package hrzhao.servlets;
 
 import hrzhao.DebugHelper;
-import hrzhao.beans.MessageBean;
+import hrzhao.beans.ReqMessageBean;
+import hrzhao.beans.RespMessageBean;
 import hrzhao.services.MessageFilter;
 import hrzhao.utils.WeChatHelper;
 
+import java.io.BufferedReader;
 import java.io.IOException;
+import java.io.InputStreamReader;
 import java.io.PrintWriter;
 import java.io.StringReader;
+import java.io.UnsupportedEncodingException;
 import java.io.Writer;
 import java.util.Date;
 import java.util.Scanner;
@@ -58,35 +62,63 @@ public class EnteranceServlet extends HttpServlet {
 				pw.print(echostr);
 			}
 		}
-		
-		
 	}
-
+	
 	/**
 	 * @see HttpServlet#doPost(HttpServletRequest request, HttpServletResponse response)
 	 */
 	protected void doPost(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
 		// TODO Auto-generated method stub
-		Scanner scanner = new Scanner(request.getInputStream());
+		response.setCharacterEncoding("UTF-8");
+		String msg = "";
+		try{			
+			ReqMessageBean reqBean = getReqMessageBean(request);
+			
+			msg = reqBean.getContent();
+			
+			RespMessageBean respBean = createRespBean(reqBean,msg);
+			responseMessage(response, respBean);
+		}catch(JAXBException e){
+			DebugHelper.log("JAXBException",e.toString());
+		}finally{
+			
+		}
+	}
+
+	private ReqMessageBean getReqMessageBean(HttpServletRequest request) throws JAXBException{
+		ReqMessageBean reqBean = null;
+		
+		JAXBContext jc = JAXBContext.newInstance(ReqMessageBean.class);
+		Unmarshaller u = jc.createUnmarshaller();
+//		ReqMessageBean reqBean = (ReqMessageBean) u.unmarshal(request.getInputStream());
+		
+		BufferedReader bReader;
+		try {
+			bReader = new BufferedReader(
+					new InputStreamReader(request.getInputStream(),"UTF-8")
+					);
+			String line = null;
+			String srcXML = "";
+			while((line = bReader.readLine())!=null){  
+				srcXML += line;
+			}  
+			DebugHelper.log("SrcXML",srcXML);
+			reqBean = (ReqMessageBean) u.unmarshal(new StringReader(srcXML));
+		} catch (IOException e) {
+			// TODO Auto-generated catch block
+			DebugHelper.log("getReqMessageBean.IOException",e.toString());
+			e.printStackTrace();
+		}
+		return reqBean;
+	}
+	
+	private void responseMessage(HttpServletResponse response,RespMessageBean respBean) throws JAXBException{
 		response.setContentType("application/xml");
 		response.setCharacterEncoding("UTF-8");
-		PrintWriter out = response.getWriter();
+		PrintWriter out = null;
 		try {
-			// 1、获取用户发送的信息
-			StringBuffer sb = new StringBuffer(100);
-			while (scanner.hasNextLine()) {
-				sb.append(scanner.nextLine());
-			}
-			
-			// 2、解析用户的信息
-			JAXBContext jc = JAXBContext.newInstance(MessageBean.class);
-			Unmarshaller u = jc.createUnmarshaller();
-			MessageBean reqBean = (MessageBean) u.unmarshal(new StringReader(sb.toString()));
-			MessageFilter msgFilter = new MessageFilter();
-			String msg = msgFilter.receiveMessage(reqBean);
-			
-			// 4、创建一个回复消息
-			jc = JAXBContext.newInstance(MessageBean.class);
+			out = response.getWriter();
+			JAXBContext jc = JAXBContext.newInstance(RespMessageBean.class);
 			Marshaller m = jc.createMarshaller();
 			m.setProperty(Marshaller.JAXB_FORMATTED_OUTPUT, Boolean.TRUE);
 			m.setProperty(CharacterEscapeHandler.class.getName(),
@@ -98,24 +130,15 @@ public class EnteranceServlet extends HttpServlet {
 				}
 			});
 			m.setProperty(Marshaller.JAXB_FRAGMENT, Boolean.TRUE);
-			
-			
-			MessageBean respBean = createRespBean(reqBean, msg);
 			m.marshal(respBean, out);
-			
 			out.flush();
-		} catch (JAXBException e) {
-			DebugHelper.log("JAXBException",e.toString());
-			//
+		} catch (IOException e) {
+			// TODO Auto-generated catch block
+			DebugHelper.log("IOException",e.toString());
 		} finally {
-			if (scanner != null) {
-				scanner.close();
-				scanner = null;
-			}
-			if (out != null) {
+			if(out != null)
 				out.close();
-				out = null;
-			}
+			
 		}
 	}
 	/**
@@ -123,8 +146,8 @@ public class EnteranceServlet extends HttpServlet {
 	 * @param content
 	 * @return
 	 */
-	private MessageBean createRespBean(MessageBean reqBean, String content) {
-		MessageBean respBean = new MessageBean();
+	private RespMessageBean createRespBean(ReqMessageBean reqBean, String content) {
+		RespMessageBean respBean = new RespMessageBean();
 		respBean.setFromUserName(reqBean.getToUserName());
 		respBean.setToUserName(reqBean.getFromUserName());
 		respBean.setMsgType("text");

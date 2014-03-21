@@ -61,3 +61,18 @@ export PATH=$JAVA_HOME/bin:$JRE_HOME/biN:$PATH
 vi /etc/rc.local
 	#startup tomcat
 	/usr/local/tomcat/bin/startup.sh
+
+
+
+
+CREATE TABLE `message` (
+  `id` int(11) NOT NULL AUTO_INCREMENT,
+  `toUserName` varchar(255) DEFAULT NULL,
+  `fromUserName` varchar(255) DEFAULT NULL,
+  `createTime` datetime DEFAULT NULL,
+  `msgType` varchar(50) DEFAULT NULL,
+  `content` text,
+  `msgId` bigint(20) DEFAULT NULL,
+  `innerType` int(11) DEFAULT NULL,
+  PRIMARY KEY (`id`)
+) ENGINE=InnoDB AUTO_INCREMENT=8 DEFAULT CHARSET=utf8

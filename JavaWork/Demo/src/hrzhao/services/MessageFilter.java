@@ -4,12 +4,11 @@ import java.util.Date;
 
 import hrzhao.HiberHelper;
 import hrzhao.beans.CustomerBean;
-import hrzhao.beans.MessageBean;
+import hrzhao.beans.ReqMessageBean;
 import hrzhao.dao.CustomerBeanDao;
 import hrzhao.dao.MessageBeanDao;
 
 public class MessageFilter {
-	private static String wechatName = null;
 	private MessageFilter instance = null;
 	public MessageFilter getInstance(){
 		if(instance == null){
@@ -17,12 +16,7 @@ public class MessageFilter {
 		}
 		return instance;
 	}
-	private static void saveWechatName(String name){
-		if(wechatName == null || wechatName.equals("")){
-			wechatName = name;
-		}
-	}
-	public String receiveMessage(MessageBean messageBean){
+	public String receiveMessage(ReqMessageBean messageBean){
 		String msg = "";
 		MessageBeanDao messageDao = new MessageBeanDao();
 		messageDao.saveMessage(messageBean);
@@ -34,10 +28,11 @@ public class MessageFilter {
 			customerBean.setIntime(new Date());
 			customerBean.setLasttime(new Date());
 			customerDao.saveCustomer(customerBean);
-			msg +="欢迎您，第一次发信给邑水一方人，\n";
+			msg +="欢迎您，我是邑水一方人。";
 		}
 		HiberHelper.closeFactory();
 		msg +="刚才的消息已收到，稍候会有人员跟进。";
+		msg +="#"+messageBean.getContent();
 		return msg;
 	}
 

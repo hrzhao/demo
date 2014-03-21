@@ -1,5 +1,6 @@
 package hrzhao.beans;
 
+import hrzhao.adapter.CDataAdapter;
 import hrzhao.adapter.TimestampAdapter;
 
 import java.util.Date;
@@ -8,35 +9,20 @@ import javax.xml.bind.annotation.XmlElement;
 import javax.xml.bind.annotation.XmlRootElement;
 import javax.xml.bind.annotation.adapters.XmlJavaTypeAdapter;
 
-import com.sun.xml.txw2.annotation.XmlCDATA;
-
-
 @XmlRootElement(name = "xml")
-public class MessageBean {
-	private int id;
+public class RespMessageBean {
 	private String toUserName;
 	private String fromUserName;
 	private Date createTime;
 	private String msgType;
 	private String content;
 	
-	private Long msgId;
-
-	private int innerType;
-	public int getInnerType() {
-		return innerType;
-	}
-
-	public void setInnerType(int innerType) {
-		this.innerType = innerType;
-	}
-
 	public String getToUserName() {
 		return toUserName;
 	}
 
-	@XmlCDATA
 	@XmlElement(name = "ToUserName")
+	@XmlJavaTypeAdapter(value = CDataAdapter.class)
 	public void setToUserName(String toUserName) {
 		this.toUserName = toUserName;
 	}
@@ -45,8 +31,8 @@ public class MessageBean {
 		return fromUserName;
 	}
 
-	@XmlCDATA
 	@XmlElement(name = "FromUserName")
+	@XmlJavaTypeAdapter(value = CDataAdapter.class)
 	public void setFromUserName(String fromUserName) {
 		this.fromUserName = fromUserName;
 	}
@@ -65,8 +51,8 @@ public class MessageBean {
 		return msgType;
 	}
 
-	@XmlCDATA
 	@XmlElement(name = "MsgType")
+	@XmlJavaTypeAdapter(value = CDataAdapter.class)
 	public void setMsgType(String msgType) {
 		this.msgType = msgType;
 	}
@@ -75,27 +61,10 @@ public class MessageBean {
 		return content;
 	}
 
-	@XmlCDATA
 	@XmlElement(name = "Content")
+	@XmlJavaTypeAdapter(value = CDataAdapter.class)
 	public void setContent(String content) {
 		this.content = content;
-	}
-
-	public Long getMsgId() {
-		return msgId;
-	}
-
-	@XmlElement(name = "MsgId")
-	public void setMsgId(Long msgId) {
-		this.msgId = msgId;
-	}
-
-	public int getId() {
-		return id;
-	}
-
-	public void setId(int id) {
-		this.id = id;
 	}
 
 }

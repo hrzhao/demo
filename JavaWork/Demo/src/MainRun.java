@@ -1,11 +1,16 @@
 import hrzhao.ConfigHelper;
 import hrzhao.HiberHelper;
+import hrzhao.beans.CustomerBean;
 import hrzhao.beans.Event;
-import hrzhao.beans.MessageBean;
+import hrzhao.beans.ReqMessageBean;
 import hrzhao.beans.TestBean;
+import hrzhao.dao.CustomerBeanDao;
 import hrzhao.dao.MessageBeanDao;
 
+import java.io.BufferedReader;
+import java.io.IOException;
 import java.io.StringReader;
+import java.io.UnsupportedEncodingException;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
@@ -44,13 +49,55 @@ public class MainRun {
 //		System.out.println(date);
 //		System.out.println(dateL);
 //		Session session = HiberHelper.getSession();
-//		HiberHelper.closeSession(session);
+//		session.close();
 //		HiberHelper.closeFactory();
 //		session.beginTransaction();
 //		MessageBeanDao msgDao = new MessageBeanDao();
 //		ArrayList<MessageBean> msgList = msgDao.getMessageList();
 //		System.out.println(msgList);
-		method2saveConfig();
+//		method2saveConfig();
+	
+//		Date date = new Date();
+//		System.out.print(date.getTime());
+//		saveCustomer("ABCEDELS");
+		method3();
+	}
+	public static void method3(){
+		StringReader sReader = new StringReader("asdsdfjljljsd你好吗中械的以要\n架困顺困右\n枯坷可顺在在中");
+		BufferedReader bReader = new BufferedReader(sReader);
+		
+		String line = null;
+		try {
+			String sum ="";
+			while((line = bReader.readLine()) != null ){
+				System.out.println(line);
+				sum += line;
+			}
+			System.out.println(sum);
+			sum = "";
+			System.out.println("2");
+			while((line = bReader.readLine()) != null ){
+				System.out.println(">>>>"+line);
+				sum += line;
+			}
+			System.out.println(sum);
+			
+		} catch (IOException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+	}
+	public static void saveCustomer(String customerName){
+		
+		CustomerBeanDao customerDao = new CustomerBeanDao();
+		CustomerBean customerBean = customerDao.getCustomer(customerName);
+		if(customerBean == null){
+			customerBean = new CustomerBean();
+			customerBean.setName(customerName);
+			customerBean.setIntime(new Date());
+			customerBean.setLasttime(new Date());
+			customerDao.saveCustomer(customerBean);
+		}
 	}
 	public static void method2saveConfig(){
 		String source ="<xml>"+
@@ -58,14 +105,14 @@ public class MainRun {
 				"<FromUserName><![CDATA[fromUser]]></FromUserName>"+ 
 				"<CreateTime>1348831860</CreateTime>"+
 				"<MsgType><![CDATA[text]]></MsgType>"+
-				"<Content><![CDATA[this is a test]]></Content>"+
+				"<Content><![CDATA[this is a test支持中文吗？]]></Content>"+
 				"<MsgId>1234567890123456</MsgId>"+
 				"</xml>";
 		JAXBContext jc;
 		try {
-			jc = JAXBContext.newInstance(MessageBean.class);
+			jc = JAXBContext.newInstance(ReqMessageBean.class);
 			Unmarshaller u = jc.createUnmarshaller();
-			MessageBean reqBean = (MessageBean) u.unmarshal(new StringReader(source));
+			ReqMessageBean reqBean = (ReqMessageBean) u.unmarshal(new StringReader(source));
 			MessageBeanDao msgDao = new MessageBeanDao();
 			msgDao.saveMessage(reqBean);
 		} catch (JAXBException e) {
@@ -119,9 +166,9 @@ public class MainRun {
 				"</xml>";
 		JAXBContext jc;
 		try {
-			jc = JAXBContext.newInstance(MessageBean.class);
+			jc = JAXBContext.newInstance(ReqMessageBean.class);
 			Unmarshaller u = jc.createUnmarshaller();
-			MessageBean reqBean = (MessageBean) u.unmarshal(new StringReader(source));
+			ReqMessageBean reqBean = (ReqMessageBean) u.unmarshal(new StringReader(source));
 			System.out.println(reqBean);
 		} catch (JAXBException e) {
 			// TODO Auto-generated catch block

@@ -7,7 +7,7 @@
         package="hrzhao.beans"
         >
 
-    <class name="MessageBean" table="message">
+    <class name="ReqMessageBean" table="message">
 
         <id name="id">
             <generator class="increment"/>

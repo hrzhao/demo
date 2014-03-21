@@ -6,7 +6,7 @@ import org.hibernate.Criteria;
 import org.hibernate.Session;
 
 import hrzhao.HiberHelper;
-import hrzhao.beans.MessageBean;
+import hrzhao.beans.ReqMessageBean;
 public class MessageBeanDao {
 //	public MessageBean messageBean;
 	
@@ -15,7 +15,7 @@ public class MessageBeanDao {
 		// TODO Auto-generated constructor stub
 	}
 
-	public void saveMessage(MessageBean messageBean) {
+	public void saveMessage(ReqMessageBean messageBean) {
 		Session session = HiberHelper.getSession();
 		session.beginTransaction();
 		
@@ -24,15 +24,15 @@ public class MessageBeanDao {
 		session.getTransaction().commit();
 		session.close();
 	}
-	public MessageBean getMessage(){
+	public ReqMessageBean getMessage(){
 		return null;
 	}
-	public ArrayList<MessageBean> getMessageList(){
-		ArrayList<MessageBean> messageList = null;
+	public ArrayList<ReqMessageBean> getMessageList(){
+		ArrayList<ReqMessageBean> messageList = null;
 		Session session = HiberHelper.getSession();
 		
-		Criteria cr = session.createCriteria(MessageBean.class);
-		messageList = (ArrayList<MessageBean>) cr.list();
+		Criteria cr = session.createCriteria(ReqMessageBean.class);
+		messageList = (ArrayList<ReqMessageBean>) cr.list();
 		
 		session.getTransaction().commit();
 		session.close();

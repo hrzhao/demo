@@ -37,6 +37,7 @@ public class CustomerBeanDao {
 		
 		session.save(customerBean);
 		
+		session.getTransaction().commit();
 		session.close();
 	}
 

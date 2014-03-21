@@ -23,4 +23,11 @@ public final class ConfigHelper {
 		HiberHelper.closeFactory();
 		return value;
 	}
+	private static String originalId = null;
+	public static String getOriginalId(){
+		if(originalId == null || originalId.equals("")){
+			originalId = getConfig("original_id");
+		}
+		return originalId;
+	}
 }
