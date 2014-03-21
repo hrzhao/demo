@@ -1,8 +1,10 @@
 package hrzhao;
 import hrzhao.beans.ConfigBean;
 
+import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
+import java.util.Map;
 
 import org.hibernate.Criteria;
 import org.hibernate.Session;
@@ -30,4 +32,19 @@ public final class ConfigHelper {
 		}
 		return originalId;
 	}
+	private static List<String> msgTypeList = null;
+	public static List<String> getMsgType(){
+		if(msgTypeList == null){
+			String[] msgT = {"event","image","text"};
+			msgTypeList = new ArrayList<String>();
+			for(String val:msgT){
+				msgTypeList.add(val);
+			}
+		}
+		return msgTypeList;
+	}
+//	public static ArrayList<String> MSGTYPE = new ArrayList(["test","voice"]);
+//	public void method(){
+//		String[] arr = new String[2].["abc","123"];
+//	}
 }

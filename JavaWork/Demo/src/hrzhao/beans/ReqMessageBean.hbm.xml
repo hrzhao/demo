@@ -18,6 +18,8 @@
         <property name="msgType" column="msgType" type="string"/>
         <property name="content" column="content" type="text"/>
         <property name="msgId" column="msgId" type="long"/>
+        <property name="picURL" column="picURL" type="string"/>
+        <property name="event" column="event" type="string"/>
         <property name="innerType" column="innerType" type="int"/>
         <!-- 
          -->

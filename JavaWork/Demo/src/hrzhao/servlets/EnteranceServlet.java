@@ -74,7 +74,9 @@ public class EnteranceServlet extends HttpServlet {
 		try{			
 			ReqMessageBean reqBean = getReqMessageBean(request);
 			
-			msg = reqBean.getContent();
+			MessageFilter msgFilter = new MessageFilter();
+			
+			msg = msgFilter.receiveMessage(reqBean);
 			
 			RespMessageBean respBean = createRespBean(reqBean,msg);
 			responseMessage(response, respBean);

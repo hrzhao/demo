@@ -1,5 +1,6 @@
 package hrzhao.beans;
 
+import hrzhao.adapter.CDataAdapter;
 import hrzhao.adapter.TimestampAdapter;
 
 import java.util.Date;
@@ -19,10 +20,29 @@ public class ReqMessageBean {
 	private Date createTime;
 	private String msgType;
 	private String content;
-	
+	private String event;
+	private String picURL;
 	private Long msgId;
-
+	
 	private int innerType;
+	
+	public String getPicURL() {
+		return picURL;
+	}
+	@XmlCDATA
+	@XmlElement(name = "PicUrl")
+	public void setPicURL(String picURL) {
+		this.picURL = picURL;
+	}
+
+	public String getEvent() {
+		return event;
+	}
+	@XmlCDATA
+	@XmlElement(name = "Event")
+	public void setEvent(String event) {
+		this.event = event;
+	}
 	public int getInnerType() {
 		return innerType;
 	}

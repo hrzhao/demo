@@ -48,9 +48,11 @@ public class MainRun {
 //		Long dateL = date.getTime();
 //		System.out.println(date);
 //		System.out.println(dateL);
+//		
 //		Session session = HiberHelper.getSession();
 //		session.close();
 //		HiberHelper.closeFactory();
+		
 //		session.beginTransaction();
 //		MessageBeanDao msgDao = new MessageBeanDao();
 //		ArrayList<MessageBean> msgList = msgDao.getMessageList();
@@ -60,7 +62,25 @@ public class MainRun {
 //		Date date = new Date();
 //		System.out.print(date.getTime());
 //		saveCustomer("ABCEDELS");
-		method3();
+//		method3();
+		method4();
+	}
+	public static void method4(){
+		String[] msgT = {"event","image","text"};
+		List<String> msgTypeList = new ArrayList<String>();
+		for(String val:msgT){
+			msgTypeList.add(val);
+		}
+		if(msgTypeList.contains("event")){
+			System.out.println("hasEvent");
+		}
+		if(msgTypeList.contains("good")){
+			System.out.println("good");
+		}else{
+			System.out.println("nogood");
+			
+		}
+		
 	}
 	public static void method3(){
 		StringReader sReader = new StringReader("asdsdfjljljsd你好吗中械的以要\n架困顺困右\n枯坷可顺在在中");

@@ -1,7 +1,9 @@
 package hrzhao.services;
 
 import java.util.Date;
+import java.util.List;
 
+import hrzhao.ConfigHelper;
 import hrzhao.HiberHelper;
 import hrzhao.beans.CustomerBean;
 import hrzhao.beans.ReqMessageBean;
@@ -16,23 +18,57 @@ public class MessageFilter {
 		}
 		return instance;
 	}
-	public String receiveMessage(ReqMessageBean messageBean){
+	public String receiveMessage(ReqMessageBean reqMessageBean){
 		String msg = "";
-		MessageBeanDao messageDao = new MessageBeanDao();
-		messageDao.saveMessage(messageBean);
-		CustomerBeanDao customerDao = new CustomerBeanDao();
-		CustomerBean customerBean = customerDao.getCustomer(messageBean.getFromUserName());
-		if(customerBean == null){
-			customerBean = new CustomerBean();
-			customerBean.setName(messageBean.getFromUserName());
-			customerBean.setIntime(new Date());
-			customerBean.setLasttime(new Date());
+		String msgType = reqMessageBean.getMsgType();
+		List<String> msgTypeList = ConfigHelper.getMsgType();
+		if(msgTypeList.contains(msgType)){
+			MessageBeanDao messageDao = new MessageBeanDao();
+			messageDao.saveMessage(reqMessageBean);
+			CustomerBeanDao customerDao = new CustomerBeanDao();
+			CustomerBean customerBean = customerDao.getCustomer(reqMessageBean.getFromUserName());
+			if(customerBean == null){
+				customerBean = new CustomerBean();
+				customerBean.setName(reqMessageBean.getFromUserName());
+				customerBean.setIntime(new Date());
+				customerBean.setLasttime(new Date());
+				customerBean.setType(1);
+				customerDao.saveCustomer(customerBean);
+				msg +="欢迎您首次来到。";
+			}
+			String realname = customerBean.getRealname();
+			if(realname == null || realname.equals("")){
+				customerBean.setType(1);//没有名字
+			}else{
+				msg += realname+",您好\n";
+			}
+			switch(customerBean.getType())
+			{
+			case 0:
+				msg += "有什么可以帮到您：\n";
+			case 1:
+				msg += "请输入你的名字\n";
+				customerBean.setType(2);
+				break;
+			case 2:
+				realname = reqMessageBean.getContent();
+				//保存名字
+				customerBean.setRealname(realname);
+				msg += "系统保存您的名字为：" + realname+"\n";
+				customerBean.setType(0);//回到主目录
+				break;
+			case 3:
+				break;
+			case 4:
+				break;
+			case 5:
+				break;
+			}
 			customerDao.saveCustomer(customerBean);
-			msg +="欢迎您，我是邑水一方人。";
+			HiberHelper.closeFactory();
+		}else{
+			msg = "对不起，我不能处理您的这类型消息";
 		}
-		HiberHelper.closeFactory();
-		msg +="刚才的消息已收到，稍候会有人员跟进。";
-		msg +="#"+messageBean.getContent();
 		return msg;
 	}
 

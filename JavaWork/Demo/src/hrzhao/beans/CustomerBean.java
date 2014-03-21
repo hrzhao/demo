@@ -19,10 +19,16 @@ public class CustomerBean {
 		// TODO Auto-generated constructor stub
 	}
 
+	/**
+	 * 1、首次到来
+	 */
 	public int getId() {
 		return id;
 	}
-
+	/**
+	 * 1、首次到来
+	 * 2、输入realname
+	 */
 	public void setId(int id) {
 		this.id = id;
 	}
