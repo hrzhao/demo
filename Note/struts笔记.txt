@@ -1,0 +1,418 @@
+jdk默认编码：
+
+
+>>>>搭建安装struts2
+	1、下载struts2 jar包，放到项目的lib文件夹下。
+		包括：
+			structs-core-2.x.x.jar
+				核心库
+			xwork-2.x.x.jar
+				XWork
+			ognl-2.6.x.jar
+				对象图导航语言
+			freemarker-2.3.x.jar
+				UI标签模板使用freemarker编写
+			commons-logging-1.1.x.jar
+				日志
+			commons-fileupload-1.2.1.jar
+				上传文件
+
+	>>>web.xml
+<?xml version="1.0" encoding="UTF-8"?>
+<web-app version="3.0" 
+	xmlns="http://java.sun.com/xml/ns/javaee" 
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" 
+	xsi:schemaLocation="http://java.sun.com/xml/ns/javaee 
+	http://java.sun.com/xml/ns/javaee/web-app_3_0.xsd">
+  <display-name></display-name>	
+  <filter>
+  	<filter-name>struts2</filter-name>
+  	<filter-class>org.apache.struts2.dispatcher.ng.filter.StrutsPrepareAndExecuteFilter</filter-class>
+  </filter>
+  <filter-mapping>
+  	<filter-name>struts2</filter-name>
+  	<url-pattern>/*</url-pattern>
+  </filter-mapping>
+  <welcome-file-list>
+    <welcome-file>index.jsp</welcome-file>
+  </welcome-file-list>
+</web-app>
+
+	>>>src/struts.xml 来自\struts-2.3.15.1\apps\struts2-blank\WEB-INF\classes
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE struts PUBLIC
+	"-//Apache Software Foundation//DTD Struts Configuration 2.3//EN"
+	"http://struts.apache.org/dtds/struts-2.3.dtd">
+
+<struts>
+</struts>
+
+
+-----------------------------------------------------------------
+
+>>>>struts.xml中的默认值
+	action
+		class=ActionSupport
+		method=execute
+	result
+		name="success"
+>>>>重定向
+	action.result
+		type=redirect  浏览器重定向
+	>>>eg.1    浏览器重定向
+<action name="redirect">
+	<result type="redirect">/employee.jsp</result>
+</action>
+
+
+	>>>eg.2    Action重定向
+<action name="redirectAction">
+	<result type="redirectAction">
+		<param name="actionName">xxx</param>
+		<param name="namespace">/control/department</param>
+	</result>
+</action>
+
+
+	>>>eg.3
+		type=plainText  直接输出JSP源代码
+
+<action name="plainText">
+	<result type="plainText">
+		<param name="actionName">xxx</param>
+		<param name="charSet">UTF-8</param>
+		<param name="namespace">/control/department</param>
+	</result>
+</action>
+
+>>>>global-result
+	<global-results>
+		<result name="message">xxx.jsp</result>
+	</global-results>
+	注：在相同包里面可用global-result的视图
+	包可以继承，把上述视图放在父包里面，父包继成struts-default即可，实现全部可转发到该视图
+
+>>>>constant常量
+开发模式
+	<constant name="struts.devMode" value="true"/>
+默认处理后缀
+	<constant name="struts.action.extension" value="do,action"/>
+设置默认编码
+	<constant name="struts.i18n.encoding" value="UTF-8"/>
+<!-- 资源文件 -->
+	<constant name="struts.custom.i18n.resources" value="stdemo"/>
+是否缓存静态文件
+	<constant name="struts.serve.stataic.browseCache" value="true"/>
+<!--默认视图主题-->
+	<constant name="struts.ui.theme" value="simple"/>
+<!--与spring集成时，指定由spring负责action对象的创建-->
+	<constant name="struts.objectFactory" value="spring"/>
+<!--动态方法调用-->
+	<constant name="struts.enable.DynamicMethodInvocation" value="false"/>
+<!--上传文件大小，可能默认为5MB-->
+	<constant name="struts.multipart.maxSize" value="10701096"/>
+
+-----------------------
+   <!-- 该属性指定需要Struts2处理的请求后缀，该属性的默认值是action，即所有匹配*.action的请求都由Struts2处理。
+        如果用户需要指定多个请求后缀，则多个后缀之间以英文逗号（,）隔开。 -->
+    <constant name="struts.action.extension" value="do" />
+    <!-- 设置浏览器是否缓存静态内容,默认值为true(生产环境下使用),开发阶段最好关闭 -->
+    <constant name="struts.serve.static.browserCache" value="false" />
+    <!-- 当struts的配置文件修改后,系统是否自动重新加载该文件,默认值为false(生产环境下使用),开发阶段最好打开 -->
+    <constant name="struts.configuration.xml.reload" value="true" />
+    <!-- 开发模式下使用,这样可以打印出更详细的错误信息 -->
+    <constant name="struts.devMode" value="true" />
+    <!-- 默认的视图主题 -->
+    <constant name="struts.ui.theme" value="simple" />
+    <!--<constant name="struts.objectFactory" value="spring" />-->
+    <!--解决乱码    -->
+    <constant name="struts.i18n.encoding" value="UTF-8" />
+    <!-- 指定允许上传的文件最大字节数。默认值是2097152(2M) -->
+    <constant name="struts.multipart.maxSize" value="10701096"/>
+    <!-- 设置上传文件的临时文件夹,默认使用javax.servlet.context.tempdir -->
+    <constant name="struts.multipart.saveDir " value="d:/tmp" />
+------------------------------------------
+
+>>>>引入多个配置文件
+	<include file="***"/>
+
+>>>>配置文件
+	struts-default.xml
+	struts-plugin.xml
+	struts.xml
+	struts.properties
+	web.xml
+>>>>动态方法调用
+	***/myaction.action    调用默认方法
+	***/myaction!fnc1.action
+>>>>通配符
+<action name="list_*_*" class="com.hrzhao.{1}" method="{2}">
+	<result>{2}</result>
+</action>
+
+------------------------------------------------------------------
+
+>>>>URLDecoder.decode
+
+------------------------------------------------------------------
+
+>>>>
+${pageContext.request.contextPath}
+正则表达式
+!Pattern.compile("^1[358]\\d{9}$").matcher(this.mobile).matches()
+	
+------------------------------------------------------------------
+>>>>在Action中通过ServletActionContext获取几大对像
+	HttpServletRequest,ServletContext,HttpServletResponse
+>>>>通过继承ServletRequestAware,ServletResponse,ServletContextAware接口
+
+
+------------------------------------------------------------------
+>>>>自定义拦截器
+struts.xml
+<interceptors>
+	<interceptor name="permission" class="com.stdemo.interceptor.PermissionInterceptor"/>//定义拦截器
+	<interceptor-stack name="permissionStack">//定义拦截器栈
+		<interceptor-ref name="defaultStack"></interceptor-ref>
+		<interceptor-ref name="permission"></interceptor-ref>
+	</interceptor-stack>
+</interceptors>
+<action name="login" class="com.stdemo.action.LoginAction">
+	<interceptor-ref name="permissionStack"/>//在Action中应用
+</action>
+PermissionInterceptor implements Interceptor
+	
+@Override
+	public String intercept(ActionInvocation invocation) throws Exception {
+		
+	return invocation.invoke();//执行原有的方法，返回原有方法的返回值，如execute
+	}
+
+----------------------------校验------------------------------------
+>>>>校验
+Action.java继承ActionSupport
+重写validate(){
+	this.addFieldError("username", "用户名不能为空");
+	//若有信息则会转向input视图
+	if(!Pattern.compile("^1[358]\\d{9}$").matcher(this.mobile).matches()){
+		this.addFieldError("mobile", "手机号格式不正确");
+	}
+}
+执行完以后再转向本来要执行的方法
+JSP中
+<%@ taglib uri="/struts-tags" prefix="s"%>//就用标签
+<s:fielderror></s:fielderror>//输出错误信息
+
+>>>只对特定方法（如add()）进进行校验
+	实现validateAdd()即可
+	
+
+>>>>XML校验法
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE validators PUBLIC
+        "-//Apache Struts//XWork Validator 1.0.2//EN"
+        "http://struts.apache.org/dtds/xwork-validator-1.0.3.dtd">
+<validators>
+    <field name="username">
+        <field-validator type="requiredstring">
+        	<param name="trim">true</param>
+          <!-- <message key="requiredstring"/> -->  
+          <message>用户名不能为空1</message>
+        </field-validator>
+    </field>
+    <field name="mobile">
+    	<field-validator type="requiredstring">
+    		<message>手机号不能为空1</message>
+    	</field-validator>
+        <field-validator type="regex">
+        	<param name="expression"><![CDATA[^1[358]\d{9}$]]></param>
+        	<message>手机号格式不正确1</message>
+        </field-validator>
+    </field>
+</validators>
+---------
+<validators>
+
+    <field name="password">
+        <field-validator type="requiredstring">
+            <message key="error.password.required"/>
+        </field-validator>
+        <field-validator type="stringlength">
+            <param name="trim">true</param>
+            <param name="minLength">4</param>
+            <param name="maxLength">10</param>
+            <message key="errors.range"/>
+        </field-validator>
+    </field>
+
+    <field name="password2">
+        <field-validator type="requiredstring">
+            <message key="error.password2.required"/>
+        </field-validator>
+    </field>
+
+    <validator type="expression">
+        <param name="expression">password eq password2</param>
+        <message key="error.password.match"/>
+    </validator>
+
+</validators>
+-------------
+对特定方法进行校验
+命名为：UserAction-user_add-validation.xml
+	UserAction为Action类名
+	user_add为struts.xml中的action名，可用add为指定方法
+
+---------------------------国际化---------------------------
+>>>>国际化
+	>>>在JSP中引入标签
+	<%@ taglib uri="/struts-tags" prefix="s" %>
+  	<s:text name="welcome"/>
+
+	>>>占位符：
+	{0}{1}
+	<s:text name="welcome">
+		<s:param>参数一</s:param>
+		<s:param>参数二</s:param>
+	</s:text>
+
+	>>>在Action中
+		用this.getText()
+
+	>>全局：
+	资源文件的命名格式
+	baseName_language_country.properties
+	baseName_language.properties
+	baseName.properties
+	如：
+	baseName_zh_CN.properties
+	baseName_en_US.properties
+	放于src下
+	
+	>>包范围:
+	放于包下
+	命名"package_language_country.properties"
+	如：package_zh_CN.properties
+	
+	>>Action范围：
+	ActionName_lanuage_country.properties
+	如：PersonAction_zh_CN.properties
+
+>>>直接访某个资源文件
+	<s:i18n name="stdemo">
+		<s:text name="welcome"/>
+	</s:i18n>
+	---------------
+	<s:i18n name="com/stdemo/action/package">
+		<s:text name="welcome">
+			<s:param>小张〈/s:param>
+		</s:text>
+	</s:i18n>
+	
+	
+
+jdk的native2ascii转成Unicode
+
+
+------------------------------------OGNL---------------------------------
+>>>>OGNL表达式
+	对象方法调用：如xxx.sayHello()
+	静态方法调用：
+		@[类全名]@[方法名|值名]
+		如：
+		@com.stdemo.Constant@APP_NAME
+
+OGNL Context---	|-- ValueStack
+		|-- parameters
+		|-- request
+		|-- session
+		|-- application
+		|-- attr
+	>>>访问对象方式：
+		如：#request #session
+		根对象可省去#，即ValueStack
+
+	>>>
+	request.getSession().setAttribute("employee", "小张");
+	request.setAttribute("user", "小李");
+	<s:property value="name"/>OGNL表达式输出值
+	<s:property value="#session.employee"/>
+	<s:property value="#request.user"/>
+
+	>>>
+	<s:set var="lise" value="{'aaa','bbb','ccc'}"/>
+	<s:iterator value="#list">
+    		<s:property /><br>
+    	</s:iterator>
+	------------
+	<s:set var="maps" value="#{'key1':90,'key2':78,'key3':22}"/>
+    	<s:iterator value="#maps">
+    		<s:property value="key"/>=<s:property value="value"/><br>
+    	</s:iterator>
+
+	------------
+	<s:if test="'foo' in {'foo','bar'}">//或者 not in
+    		在
+	    </s:if>
+    	<s:else>
+    		不在
+    	</s:else>
+	------------
+	List books
+	<s:iterator value="books.(?#this.price>60">
+		<s:property value="name" />
+		,价格：<s:property value="price"/><br/>
+	</s:iterator>
+
+-------------------------------标签---------------------------------------
+>>>>url
+	<s:url action="helloworld" namespace="/test">
+		<s:param name="personid" value="23"/>
+	</s:url>
+	----------------
+	<s:set name="myurl" value="'http://www.baidu.com'"/>
+	<s:url value="%{#myurl}"/><!--OGNL输出http://www.baidu.com-->
+	<s:url value="#myurl"/><!--字符串输出#myurl-->
+
+>>>>checkboxlist
+	<s:checkboxlist name="languageList" list="{'java','Net','PHP'}" value="{'Net','PHP'}"></s:checkboxlist>
+
+	  <s:checkboxlist name="languageMap" 
+   		 list="#{1:'AAA',2:'BBB',3:'CCC' }"
+    		 listKey="key" listValue="value" value="{1,2}"
+   		 />
+	>>>对象
+	<s:checkboxlist name="personList"
+		list="#request.person"
+		listKey="persionid"
+		listValue="name"
+	/>
+>>>>radio
+	<s:radio name="languageRadio" list="{'java','Net','PHP'}" value="'PHP'"></s:radio>
+
+	 <s:radio list="#{1:'AAA',2:'BBB',3:'CCC' }" name="radio2"
+    		listKey="key"
+    		listValue="value"
+	    	value="1"
+	></s:radio>
+
+	<s:select>
+
+
+>>>>防止表单重复提交->
+	<s:token/>
+	
+	<s:form action="helloworld_other" method="post" namespace="/test">
+		<s:textfield name="person.name"/>
+		<s:token/>
+		<s:submit>
+	</s:form>
+
+	<action name="helloworld_*" class="com.stdemo.action.HelloWorldAction" method="{1}">
+		<interceptor-ref name="defaultStack"/>
+		<interceptor-ref name="token"/>
+		<result name="invalid.token">/WEB-INF/page?message.jsp</result>
+		<result>xxx.jsp</result>
+	</action>
+
+	

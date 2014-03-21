@@ -1,0 +1,41 @@
+>>>>主要包
+	>>>struts2
+	struts2-core-2.x.x.jar
+	xwork-core-2.x.x.jar
+	ognl-2.6.x.jar
+	freemarker-2.3.x.jar
+	commons-fileupload-1.2.x.jar
+	struts2-spring-plugin-2.x.x.jar
+
+	>>>hibernate
+	(http://www.hibernate.org)
+	核心安装包
+	hibernate3.jar
+	lib\bytecode\cglib\hibernate-cglib-repack-2.1_3.jar
+	lib\require\*.jar
+	注解安装包
+	hibernate=annotations.jar
+	lib\ejb3-persistence.jar
+	lib\hibernate-commons-annotations.jar
+	JPA实现包
+	hibernate-entitymanager.jar
+	lib\test\log4j.jar
+	lib\test\slf4j-log4j12.jar
+	>>>Spring
+	dist\spring.jar
+	lib\c3p0-0.9.1.2.jar
+	lib\aspedj\aspectjweaver.jar、aspectjrt.jar
+	lib\ccglib\cglib-nodep-2.1_3.jar
+	lib\j2ee\common-annotations.jar
+	lib\log4j\log4j-1.2.15.jar
+	lib\jakarta-commons\commons\logging.jar
+
+
+>>>>快速上手
+	添加Hibernate配置文件hibernate.cfg.xml
+	编写映射文件User.hbm.xml
+	编写持久化类User.java
+	编写辅助类HibernateSessionFactory.java
+	编写DAO类UserDao.java
+	编写Service类UserService.java
+	
