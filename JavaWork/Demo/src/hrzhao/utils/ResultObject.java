@@ -1,4 +1,4 @@
-package hrzhao;
+package hrzhao.utils;
 
 public class ResultObject {
 	private String state;
@@ -44,6 +44,7 @@ public class ResultObject {
 	}
 	public ResultObject() {
 		// TODO Auto-generated constructor stub
+		this.state = FAIL;
 	}
 
 }

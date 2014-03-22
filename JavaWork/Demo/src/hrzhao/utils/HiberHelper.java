@@ -1,4 +1,4 @@
-package hrzhao;
+package hrzhao.utils;
 
 import org.hibernate.Session;
 import org.hibernate.SessionFactory;

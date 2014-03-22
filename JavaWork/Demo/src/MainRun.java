@@ -1,11 +1,13 @@
-import hrzhao.ConfigHelper;
-import hrzhao.HiberHelper;
 import hrzhao.beans.CustomerBean;
 import hrzhao.beans.Event;
 import hrzhao.beans.ReqMessageBean;
 import hrzhao.beans.TestBean;
 import hrzhao.dao.CustomerBeanDao;
 import hrzhao.dao.MessageBeanDao;
+import hrzhao.services.MessageFilter;
+import hrzhao.utils.ConfigHelper;
+import hrzhao.utils.HiberHelper;
+import hrzhao.utils.HibernateSessionFactory;
 
 import java.io.BufferedReader;
 import java.io.IOException;
@@ -19,11 +21,14 @@ import javax.xml.bind.JAXBContext;
 import javax.xml.bind.JAXBException;
 import javax.xml.bind.Unmarshaller;
 
+import org.hibernate.Criteria;
 import org.hibernate.Session;
 import org.hibernate.SessionFactory;
+import org.hibernate.Transaction;
 import org.hibernate.boot.registry.StandardServiceRegistry;
 import org.hibernate.boot.registry.StandardServiceRegistryBuilder;
 import org.hibernate.cfg.Configuration;
+import org.hibernate.criterion.Restrictions;
 
 
 //import hrzhao.Config;
@@ -63,7 +68,57 @@ public class MainRun {
 //		System.out.print(date.getTime());
 //		saveCustomer("ABCEDELS");
 //		method3();
-		method4();
+//		mthod5();
+//		mthod6();
+		mthod7();
+	}
+	public static void mthod7(){
+		MessageFilter msgFilter = new MessageFilter();
+		ReqMessageBean reqBean = new ReqMessageBean();
+		String msg = "";
+		reqBean.setFromUserName("oBx4Dt37J4GSXlt32V4zGf-EDQQM");
+		reqBean.setMsgType("text");
+		
+		reqBean.setCreateTime(new Date());
+		reqBean.setContent("你好");
+		msg += msgFilter.receiveMessage(reqBean);
+		reqBean.setCreateTime(new Date());
+		reqBean.setContent("赵海荣");
+		msg += msgFilter.receiveMessage(reqBean);
+		reqBean.setCreateTime(new Date());
+		reqBean.setContent("松坪村");
+		msg += msgFilter.receiveMessage(reqBean);
+		System.out.println(msg);
+		
+		
+//		return customerBean;
+	}
+	public static void mthod6(){
+		Session session = HibernateSessionFactory.getSession();
+		Transaction tx = session.beginTransaction();
+		TestBean testBean = (TestBean) session.get(TestBean.class, 1);
+		testBean.setName("li");
+		testBean.setContent("liContent55");
+		session.save(testBean);
+		tx.commit();
+		HibernateSessionFactory.closeSession();
+		
+		session = HibernateSessionFactory.getSession();
+		tx = session.beginTransaction();
+		testBean.setContent("liContent66");
+		session.update(testBean);
+		tx.commit();
+		HibernateSessionFactory.closeSession();
+	}
+	public static void mthod5(){
+		Session session = HibernateSessionFactory.getSession();
+		Transaction tx = session.beginTransaction();
+		TestBean testBean = new TestBean();
+		testBean.setName("li");
+		testBean.setContent("liContent");
+		session.save(testBean);
+		tx.commit();
+		HibernateSessionFactory.closeSession();
 	}
 	public static void method4(){
 		String[] msgT = {"event","image","text"};

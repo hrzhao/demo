@@ -2,7 +2,7 @@
 <s:Group xmlns:fx="http://ns.adobe.com/mxml/2009" 
 		 xmlns:s="library://ns.adobe.com/flex/spark" 
 		 xmlns:mx="library://ns.adobe.com/flex/mx" width="100%" height="100%"
-		 creationComplete="group1_creationCompleteHandler(event)"
+		 creationComplete="group1_creationCompleteHandler(event)" xmlns:plugins="plugins.*"
 		 >
 	<fx:Declarations>
 		<!-- 将非可视元素（例如服务、值对象）放在此处 -->
@@ -22,5 +22,9 @@
 			
 		]]>
 	</fx:Script>
+	<s:layout>
+		<s:VerticalLayout gap="0"/>
+	</s:layout>
 	<s:Label id="lbl_userinfo" text="welcome to mFrame!"/>
+	<plugins:CustomerManage width="100%" height="100%" />
 </s:Group>

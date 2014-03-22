@@ -30,5 +30,10 @@
   			<source>hrzhao.services.AdminService</source>
   		</properties>  
     </destination>
+    <destination id="customerService">
+  		<properties>
+  			<source>hrzhao.services.CustomerService</source>
+  		</properties>  
+    </destination>
 
 </service>

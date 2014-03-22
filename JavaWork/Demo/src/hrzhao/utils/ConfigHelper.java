@@ -1,4 +1,4 @@
-package hrzhao;
+package hrzhao.utils;
 import hrzhao.beans.ConfigBean;
 
 import java.util.ArrayList;

@@ -1,4 +1,4 @@
-package hrzhao;
+package hrzhao.utils;
 
 import java.sql.*;
 //import org.mariadb.jdbc.Driver;

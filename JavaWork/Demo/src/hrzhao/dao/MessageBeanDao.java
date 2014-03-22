@@ -5,8 +5,8 @@ import java.util.ArrayList;
 import org.hibernate.Criteria;
 import org.hibernate.Session;
 
-import hrzhao.HiberHelper;
 import hrzhao.beans.ReqMessageBean;
+import hrzhao.utils.HiberHelper;
 public class MessageBeanDao {
 //	public MessageBean messageBean;
 	

@@ -1,8 +1,8 @@
 package hrzhao.services;
 
-import hrzhao.ResultObject;
 import hrzhao.beans.UserBean;
 import hrzhao.dao.UserBeanDao;
+import hrzhao.utils.ResultObject;
 
 public class UserService {
 

@@ -7,8 +7,8 @@ import org.hibernate.Criteria;
 import org.hibernate.Session;
 import org.hibernate.criterion.Restrictions;
 
-import hrzhao.HiberHelper;
 import hrzhao.beans.UserBean;
+import hrzhao.utils.HiberHelper;
 
 public class UserBeanDao {
 	public UserBeanDao() {
@@ -23,7 +23,7 @@ public class UserBeanDao {
 		session.beginTransaction();
 		
 		Criteria cr = session.createCriteria(UserBean.class);
-		cr.add(Restrictions.eq("userbean",username));
+		cr.add(Restrictions.eq("username",username));
 		cr.setMaxResults(1);
 		List<UserBean> rs = cr.list();
 		if(!rs.isEmpty()){
