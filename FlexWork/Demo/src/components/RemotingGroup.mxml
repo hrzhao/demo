@@ -6,6 +6,9 @@
 		 >
 	<fx:Script>
 		<![CDATA[
+			import entities.AppConfig;
+			import entities.TestMapBean;
+			
 			import mx.events.FlexEvent;
 			import mx.rpc.events.FaultEvent;
 			import mx.rpc.events.ResultEvent;
@@ -14,7 +17,11 @@
 			protected function ro_resultHandler(event:ResultEvent):void
 			{
 				// TODO Auto-generated method stub
-				lbl_result.text = event.result.toString(); 
+				lbl_result.text = event.result.toString();
+				if(event.result is AppConfig){
+					var bean:AppConfig = AppConfig(event.result);
+				}
+				lbl_result.text += bean.name;
 				
 			}
 			
@@ -34,16 +41,18 @@
 			protected function button2_clickHandler(event:MouseEvent):void
 			{
 				// TODO Auto-generated method stub
-				ro2.getList();
+//				ro2.getList();
+				var appStoreId:String = "4d7665a6-175c-49e1-b89d-d8628157355e";
+				roTest.getAppConfigBean(appStoreId);
 			}
 			
 			
 			protected function group1_creationCompleteHandler(event:FlexEvent):void
 			{
 				// TODO Auto-generated method stub
-				ro2 = new mx.rpc.remoting.RemoteObject("adminDestination");
-				ro2.addEventListener(ResultEvent.RESULT,ro_resultHandler);
-				ro2.addEventListener(FaultEvent.FAULT,ro_faultHandler);
+//				ro2 = new mx.rpc.remoting.RemoteObject("adminDestination");
+//				ro2.addEventListener(ResultEvent.RESULT,ro_resultHandler);
+//				ro2.addEventListener(FaultEvent.FAULT,ro_faultHandler);
 				
 			}
 			
@@ -52,12 +61,13 @@
 	<fx:Declarations>
 		<!-- 将非可视元素（例如服务、值对象）放在此处 -->
 		<s:RemoteObject id="ro" destination="helloWorld" result="ro_resultHandler(event)" fault="ro_faultHandler(event)"/>
+		<s:RemoteObject id="roTest" destination="frameService" result="ro_resultHandler(event)" fault="ro_faultHandler(event)"/>
 	</fx:Declarations>
 	<s:layout>
 		<s:VerticalLayout/>
 	</s:layout>
 	<s:Button label="Call" click="button1_clickHandler(event)" />
-	<s:Button label="Message" click="button2_clickHandler(event)"/>
+	<s:Button label="AppConfig" click="button2_clickHandler(event)"/>
 	<s:TextArea id="lbl_result" text="hello HRZhao" width="80%" height="90%"/>
 	
 </s:Group>

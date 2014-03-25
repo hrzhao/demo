@@ -25,14 +25,19 @@
     		</include-methods>
     	</properties>
     </destination>
-    <destination id="adminDestination">
+    <destination id="testService">
   		<properties>
-  			<source>hrzhao.services.AdminService</source>
+  			<source>hrzhao.services.TestService</source>
   		</properties>  
     </destination>
     <destination id="customerService">
   		<properties>
   			<source>hrzhao.services.CustomerService</source>
+  		</properties>  
+    </destination>
+     <destination id="frameService">
+  		<properties>
+  			<source>hrzhao.services.FrameService</source>
   		</properties>  
     </destination>
 

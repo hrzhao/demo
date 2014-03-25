@@ -19,15 +19,15 @@
         <!-- Drop and re-create the database schema on startup 
         <property name="hbm2ddl.auto">create</property>
         -->
-        <property name="hbm2ddl.auto">validate</property>
+		<mapping resource="hrzhao/beans/AppConfigBean.hbm.xml"/>
+		<mapping resource="hrzhao/beans/CategoryBean.hbm.xml"/>
 		<mapping resource="hrzhao/beans/Event.hbm.xml"/>
 		<mapping resource="hrzhao/beans/ReqMessageBean.hbm.xml"/>
 		<mapping resource="hrzhao/beans/ConfigBean.hbm.xml"/>
 		<mapping resource="hrzhao/beans/UserBean.hbm.xml"/>
 		<mapping resource="hrzhao/beans/CustomerBean.hbm.xml"/>
-		
 		<!-- 
-		<mapping resource="hrzhao/beans/TestBean.hbm.xml"/>
+        <property name="hbm2ddl.auto">validate</property>
 		<class-cache
 			class="org.hibernate.test.legacy.Simple"
 			region="Simple"

@@ -1,7 +1,9 @@
+import hrzhao.beans.AppConfigBean;
 import hrzhao.beans.CustomerBean;
 import hrzhao.beans.Event;
 import hrzhao.beans.ReqMessageBean;
 import hrzhao.beans.TestBean;
+import hrzhao.dao.AppConfigBeanDao;
 import hrzhao.dao.CustomerBeanDao;
 import hrzhao.dao.MessageBeanDao;
 import hrzhao.services.MessageFilter;
@@ -53,7 +55,7 @@ public class MainRun {
 //		Long dateL = date.getTime();
 //		System.out.println(date);
 //		System.out.println(dateL);
-//		
+		
 //		Session session = HiberHelper.getSession();
 //		session.close();
 //		HiberHelper.closeFactory();
@@ -70,7 +72,10 @@ public class MainRun {
 //		method3();
 //		mthod5();
 //		mthod6();
-		mthod7();
+//		mthod7();
+		AppConfigBean appBean;
+		AppConfigBeanDao appDao = new AppConfigBeanDao();
+		appBean = appDao.getAppConfigBean("4d7665a6-175c-49e1-b89d-d8628157355e");
 	}
 	public static void mthod7(){
 		MessageFilter msgFilter = new MessageFilter();

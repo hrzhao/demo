@@ -6,7 +6,7 @@
 		 >
 	<fx:Script>
 		<![CDATA[
-			import entities.User;
+			import entities.UserBean;
 			
 			import events.LoginEvent;
 			
@@ -19,19 +19,16 @@
 			{
 				// TODO Auto-generated method stub
 				txtResult.text = event.message.toString();
-				
 			}
 			protected function ro_resultHandler(event:ResultEvent):void
 			{
 				// TODO Auto-generated method stub
 				var data:Object = event.result.data;
 				if(event.result.state == "success" && data != null){
-					var user:User = new User();
-					user.id = data.id;
-					user.username = data.username;
-					user.password = data.password;
-					user.uid = data.uid;
-					this.dispatchEvent(new LoginEvent("loginSuccess",user));
+					if(event.result.data is UserBean){
+						var user:UserBean = UserBean(event.result.data);
+						this.dispatchEvent(new LoginEvent("loginSuccess",user));
+					}
 				}
 				txtResult.text = "密码或用户名有错";
 				

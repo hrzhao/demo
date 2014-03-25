@@ -1,0 +1,33 @@
+appStoreUID = 4d7665a6-175c-49e1-b89d-d8628157355e
+
+
+hibernate+java+sql 之间数据类型转换关系
+---------------------------------------------------------------------------------
+Hibernate映射类型	java类型			标准SQL类型		|
+integer			java.lang.Integer		integer			|
+long			java.lang.Long	bigint					|	
+short			java.lang.Short	smallint				|	
+float			java.lang.Float	float
+double			java.lang.Float	double
+big_decimal		java.math.BigDecimal		numeric
+character		java.lang.String		char(1)
+string			java.lang.String		varchar
+byte			byte或java.lang.Byte		tinyint
+boolean			boolean或java.lang.Boolean  	bit
+yes_no    		boolean或java.lang.Boolean	char(1)('Y'/'N')
+true_false		boolean或java.lang.Boolean	char(1)('Y'/'N')
+date			java.util.Date或java.sql.Date	date
+time			java.util.Date或java.sql.Time	time
+timestamp		java.util.Date或java.sql.timestamp	timestamp
+calendar		java.util.Calendar		timestamp
+calendar_date		java.util.Calendar		date
+binary			byte[]	varbinary或blob
+text			java.lang.String		clob
+serializable		java.io.Serializable实例	varbinary或blob
+clob			java.sql.Clob			clob
+blob			java.sql.Blob			varbinary或blob
+class			java.lang.Class			varchar
+locale			java.util.Locale		varchar			|
+timezone		java.util.TimeZone		varchar			|
+currency		java.util.Currency		varchar			|
+---------------------------------------------------------------------------------
