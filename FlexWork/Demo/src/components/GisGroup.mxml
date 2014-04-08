@@ -1,0 +1,41 @@
+<?xml version="1.0" encoding="utf-8"?>
+<s:Group xmlns:fx="http://ns.adobe.com/mxml/2009" 
+		 xmlns:s="library://ns.adobe.com/flex/spark" 
+		 xmlns:mx="library://ns.adobe.com/flex/mx" width="100%" height="100%"
+		 xmlns:esri="http://www.esri.com/2008/ags" xmlns:layers="com.esri.ags.layers.*"
+		 xmlns:layer="layer.*"
+		 creationComplete="group1_creationCompleteHandler(event)"
+		 >
+	<fx:Script>
+		<![CDATA[
+			import mx.events.FlexEvent;
+			
+			protected function group1_creationCompleteHandler(event:FlexEvent):void
+			{
+				// TODO Auto-generated method stub
+				
+			}
+			
+		]]>
+	</fx:Script>
+	<fx:Declarations>
+		<!-- 将非可视元素（例如服务、值对象）放在此处 -->
+	</fx:Declarations>
+	<esri:Map id="map" level="8" wrapAround180="true" left="1" right="1" top="1" bottom="1" 
+			  logoVisible="false">
+		<layer:WrapGoogleTilesMapServiceLayer id="tilesServiceLayer"/>
+								
+		<!---
+		<esri:center>
+			<esri:WebMercatorMapPoint lon="0" lat="0"/>
+		</esri:center>
+		<esri:ArcGISTiledMapServiceLayer
+			url="http://server.arcgisonline.com/ArcGIS/rest/services/
+			World_Street_Map/MapServer"/>
+		<esri:ArcGISDynamicMapServiceLayer
+			url="http://sampleserver1.arcgisonline.com/ArcGIS/rest/services/
+			Demographics/ESRI_Population_World/MapServer" 
+			alpha=".70"/>
+		-->
+	</esri:Map>
+</s:Group>

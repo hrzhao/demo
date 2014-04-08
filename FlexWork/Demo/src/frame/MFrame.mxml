@@ -2,29 +2,150 @@
 <s:Group xmlns:fx="http://ns.adobe.com/mxml/2009" 
 		 xmlns:s="library://ns.adobe.com/flex/spark" 
 		 xmlns:mx="library://ns.adobe.com/flex/mx" width="100%" height="100%"
-		 creationComplete="group1_creationCompleteHandler(event)" xmlns:plugin="plugin.*"
+		 creationComplete="group1_creationCompleteHandler(event)" 
+		 xmlns:plugin="plugin.*" 
+		 xmlns:frame="frame.*"
+		 implements="frame.IAppFrame"
 		 >
 	<fx:Declarations>
 		<!-- 将非可视元素（例如服务、值对象）放在此处 -->
 	</fx:Declarations>
 	<fx:Script>
 		<![CDATA[
+			import entities.AppConfig;
 			import entities.UserBean;
 			
-			import mx.events.FlexEvent;
-			public var user:UserBean;
+			import frame.IModule;
 			
+			import mx.core.IVisualElement;
+			import mx.events.FlexEvent;
+			import mx.events.ModuleEvent;
+			import mx.modules.IModuleInfo;
+			import mx.modules.ModuleManager;
+			import mx.rpc.AbstractOperation;
+			import mx.rpc.events.FaultEvent;
+			import mx.rpc.events.ResultEvent;
+			import mx.rpc.remoting.Operation;
+			import mx.rpc.remoting.RemoteObject;
+			
+			import spark.components.NavigatorContent;
+			public var _user:UserBean;
+			public var appDic:Dictionary;
 			protected function group1_creationCompleteHandler(event:FlexEvent):void
 			{
 				// TODO Auto-generated method stub
-				lbl_userinfo.text = user.username + "," + lbl_userinfo.text;
+				appDic = new Dictionary();
+				var ro:RemoteObject = new RemoteObject();
+				ro.destination = "frameService";
+				var op:AbstractOperation = ro.getOperation("getAppConfigBean");
+				op.send(appStoreId);
+				op.addEventListener(FaultEvent.FAULT,faultHandler);
+				op.addEventListener(ResultEvent.RESULT,function(event:ResultEvent):void{
+					if(event.result.state == "success"){
+						if(event.result.data is AppConfig){
+							var appConfig:AppConfig = event.result.data;
+							appDic[appConfig.appId] = appConfig;
+						}
+					}
+				});
+				
 			}
+			protected function faultHandler(event:FaultEvent):void
+			{
+				// TODO Auto-generated method stub
+				
+			}
+			private var appStoreId:String = "4d7665a6-175c-49e1-b89d-d8628157355e";
+			protected function header_homeButtonClickHandler(event:FlexEvent):void
+			{
+				// TODO Auto-generated method stub
+				if(appDic[appStoreId] != null){
+					var appConfig:AppConfig = appDic[appStoreId];
+					getLoadModule(appConfig,appConfig.param);
+				}
+				
+			}
+			private var isLoading:Boolean = false;
+			private var mInfo:IModuleInfo;
+			private function getLoadModule(appConfig:AppConfig, callParam:Object):void
+			{
+				isLoading = true;
+				var path:String = appConfig.path;
+				mInfo = ModuleManager.getModule(path);
+				mInfo.data = {"data":appConfig, "param":callParam };
+				mInfo.addEventListener(ModuleEvent.READY, modulReady_GetNavi);   
+				mInfo.addEventListener(ModuleEvent.ERROR, modulError);
+				mInfo.addEventListener(ModuleEvent.SETUP, modulSetup);
+				mInfo.load();
+			}
+			
+			private function modulError(e:ModuleEvent):void
+			{
+				// TODO Auto Generated method stub
+				
+			}
+			
+			private function modulSetup(e:ModuleEvent):void
+			{
+				// TODO Auto Generated method stub
+				createModule(e.module);
+			}
+			
+			private function modulReady_GetNavi(e:ModuleEvent):void
+			{
+				// TODO Auto Generated method stub
+				
+			}
+			private function createModule(moduleInfo:IModuleInfo):void{
+				var obj:Object = moduleInfo.factory.create();
+				var module:IVisualElement = moduleInfo.factory.create() as IVisualElement;
+				var naviCont:NavigatorContent = new NavigatorContent();
+				naviCont.top = 0;
+				naviCont.bottom = 0;
+				naviCont.right = 0;
+				naviCont.left= 0;
+				naviCont.addElement(module);
+				viewStack.addElement(naviCont);
+				viewStack.selectedIndex = 0;
+			}
+			
+			public function popupLoginPanel():void
+			{
+				// TODO Auto Generated method stub
+				
+			}
+			
+			public function get selectedModule():IModule
+			{
+				// TODO Auto Generated method stub
+				return null;
+			}
+			
+			public function set selectedTabIndex(value:int):void
+			{
+				// TODO Auto Generated method stub
+				
+			}
+			
+			public function get user():UserBean
+			{
+				// TODO Auto Generated method stub
+				return _user;
+			}
+			public function set user(value:UserBean){
+				_user = value;
+			}
+			
+			
+			
 			
 		]]>
 	</fx:Script>
 	<s:layout>
-		<s:VerticalLayout gap="0"/>
+		<s:BasicLayout/>
 	</s:layout>
-	<s:Label id="lbl_userinfo" text="welcome to mFrame!"/>
-	<plugin:CustomerManage width="100%" height="100%" />
+	<s:Group top="90" left="0" right="0" bottom="0" id="mainGroup">
+		<mx:ViewStack id="viewStack" left="0" right="0" top="0" bottom="0" />
+	</s:Group>
+	<frame:Header id="header" homeButtonClick="header_homeButtonClickHandler(event)"/>
 </s:Group>
