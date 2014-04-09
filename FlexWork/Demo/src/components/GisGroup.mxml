@@ -16,26 +16,28 @@
 				
 			}
 			
+			protected function togBtn_changeHandler(event:Event):void
+			{
+				// TODO Auto-generated method stub
+				if(togBtn.selected){
+					tilesServiceLayer.mapType=1;
+				}else{
+					tilesServiceLayer.mapType=0;
+				}
+				
+			}
+			
 		]]>
 	</fx:Script>
 	<fx:Declarations>
 		<!-- 将非可视元素（例如服务、值对象）放在此处 -->
 	</fx:Declarations>
-	<esri:Map id="map" level="8" wrapAround180="true" left="1" right="1" top="1" bottom="1" 
-			  logoVisible="false">
-		<layer:WrapGoogleTilesMapServiceLayer id="tilesServiceLayer"/>
-								
-		<!---
-		<esri:center>
-			<esri:WebMercatorMapPoint lon="0" lat="0"/>
-		</esri:center>
-		<esri:ArcGISTiledMapServiceLayer
-			url="http://server.arcgisonline.com/ArcGIS/rest/services/
-			World_Street_Map/MapServer"/>
-		<esri:ArcGISDynamicMapServiceLayer
-			url="http://sampleserver1.arcgisonline.com/ArcGIS/rest/services/
-			Demographics/ESRI_Population_World/MapServer" 
-			alpha=".70"/>
-		-->
-	</esri:Map>
+	<s:BorderContainer width="100%" height="100%">
+		
+		<esri:Map id="map" level="6" wrapAround180="true" left="1" right="1" top="1" bottom="1" 
+				  logoVisible="false">
+			<layer:WrapGoogleTilesMapServiceLayer id="tilesServiceLayer"/>
+		</esri:Map>
+		<s:ToggleButton id="togBtn" top="7" right="7" label="切换" change="togBtn_changeHandler(event)"/>
+	</s:BorderContainer>
 </s:Group>

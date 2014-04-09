@@ -6,6 +6,7 @@ package layer
 	import com.esri.ags.layers.TiledMapServiceLayer;
 	import com.esri.ags.layers.supportClasses.LOD;
 	import com.esri.ags.layers.supportClasses.TileInfo;
+	import com.esri.ags.utils.WebMercatorUtil;
 	
 	import flash.net.URLRequest;
 	
@@ -29,7 +30,9 @@ package layer
 		
 		override public function get initialExtent():Extent
 		{
-			return new Extent(-20037508.342787, -20037508.342787, 20037508.342787, 20037508.342787, new SpatialReference(102113));
+//			return new Extent(-20037508.342787, -20037508.342787, 20037508.342787, 20037508.342787, new SpatialReference(102113));
+			var extent:Extent = new Extent(120.8,30.6,122,31.8);
+			return WebMercatorUtil.geographicToWebMercator(extent) as Extent;
 		}
 		
 		override public function get spatialReference():SpatialReference
@@ -77,9 +80,9 @@ package layer
 				new LOD(14, 9.55462853563415, 36111.909643), 
 				new LOD(15, 4.77731426794937, 18055.954822),
 				new LOD(16, 2.38865713397468, 9027.977411), 
-				new LOD(17, 1.19432856685505, 4513.988705), 
+				new LOD(17, 1.19432856685505, 4513.988705)/*, 
 				new LOD(18, 0.597164283559817, 2256.994353),
-				new LOD(19, 0.298582141647617, 1128.497176)
+				new LOD(19, 0.298582141647617, 1128.497176)*/
 			];
 		}
 	}

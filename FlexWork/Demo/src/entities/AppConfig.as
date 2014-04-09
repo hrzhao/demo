@@ -8,7 +8,7 @@ package entities
 		public var visible:Boolean;
 		public var categoryId:String;
 		public var param:String;
-		public var mutliInstance:Boolean;
+		public var multiInstance:Boolean;
 		public var description:String;
 		public var path:String
 		

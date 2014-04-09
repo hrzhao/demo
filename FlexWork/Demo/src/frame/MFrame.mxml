@@ -88,12 +88,13 @@
 			private function modulSetup(e:ModuleEvent):void
 			{
 				// TODO Auto Generated method stub
-				createModule(e.module);
+				
 			}
 			
 			private function modulReady_GetNavi(e:ModuleEvent):void
 			{
 				// TODO Auto Generated method stub
+				createModule(e.module);
 				
 			}
 			private function createModule(moduleInfo:IModuleInfo):void{
@@ -132,7 +133,7 @@
 				// TODO Auto Generated method stub
 				return _user;
 			}
-			public function set user(value:UserBean){
+			public function set user(value:UserBean):void{
 				_user = value;
 			}
 			
