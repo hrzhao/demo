@@ -1,5 +1,8 @@
 package hrzhao.dao;
 
+import java.util.List;
+
+import org.hibernate.Criteria;
 import org.hibernate.Session;
 
 import hrzhao.beans.AppConfigBean;
@@ -14,6 +17,12 @@ public class AppConfigBeanDao {
 		Session session = HiberHelper.getSession();
 		AppConfigBean appBean = (AppConfigBean) session.get(AppConfigBean.class, appId);
 		return appBean;
+	}
+	public List<AppConfigBean> getAppConfigBeanList(){
+		Session session = HiberHelper.getSession();
+		Criteria cr = session.createCriteria(AppConfigBean.class);
+		List<AppConfigBean> result = cr.list();
+		return result;
 	}
 
 }

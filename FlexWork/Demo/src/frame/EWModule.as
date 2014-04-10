@@ -5,6 +5,7 @@ package frame
 	public class EWModule extends Module implements IModule
 	{
 		private var _appId:String;
+		private var _param:Object;
 		public function EWModule()
 		{
 			super();
@@ -31,10 +32,11 @@ package frame
 		
 		public function set param(value:Object):void
 		{
+			_param = value;
+		}
+		public function get param():Object{
+			return _param;
 		}
 		
-		public function set callParam(value:Object):void
-		{
-		}
 	}
 }

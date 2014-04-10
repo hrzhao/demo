@@ -2,7 +2,7 @@
 <s:Group xmlns:fx="http://ns.adobe.com/mxml/2009" 
 		 xmlns:s="library://ns.adobe.com/flex/spark" 
 		 xmlns:mx="library://ns.adobe.com/flex/mx" width="100%" height="100%"
-		 
+		 creationComplete="creationCompleteHandler(event)"
 		 >
 	<fx:Script>
 		<![CDATA[
@@ -10,6 +10,7 @@
 			
 			import events.LoginEvent;
 			
+			import mx.events.FlexEvent;
 			import mx.rpc.events.FaultEvent;
 			import mx.rpc.events.ResultEvent;
 			import mx.utils.StringUtil;
@@ -33,6 +34,12 @@
 				txtResult.text = "密码或用户名有错";
 				
 			}
+			
+			protected function tbxPwd_keyDownHandler(event:KeyboardEvent):void
+			{
+				if(event.keyCode == 13 && btn_login.enabled)
+					btn_login_clickHandler(null);
+			}
 			protected function btn_login_clickHandler(event:MouseEvent):void
 			{
 				// TODO Auto-generated method stub
@@ -40,6 +47,20 @@
 				var password:String = MD5.getMD5(txt_password.text);
 				ro.checkUser(username,password);
 			}
+			
+			protected function creationCompleteHandler(event:FlexEvent):void
+			{
+				// TODO Auto-generated method stub
+				txt_password.addEventListener(KeyboardEvent.KEY_DOWN, tbxPwd_keyDownHandler);
+				if(txt_username.text == "")
+					txt_username.setFocus();
+				else
+					txt_password.setFocus();
+				//开发时用
+				btn_login_clickHandler(null);
+				
+			}
+			
 		]]>
 	</fx:Script>
 	<fx:Metadata>
@@ -63,14 +84,14 @@
 			<s:layout>
 				<s:BasicLayout/>
 			</s:layout>
-			<s:Button id="btn_login" left="69" top="124" width="185" label="登录"
-					  click="btn_login_clickHandler(event)"/>
+			<s:Label left="33" top="66" fontSize="14" text="用户名"/>
 			<s:TextInput id="txt_username" left="87" top="60" width="194" prompt="请输入用户名"
 						 text="admin"/>
+			<s:Label left="37" top="94" fontSize="14" text="密  码"/>
 			<s:TextInput id="txt_password" left="87" top="90" width="194" displayAsPassword="true"
 						 prompt="请输入密码" text="123"/>
-			<s:Label left="33" top="66" fontSize="14" text="用户名"/>
-			<s:Label left="37" top="94" fontSize="14" text="密  码"/>
+			<s:Button id="btn_login" left="69" top="124" width="185" label="登录"
+					  click="btn_login_clickHandler(event)"/>
 			<s:TextInput id="txtResult" x="30" y="154" width="302" height="172"/>
 			
 		</s:Group>

@@ -9,6 +9,7 @@ public class AppConfigBean {
 	private Boolean multiInstance;
 	private String description;
 	private String path;
+	private Integer order;
 
 	public AppConfigBean() {
 		// TODO Auto-generated constructor stub
@@ -77,6 +78,15 @@ public class AppConfigBean {
 	public void setPath(String path) {
 		this.path = path;
 	}
+
+	public Integer getOrder() {
+		return order;
+	}
+
+	public void setOrder(Integer order) {
+		this.order = order;
+	}
+
 	
 	
 }

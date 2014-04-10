@@ -17,6 +17,7 @@
 			
 			import frame.IModule;
 			
+			import mx.collections.ArrayCollection;
 			import mx.core.IVisualElement;
 			import mx.events.FlexEvent;
 			import mx.events.ModuleEvent;
@@ -29,27 +30,35 @@
 			import mx.rpc.remoting.RemoteObject;
 			
 			import spark.components.NavigatorContent;
+			
+			import utils.MessageBox;
+			import utils.ToolsUtil;
 			public var _user:UserBean;
 			public var appDic:Dictionary;
+			[Bindable]
+			private var appConfigList:ArrayCollection = new ArrayCollection();
 			protected function group1_creationCompleteHandler(event:FlexEvent):void
 			{
 				// TODO Auto-generated method stub
 				appDic = new Dictionary();
 				var ro:RemoteObject = new RemoteObject();
 				ro.destination = "frameService";
-				var op:AbstractOperation = ro.getOperation("getAppConfigBean");
-				op.send(appStoreId);
+				var op:AbstractOperation = ro.getOperation("getAppConfigBeanList");
+				op.send();
 				op.addEventListener(FaultEvent.FAULT,faultHandler);
 				op.addEventListener(ResultEvent.RESULT,function(event:ResultEvent):void{
 					if(event.result.state == "success"){
-						if(event.result.data is AppConfig){
-							var appConfig:AppConfig = event.result.data;
-							appDic[appConfig.appId] = appConfig;
+						if(event.result.data is ArrayCollection){
+							appConfigList = event.result.data;
+							for each(var val:AppConfig in appConfigList){
+								appDic[val.appId] = val;
+							}
 						}
 					}
 				});
 				
 			}
+
 			protected function faultHandler(event:FaultEvent):void
 			{
 				// TODO Auto-generated method stub
@@ -63,20 +72,28 @@
 					var appConfig:AppConfig = appDic[appStoreId];
 					getLoadModule(appConfig,appConfig.param);
 				}
-				
 			}
-			private var isLoading:Boolean = false;
+			protected function btn_OpenGis_clickHandler(event:MouseEvent):void
+			{
+				// TODO Auto-generated method stub
+				var gisAppId:String = "1e8e7f6f-091c-49e9-969d-c1c6256ce32a";
+				if(appDic[gisAppId] != null){
+					var appConfig:AppConfig = appDic[gisAppId];
+					getLoadModule(appConfig,appConfig.param);
+				}
+			}
+			private var isLoading:Boolean = false;//未完成 
 			private var mInfo:IModuleInfo;
-			private function getLoadModule(appConfig:AppConfig, callParam:Object):void
+			private function getLoadModule(appConfig:AppConfig, param:Object):void
 			{
 				isLoading = true;
 				var path:String = appConfig.path;
 				mInfo = ModuleManager.getModule(path);
-				mInfo.data = {"data":appConfig, "param":callParam };
-				mInfo.addEventListener(ModuleEvent.READY, modulReady_GetNavi);   
+				mInfo.data = {"appId":appConfig.appId, "param":param };
+				mInfo.addEventListener(ModuleEvent.READY, modulReady);   
 				mInfo.addEventListener(ModuleEvent.ERROR, modulError);
 				mInfo.addEventListener(ModuleEvent.SETUP, modulSetup);
-				mInfo.load();
+				mInfo.load(null, null, null, moduleFactory);
 			}
 			
 			private function modulError(e:ModuleEvent):void
@@ -91,23 +108,35 @@
 				
 			}
 			
-			private function modulReady_GetNavi(e:ModuleEvent):void
+			private function modulReady(e:ModuleEvent):void
 			{
 				// TODO Auto Generated method stub
-				createModule(e.module);
+				mInfo.removeEventListener(ModuleEvent.READY, modulReady);   
+				mInfo.removeEventListener(ModuleEvent.ERROR, modulError);
+				mInfo.removeEventListener(ModuleEvent.SETUP, modulSetup);
+				var paramObj:Object = ToolsUtil.jsonToObject(e.module.data.param);
+				var appId:String = e.module.data.appId;
+				createModule(e.module,appId,paramObj);
 				
 			}
-			private function createModule(moduleInfo:IModuleInfo):void{
-				var obj:Object = moduleInfo.factory.create();
+			private function createModule(moduleInfo:IModuleInfo,appId:String,param:Object):void{
 				var module:IVisualElement = moduleInfo.factory.create() as IVisualElement;
-				var naviCont:NavigatorContent = new NavigatorContent();
-				naviCont.top = 0;
-				naviCont.bottom = 0;
-				naviCont.right = 0;
-				naviCont.left= 0;
-				naviCont.addElement(module);
-				viewStack.addElement(naviCont);
-				viewStack.selectedIndex = 0;
+				if(module is IModule){
+					var iModule:IModule = (module as IModule);
+					iModule.param = param;
+					iModule.appId = appId;
+					
+					var naviCont:NavigatorContent = new NavigatorContent();
+					naviCont.top = 0;
+					naviCont.bottom = 0;
+					naviCont.right = 0;
+					naviCont.left= 0;
+					naviCont.addElement(module);
+					viewStack.addElement(naviCont);
+					viewStack.selectedIndex = 0;
+				}else{
+					MessageBox.show("请确认模块是否继承了接口");
+				}
 			}
 			
 			public function popupLoginPanel():void
@@ -140,6 +169,8 @@
 			
 			
 			
+		
+			
 		]]>
 	</fx:Script>
 	<s:layout>
@@ -148,5 +179,7 @@
 	<s:Group top="90" left="0" right="0" bottom="0" id="mainGroup">
 		<mx:ViewStack id="viewStack" left="0" right="0" top="0" bottom="0" />
 	</s:Group>
-	<frame:Header id="header" homeButtonClick="header_homeButtonClickHandler(event)"/>
+	<frame:Header id="header" homeButtonClick="header_homeButtonClickHandler(event)" appConfigList="{appConfigList}"/>
+	<s:Button id="btn_OpenGis" left="15" top="10" label="GisModule"
+			  click="btn_OpenGis_clickHandler(event)"/>
 </s:Group>

@@ -10,7 +10,8 @@ package entities
 		public var param:String;
 		public var multiInstance:Boolean;
 		public var description:String;
-		public var path:String
+		public var path:String;
+		public var order:int;
 		
 		public function AppConfig()
 		{

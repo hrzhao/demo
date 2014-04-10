@@ -8,8 +8,12 @@
 		 >
 	<fx:Script>
 		<![CDATA[
-			import mx.events.FlexEvent;
+			import com.esri.ags.events.MapEvent;
+			import com.esri.ags.geometry.Extent;
+			import com.esri.ags.geometry.MapPoint;
+			import com.esri.ags.utils.WebMercatorUtil;
 			
+			import mx.events.FlexEvent;
 			protected function group1_creationCompleteHandler(event:FlexEvent):void
 			{
 				// TODO Auto-generated method stub
@@ -26,7 +30,27 @@
 				}
 				
 			}
+			private var _initialExtent:Extent= null;
+			protected function map_loadHandler(event:MapEvent):void
+			{
+				// TODO Auto-generated method stub
+				initialExtent = initialExtent;
+				
+			}
+			public function get initialExtent():Extent
+			{
+				return _initialExtent;
+			}
 			
+			public function set initialExtent(value:Extent):void
+			{
+				_initialExtent = value;
+//				var extent:Extent = new Extent(112.9777336120808,22.546251101910844,113.1986618042192,22.641501525817873);
+				if(map != null){
+					map.initialExtent = WebMercatorUtil.geographicToWebMercator(initialExtent) as Extent;
+					map.zoomToInitialExtent();
+				}
+			}
 		]]>
 	</fx:Script>
 	<fx:Declarations>
@@ -34,9 +58,11 @@
 	</fx:Declarations>
 	<s:BorderContainer width="100%" height="100%">
 		
-		<esri:Map id="map" level="6" wrapAround180="true" left="1" right="1" top="1" bottom="1" 
-				  logoVisible="false">
-			<layer:WrapGoogleTilesMapServiceLayer id="tilesServiceLayer"/>
+		<esri:Map id="map" wrapAround180="true" left="1" right="1" top="1" bottom="1" 
+				  logoVisible="false"
+				  load="map_loadHandler(event)"
+				  >
+			<layer:WrapGoogleTilesMapServiceLayer id="tilesServiceLayer" />
 		</esri:Map>
 		<s:ToggleButton id="togBtn" top="7" right="7" label="切换" change="togBtn_changeHandler(event)"/>
 	</s:BorderContainer>
