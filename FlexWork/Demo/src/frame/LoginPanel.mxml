@@ -57,7 +57,7 @@
 				else
 					txt_password.setFocus();
 				//开发时用
-				btn_login_clickHandler(null);
+//				btn_login_clickHandler(null);
 				
 			}
 			
@@ -89,7 +89,7 @@
 						 text="admin"/>
 			<s:Label left="37" top="94" fontSize="14" text="密  码"/>
 			<s:TextInput id="txt_password" left="87" top="90" width="194" displayAsPassword="true"
-						 prompt="请输入密码" text="123"/>
+						 prompt="请输入密码" text=""/>
 			<s:Button id="btn_login" left="69" top="124" width="185" label="登录"
 					  click="btn_login_clickHandler(event)"/>
 			<s:TextInput id="txtResult" x="30" y="154" width="302" height="172"/>

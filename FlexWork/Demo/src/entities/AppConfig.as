@@ -12,6 +12,8 @@ package entities
 		public var description:String;
 		public var path:String;
 		public var order:int;
+		public var icon:String;
+		public var executePower:Boolean;
 		
 		public function AppConfig()
 		{

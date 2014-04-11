@@ -15,6 +15,8 @@
 			import entities.AppConfig;
 			import entities.UserBean;
 			
+			import events.MenuClickEvent;
+			
 			import frame.IModule;
 			
 			import mx.collections.ArrayCollection;
@@ -28,8 +30,6 @@
 			import mx.rpc.events.ResultEvent;
 			import mx.rpc.remoting.Operation;
 			import mx.rpc.remoting.RemoteObject;
-			
-			import spark.components.NavigatorContent;
 			
 			import utils.MessageBox;
 			import utils.ToolsUtil;
@@ -62,25 +62,50 @@
 			protected function faultHandler(event:FaultEvent):void
 			{
 				// TODO Auto-generated method stub
-				
+				MessageBox.show(event.message.toString());
 			}
 			private var appStoreId:String = "4d7665a6-175c-49e1-b89d-d8628157355e";
 			protected function header_homeButtonClickHandler(event:FlexEvent):void
 			{
 				// TODO Auto-generated method stub
-				if(appDic[appStoreId] != null){
-					var appConfig:AppConfig = appDic[appStoreId];
-					getLoadModule(appConfig,appConfig.param);
+				runAppByAppId(appStoreId);
+			}
+			protected function runAppByAppId(appId:String):void{
+				if(appId == null || appId =="")
+				{
+					MessageBox.show("AppID为空");
+					return;
+				}
+				header.selectedAppId = appId;
+				if(appDic != null &&
+					appDic.hasOwnProperty(appId) &&
+					appDic[appId] != null &&
+					appDic[appId] is AppConfig)
+				{
+					var appConfig:AppConfig = appDic[appId];
+					if(appConfig.multiInstance){
+						runApp(appId);
+					}else{
+						var hasInit:Boolean = false;
+						for each(var navi:MainNavigatorContent in viewStack.getChildren()){
+							if(navi.appId == appId){
+								viewStack.selectedChild = navi;
+								hasInit = true;
+								break;
+							}
+						}
+						if(!hasInit){
+							runApp(appId);
+						}
+					}
+				}else{
+					header.selectedAppId = null;
 				}
 			}
-			protected function btn_OpenGis_clickHandler(event:MouseEvent):void
-			{
-				// TODO Auto-generated method stub
-				var gisAppId:String = "1e8e7f6f-091c-49e9-969d-c1c6256ce32a";
-				if(appDic[gisAppId] != null){
-					var appConfig:AppConfig = appDic[gisAppId];
-					getLoadModule(appConfig,appConfig.param);
-				}
+			private function runApp(appId:String):void{
+				var appConfig:AppConfig = appDic[appId];
+				var paramObj:Object = ToolsUtil.jsonToObject(appConfig.param);
+				getLoadModule(appConfig,paramObj);
 			}
 			private var isLoading:Boolean = false;//未完成 
 			private var mInfo:IModuleInfo;
@@ -89,7 +114,7 @@
 				isLoading = true;
 				var path:String = appConfig.path;
 				mInfo = ModuleManager.getModule(path);
-				mInfo.data = {"appId":appConfig.appId, "param":param };
+				mInfo.data = {"appConfig":appConfig, "param":param };
 				mInfo.addEventListener(ModuleEvent.READY, modulReady);   
 				mInfo.addEventListener(ModuleEvent.ERROR, modulError);
 				mInfo.addEventListener(ModuleEvent.SETUP, modulSetup);
@@ -99,14 +124,14 @@
 			private function modulError(e:ModuleEvent):void
 			{
 				// TODO Auto Generated method stub
-				
+				MessageBox.show(e.errorText);
 			}
 			
 			private function modulSetup(e:ModuleEvent):void
 			{
 				// TODO Auto Generated method stub
-				
 			}
+		
 			
 			private function modulReady(e:ModuleEvent):void
 			{
@@ -114,26 +139,28 @@
 				mInfo.removeEventListener(ModuleEvent.READY, modulReady);   
 				mInfo.removeEventListener(ModuleEvent.ERROR, modulError);
 				mInfo.removeEventListener(ModuleEvent.SETUP, modulSetup);
-				var paramObj:Object = ToolsUtil.jsonToObject(e.module.data.param);
-				var appId:String = e.module.data.appId;
-				createModule(e.module,appId,paramObj);
-				
+				var appConfig:AppConfig = e.module.data.appConfig;
+				createModule(e.module,appConfig,e.module.data.param);
 			}
-			private function createModule(moduleInfo:IModuleInfo,appId:String,param:Object):void{
+			private function createModule(moduleInfo:IModuleInfo,appConfig:AppConfig,param:Object):void{
 				var module:IVisualElement = moduleInfo.factory.create() as IVisualElement;
 				if(module is IModule){
 					var iModule:IModule = (module as IModule);
 					iModule.param = param;
-					iModule.appId = appId;
+					iModule.appId = appConfig.appId;
 					
-					var naviCont:NavigatorContent = new NavigatorContent();
+					var naviCont:MainNavigatorContent = new MainNavigatorContent();
 					naviCont.top = 0;
 					naviCont.bottom = 0;
 					naviCont.right = 0;
 					naviCont.left= 0;
+					naviCont.module = (module as IModule);
+					naviCont.moduleInfo = moduleInfo;
+					naviCont.appId = appConfig.appId;
+					naviCont.iconPath = appConfig.icon;
 					naviCont.addElement(module);
 					viewStack.addElement(naviCont);
-					viewStack.selectedIndex = 0;
+					viewStack.selectedChild = naviCont;
 				}else{
 					MessageBox.show("请确认模块是否继承了接口");
 				}
@@ -166,10 +193,21 @@
 				_user = value;
 			}
 			
+			protected function btn_clear_clickHandler(event:MouseEvent):void
+			{
+				// TODO Auto-generated method stub
+				for each(var navi:MainNavigatorContent in viewStack.getChildren()){
+					navi.moduleInfo.release();
+					navi.moduleInfo.unload();
+				}
+				viewStack.removeAllElements();
+			}
 			
-			
-			
-		
+			protected function header_menuClickHandler(event:MenuClickEvent):void
+			{
+				// TODO Auto-generated method stub
+				runAppByAppId(event.appId);
+			}
 			
 		]]>
 	</fx:Script>
@@ -179,7 +217,9 @@
 	<s:Group top="90" left="0" right="0" bottom="0" id="mainGroup">
 		<mx:ViewStack id="viewStack" left="0" right="0" top="0" bottom="0" />
 	</s:Group>
-	<frame:Header id="header" homeButtonClick="header_homeButtonClickHandler(event)" appConfigList="{appConfigList}"/>
-	<s:Button id="btn_OpenGis" left="15" top="10" label="GisModule"
-			  click="btn_OpenGis_clickHandler(event)"/>
+	<frame:Header id="header" homeButtonClick="header_homeButtonClickHandler(event)" 
+				  menuClick="header_menuClickHandler(event)"
+				  appConfigList="{appConfigList}"/>
+	<s:Button id="btn_clear" x="207" y="10" width="32" label="C"
+			  click="btn_clear_clickHandler(event)"/>
 </s:Group>

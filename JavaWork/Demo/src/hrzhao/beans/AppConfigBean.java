@@ -10,6 +10,8 @@ public class AppConfigBean {
 	private String description;
 	private String path;
 	private Integer order;
+	private String icon;
+	private Boolean executePower = true;
 
 	public AppConfigBean() {
 		// TODO Auto-generated constructor stub
@@ -85,6 +87,22 @@ public class AppConfigBean {
 
 	public void setOrder(Integer order) {
 		this.order = order;
+	}
+
+	public String getIcon() {
+		return icon;
+	}
+
+	public void setIcon(String icon) {
+		this.icon = icon;
+	}
+
+	public Boolean getExecutePower() {
+		return executePower;
+	}
+
+	public void setExecutePower(Boolean executePower) {
+		this.executePower = executePower;
 	}
 
 	

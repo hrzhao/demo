@@ -4,18 +4,39 @@
 		 xmlns:mx="library://ns.adobe.com/flex/mx" width="100%" height="90" xmlns:frame="frame.*">
 	<fx:Metadata>
 		[Event(name="homeButtonClick", type="mx.events.FlexEvent")]
+		[Event(name="menuClick", type="events.MenuClickEvent")]
 	</fx:Metadata>
 	<fx:Script>
 		<![CDATA[
+			import events.MenuClickEvent;
+			
 			import mx.collections.ArrayCollection;
 			import mx.events.FlexEvent;
 			[Bindable]
 			public var appConfigList:ArrayCollection = new ArrayCollection();
+			private var _selectedAppId:String;
 			protected function btn_home_clickHandler(event:MouseEvent):void
 			{
 				// TODO Auto-generated method stub
 				this.dispatchEvent(new FlexEvent("homeButtonClick"));
 			}
+			[Bindable]
+			public function get selectedAppId():String
+			{
+				return _selectedAppId;
+			}
+
+			public function set selectedAppId(value:String):void
+			{
+				_selectedAppId = value;
+			}
+
+			protected function menuViewStack_menuClickHandler(event:MenuClickEvent):void
+			{
+				// TODO Auto-generated method stub
+				dispatchEvent(event);
+			}
+			
 		]]>
 	</fx:Script>
 	<fx:Declarations>
@@ -26,8 +47,12 @@
 		<s:Button id="btn_home" click="btn_home_clickHandler(event)" 
 				  height="90" width="100" right="0" label="HOME" fontSize="24"/>
 		<s:VGroup top="0" bottom="0" left="250" right="100" gap="0">
-			<s:TabBar id="tabBar" dataProvider="{menuViewStack}" width="100%" height="32"/>
-			<frame:MenuViewStack id="menuViewStack" height="100%" width="100%" dataProvider="{appConfigList}"/>
+			<s:Group width="100%" >
+				<s:TabBar id="tabBar" dataProvider="{menuViewStack}" height="26"/>
+			</s:Group>
+			<frame:MenuViewStack id="menuViewStack" height="100%" width="100%" 
+								 dataProvider="{appConfigList}" selectedAppId="{selectedAppId}" 
+								 menuClick="menuViewStack_menuClickHandler(event)"/>
 		</s:VGroup>
 	</s:BorderContainer>
 </s:Group>

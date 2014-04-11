@@ -1,11 +1,22 @@
 <?xml version="1.0" encoding="utf-8"?>
 <s:TitleWindow xmlns:fx="http://ns.adobe.com/mxml/2009" 
 			   xmlns:s="library://ns.adobe.com/flex/spark" 
-			   xmlns:mx="library://ns.adobe.com/flex/mx" width="358" height="310">
+			   xmlns:mx="library://ns.adobe.com/flex/mx" width="358" height="310"
+			   close="titlewindow1_closeHandler(event)"
+			   >
 	<fx:Script>
 		<![CDATA[
+			import mx.events.CloseEvent;
+			import mx.managers.PopUpManager;
 			[Bindable]
 			public var message:String;
+			
+			protected function titlewindow1_closeHandler(event:CloseEvent):void
+			{
+				// TODO Auto-generated method stub
+				PopUpManager.removePopUp(this);
+			}
+			
 		]]>
 	</fx:Script>
 	<fx:Declarations>

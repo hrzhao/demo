@@ -1,0 +1,45 @@
+<?xml version="1.0" encoding="utf-8"?>
+<s:Skin xmlns:fx="http://ns.adobe.com/mxml/2009" 
+		xmlns:s="library://ns.adobe.com/flex/spark" 
+		xmlns:mx="library://ns.adobe.com/flex/mx"
+		width="76" height="64"
+		alpha.disabled="0.75"
+		>
+	<!-- host component -->
+	<fx:Metadata>
+		[HostComponent("frame.MenuButton")]
+	</fx:Metadata>
+	
+	<!-- states -->
+	<s:states>
+		<s:State name="up" />
+		<s:State name="over" stateGroups="overStates" />
+		<s:State name="down" stateGroups="downStates" />
+		<s:State name="disabled" stateGroups="disabledStates" />
+		<s:State name="upAndSelected" stateGroups="selectedStates, selectedUpStates" />
+		<s:State name="overAndSelected" stateGroups="overStates, selectedStates" />
+		<s:State name="downAndSelected" stateGroups="downStates, selectedStates" />
+		<s:State name="disabledAndSelected" stateGroups="selectedUpStates, disabledStates, selectedStates" />
+	</s:states>
+	
+	<!-- SkinParts
+	name=iconDisplay, type=spark.primitives.BitmapImage, required=false
+	name=labelDisplay, type=spark.core.IDisplayText, required=false
+	-->
+	<s:Rect includeIn="over,selectedStates" top="0" left="0" right="0" bottom="0" radiusX="5">
+		<s:stroke>
+			<s:SolidColorStroke color="0x029ecf" color.over="0x4788a6" alpha="0.8" />
+		</s:stroke>
+	</s:Rect>
+	
+	<s:Rect left="1" right="1" top="1" bottom="1" radiusX="5" includeIn="over,selectedStates,downStates">
+		<s:fill>
+			<s:SolidColor color="0xffffff" color.overStates="0x1b98d9" 
+						  alpha="0.15" alpha.overStates="0.35" />
+		</s:fill>
+	</s:Rect>
+	
+	<s:BitmapImage id="iconDisplay" top="5" width="40" height="40" horizontalCenter="0" />
+	<s:Label id="labelDisplay" left="0" right="0" top="50" bottom="2"
+			 maxDisplayedLines="1" textAlign="center" />
+</s:Skin>

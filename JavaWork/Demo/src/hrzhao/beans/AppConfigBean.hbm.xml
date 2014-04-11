@@ -18,6 +18,7 @@
         <property name="description" column="description" type="string"/>
         <property name="path" column="path" type="string"/>
         <property name="order" column="order" type="integer"/>
+        <property name="icon" column="icon" type="string"/>
     </class>
 
 </hibernate-mapping>
