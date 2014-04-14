@@ -1,0 +1,16 @@
+<?xml version="1.0"?>
+<flex-config>
+ <compiler>
+ <!-- -services "D:\GradWorkSpace\JavaWork\Demo\WebContent\WEB-INF\flex\services-config.xml" -->
+  <services>${DOCUMENTS}\JavaWork\Demo\WebContent\WEB-INF\flex\services-config.xml</services>
+  <define append="true">
+	<name>CONFIG::Debug</name>
+	<value>true</value>
+  </define>
+  <define append="true">
+	<name>CONFIG::Deploy</name>
+	<value>false</value>
+  </define>
+ 
+ </compiler>
+</flex-config>

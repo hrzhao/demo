@@ -57,7 +57,12 @@
 				else
 					txt_password.setFocus();
 				//开发时用
-//				btn_login_clickHandler(null);
+				CONFIG::Debug
+				{
+					txt_username.text = "admin";
+					txt_password.text = "123";
+					btn_login_clickHandler(null);
+				}
 				
 			}
 			
@@ -86,7 +91,7 @@
 			</s:layout>
 			<s:Label left="33" top="66" fontSize="14" text="用户名"/>
 			<s:TextInput id="txt_username" left="87" top="60" width="194" prompt="请输入用户名"
-						 text="admin"/>
+						 text=""/>
 			<s:Label left="37" top="94" fontSize="14" text="密  码"/>
 			<s:TextInput id="txt_password" left="87" top="90" width="194" displayAsPassword="true"
 						 prompt="请输入密码" text=""/>
