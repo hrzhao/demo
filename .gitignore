@@ -1,15 +1,18 @@
 
 /build
 /FlexWork/.metadata
+/FlexWork/rightclickmanager
 /FlexWork/Demo/html-template
 /FlexWork/Demo/.settings
 /FlexWork/Demo/.actionScriptProperties
 /FlexWork/Demo/.flexProperties
 /FlexWork/Demo/.project
 
+
 /JavaWork/.metadata
 
 /JavaWork/WeatherDemo
+/JavaWork/Servers
 
 /JavaWork/RemoteSystemsTempFiles
 /JavaWork/Demo/.settings
