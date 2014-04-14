@@ -6,6 +6,7 @@
 		 >
 	<fx:Script>
 		<![CDATA[
+			
 			import entities.UserBean;
 			
 			import events.LoginEvent;
@@ -16,6 +17,7 @@
 			import mx.utils.StringUtil;
 			
 			import utils.MD5;
+			import utils.MessageBox;
 			protected function ro_faultHandler(event:FaultEvent):void
 			{
 				// TODO Auto-generated method stub
@@ -65,7 +67,6 @@
 				}
 				
 			}
-			
 		]]>
 	</fx:Script>
 	<fx:Metadata>

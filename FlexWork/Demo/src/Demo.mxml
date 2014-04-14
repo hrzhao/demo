@@ -8,13 +8,14 @@
 			   >
 	<fx:Script>
 		<![CDATA[
+			import com.siloon.plugin.rightClick.RightClickManager;
+			
 			import events.LoginEvent;
 			
 			import frame.MFrame;
 			
 			import mx.events.FlexEvent;
 			public var mframe:MFrame;
-			
 			protected function loginPanel_loginSuccessHandler(event:LoginEvent):void
 			{
 				// TODO Auto-generated method stub
@@ -29,6 +30,7 @@
 			protected function application1_creationCompleteHandler(event:FlexEvent):void
 			{
 				// TODO Auto-generated method stub
+				RightClickManager.regist();
 				
 			}
 			
