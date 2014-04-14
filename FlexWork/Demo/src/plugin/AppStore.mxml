@@ -84,14 +84,12 @@
 					itemRender = AdvancedDataGridItemRenderer(e.target);
 					if(itemRender != null) {  
 						selectedIndex = dg.itemRendererToIndex(itemRender);
-						if(selectedIndex >= 0 ){
-							if(dg_appConfig.selectedIndex != selectedIndex){
-								dg.selectedIndex = selectedIndex;
-							}
-						}
 					}  
 				}else{
-					dg.selectedIndex = -1;
+					selectedIndex = -1;
+				}
+				if(dg_appConfig.selectedIndex != selectedIndex){
+					dg.selectedIndex = selectedIndex;
 				}
 				return selectedIndex;
 			}

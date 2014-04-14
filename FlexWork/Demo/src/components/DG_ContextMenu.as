@@ -24,24 +24,24 @@ package components
 		public static function createMenu(parent:DisplayObjectContainer,item:uint,showRoot:Boolean):Menu {
 			var menuItem:Array = [];
 			if((item & MENUADD) >0){
-				menuItem.push({label:MENU_EDIT,enable:true});
+				menuItem.push({label:MENU_ADD,enabled:true});
 			}else{
-				menuItem.push({label:MENU_EDIT,enable:false});
+				menuItem.push({label:MENU_ADD,enabled:false});
 			}
 			if((item & MENUVIEW) >0){
-				menuItem.push({label:MENU_EDIT,enable:true});
+				menuItem.push({label:MENU_VIEW,enabled:true});
 			}else{
-				menuItem.push({label:MENU_EDIT,enable:false});
+				menuItem.push({label:MENU_VIEW,enabled:false});
 			}
-			if((item & MENUVIEW) >0){
-				menuItem.push({label:MENU_EDIT,enable:true});
+			if((item & MENUEDIT) >0){
+				menuItem.push({label:MENU_EDIT,enabled:true});
 			}else{
-				menuItem.push({label:MENU_EDIT,enable:false});
+				menuItem.push({label:MENU_EDIT,enabled:false});
 			}
-			if((item & MENUVIEW) >0){
-				menuItem.push({label:MENU_EDIT,enable:true});
+			if((item & MENUDELETE) >0){
+				menuItem.push({label:MENU_DELETE,enabled:true});
 			}else{
-				menuItem.push({label:MENU_EDIT,enable:false});
+				menuItem.push({label:MENU_DELETE,enabled:false});
 			}
 			return Menu.createMenu(parent,menuItem,showRoot);
 		}
