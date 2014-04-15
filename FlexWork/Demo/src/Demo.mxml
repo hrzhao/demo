@@ -6,6 +6,7 @@
 			   minWidth="800" minHeight="600"
 			   xmlns:frame="frame.*"
 			   >
+	<fx:Style source="main.css"/>
 	<fx:Script>
 		<![CDATA[
 			import com.siloon.plugin.rightClick.RightClickManager;

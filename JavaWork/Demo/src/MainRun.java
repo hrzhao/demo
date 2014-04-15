@@ -7,6 +7,7 @@ import hrzhao.dao.AppConfigBeanDao;
 import hrzhao.dao.CustomerBeanDao;
 import hrzhao.dao.MessageBeanDao;
 import hrzhao.dao.UserBeanDao;
+import hrzhao.services.FrameService;
 import hrzhao.services.MessageFilter;
 import hrzhao.utils.ConfigHelper;
 import hrzhao.utils.HiberHelper;
@@ -74,10 +75,12 @@ public class MainRun {
 //		mthod5();
 //		mthod6();
 //		mthod7();
+		FrameService fs = new FrameService();
+		fs.delAppConfigBeanByAppId("abc");
 //		AppConfigBean appBean;
-		AppConfigBeanDao appDao = new AppConfigBeanDao();
-		AppConfigBean appBean = appDao.getAppConfigBean("4d7665a6-175c-49e1-b89d-d8628157355e");
-		appBean = null;
+//		AppConfigBeanDao appDao = new AppConfigBeanDao();
+//		AppConfigBean appBean = appDao.getAppConfigBean("4d7665a6-175c-49e1-b89d-d8628157355e");
+//		appBean = null;
 //		UserBeanDao userDao = new UserBeanDao();
 //		userDao.getUserList();
 	}

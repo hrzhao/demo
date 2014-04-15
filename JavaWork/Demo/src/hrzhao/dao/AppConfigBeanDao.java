@@ -4,6 +4,7 @@ import java.util.List;
 
 import org.hibernate.Criteria;
 import org.hibernate.Session;
+import org.hibernate.Transaction;
 
 import hrzhao.beans.AppConfigBean;
 import hrzhao.utils.HiberHelper;
@@ -23,6 +24,13 @@ public class AppConfigBeanDao {
 		Criteria cr = session.createCriteria(AppConfigBean.class);
 		List<AppConfigBean> result = cr.list();
 		return result;
+	}
+	public void deleteAppConfigBeanByAppId(String appId){
+		Session session = HiberHelper.getSession();
+		Transaction tx = session.beginTransaction();
+		Object obj = session.get(AppConfigBean.class, appId);
+		session.delete(obj);
+		tx.commit();
 	}
 
 }

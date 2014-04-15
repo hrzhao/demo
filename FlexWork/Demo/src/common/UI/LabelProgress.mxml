@@ -1,0 +1,123 @@
+<?xml version="1.0" encoding="utf-8"?>
+<s:SkinnableContainer xmlns:fx="http://ns.adobe.com/mxml/2009"
+					  xmlns:s="library://ns.adobe.com/flex/spark"
+					  xmlns:mx="library://ns.adobe.com/flex/mx"
+					  backgroundColor="#EEEEEE"  backgroundAlpha="0.5"
+					  width="100%" height="100%">
+	<fx:Script>
+		<![CDATA[
+			[Bindable]
+			public var label:String = "正在加载，请稍候...";
+			private var pollTimer:Timer;
+			public function set notice(v:String):void
+			{
+				label = v;
+			}
+			
+			private var _interval:Number = 100;
+			public function get interval():int
+			{
+				return _interval;
+			}
+			
+			public function set interval(value:int):void
+			{
+				_interval = value;
+			}
+			
+			private var _progressColor:int = 0x969696;
+			public function get progressColor():int
+			{
+				return _progressColor;
+			}
+			
+			public function set progressColor(value:int):void
+			{
+				_progressColor = value;
+			}
+			
+			override protected function initializationComplete():void
+			{
+				super.initializationComplete();
+				pollTimer = new Timer(_interval);
+			}
+			
+			private var visibleChanged:Boolean = true;
+			override public function set visible(value:Boolean):void
+			{
+				super.visible = value;
+				
+				visibleChanged = true;
+				invalidateDisplayList();
+			}
+			
+			override protected function updateDisplayList(unscaledWidth:Number,
+														  unscaledHeight:Number):void
+			{
+				super.updateDisplayList(unscaledWidth, unscaledHeight);
+				if (visibleChanged)
+				{
+					visibleChanged = false;
+					if(visible)
+						startPlayingIndeterminate();
+					else
+						stopPlayingIndeterminate();
+				}
+			}
+			
+			private var indeterminatePlaying:Boolean = false;
+			private function startPlayingIndeterminate():void
+			{
+				if (!indeterminatePlaying)
+				{
+					indeterminatePlaying = true;
+					resetProgress();
+					pollTimer.addEventListener(TimerEvent.TIMER, updateIndeterminateHandler, false, 0, true);
+					pollTimer.start();
+				}
+			}
+			
+			private function stopPlayingIndeterminate():void
+			{
+				if (indeterminatePlaying)
+				{
+					indeterminatePlaying = false;
+					pollTimer.removeEventListener(TimerEvent.TIMER, updateIndeterminateHandler);
+					pollTimer.reset();
+				}
+			}
+			
+			private var curIndex:int = 0;
+			private function updateIndeterminateHandler(event:Event):void
+			{
+				if(curIndex < 10)
+				{
+					progressBar.graphics.beginFill(_progressColor, 1);
+					progressBar.graphics.drawRect(curIndex * 13, 0, 12, 8);
+					progressBar.graphics.endFill();
+					curIndex += 1;
+				}
+				else
+					resetProgress();
+			}
+			
+			private function resetProgress():void
+			{
+				progressBar.graphics.clear();
+				progressBar.graphics.beginFill(_progressColor, 1);
+				progressBar.graphics.drawRect(0, 0, 12, 8);
+				progressBar.graphics.endFill();
+				curIndex = 1;
+			}
+			
+		]]>
+	</fx:Script>
+	
+	<s:BorderContainer backgroundColor="#FFFFFF" borderColor="#87B4E5" backgroundAlpha="0.85"
+					   dropShadowVisible="false" horizontalCenter="0" verticalCenter="0" minWidth="160">
+		<s:Label id="lblTip" left="18" right="18" top="8" bottom="18" color="#333333"
+				 horizontalCenter="0" text="{label}" textAlign="center"/>
+		<mx:UIComponent bottom="5" width="130" height="8" id="progressBar" horizontalCenter="0">
+		</mx:UIComponent>
+	</s:BorderContainer>
+</s:SkinnableContainer>

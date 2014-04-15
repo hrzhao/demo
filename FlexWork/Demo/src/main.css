@@ -1,0 +1,47 @@
+/* CSS file */
+@namespace s "library://ns.adobe.com/flex/spark";
+@namespace mx "library://ns.adobe.com/flex/mx";
+
+global
+{
+	font-family: "Microsoft YaHei";
+	fontSize: 12;
+}
+mx|ToolTip
+{
+	font-family: "Microsoft YaHei";
+	fontSize: 12;
+}
+s|TextInput
+{
+	border-color:#808080;
+}
+s|BorderContainer
+{
+	border-color:#808080;
+	backgroundColor:#DDDDDD;
+}
+s|ComboBox
+{
+	border-color:#808080;
+}
+s|List
+{
+	border-color:#808080;
+}
+s|TextArea
+{
+	border-color:#808080;
+}
+s|DropDownList
+{
+	border-color:#808080;
+}
+mx|DateField
+{
+	border-color:#808080;
+}
+mx|Text
+{
+	border-color:#808080;
+}

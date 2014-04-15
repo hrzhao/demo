@@ -9,6 +9,7 @@ package frame
 		public function EWModule()
 		{
 			super();
+			this.setStyle("backgroundColor",0xE9E9E9);//背景色
 		}
 		
 		public function get appId():String

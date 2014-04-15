@@ -22,5 +22,10 @@ public class FrameService {
 		List<AppConfigBean> list= appDao.getAppConfigBeanList();
 		return new ResultObject(ResultObject.SUCCESS, list);
 	}
+	public ResultObject delAppConfigBeanByAppId(String appId){
+		AppConfigBeanDao appDao = new AppConfigBeanDao();
+		appDao.deleteAppConfigBeanByAppId(appId);
+		return new ResultObject(ResultObject.SUCCESS, null);
+	}
 
 }

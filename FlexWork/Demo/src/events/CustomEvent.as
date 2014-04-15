@@ -1,4 +1,4 @@
-package common.events
+package events
 {
 	import flash.events.Event;
 	
@@ -11,7 +11,7 @@ package common.events
 			this.data = data;
 		}
 		
-		override public function clone():CustomEvent
+		override public function clone():Event
 		{
 			// TODO Auto Generated method stub
 			return new CustomEvent(type,data,bubbles,cancelable);

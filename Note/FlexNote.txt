@@ -1,3 +1,24 @@
+>>>>>>>>>>>
+É¾³ınull´íÎó
+(mx.messaging.messages::ErrorMessage)#0
+  body = (null)
+  clientId = "67CC4B7D-680D-AD98-4F08-A0A0824FA6A8"
+  correlationId = "11B310F3-5AC4-E102-AD3D-63738BB81BB5"
+  destination = "frameService"
+  extendedData = (null)
+  faultCode = "Server.Processing"
+  faultDetail = (null)
+  faultString = "java.lang.IllegalArgumentException : attempt to create delete event with null entity"
+  headers = (Object)#1
+  messageId = "67CD1AFD-860C-00C3-B332-2C4E8A5FF8EA"
+  rootCause = (Object)#2
+    cause = (null)
+    localizedMessage = "attempt to create delete event with null entity"
+    message = "attempt to create delete event with null entity"
+    suppressed = (Array)#3
+  timestamp = 1397532888294
+  timeToLive = 0
+
 >>>>>>>>>>>>>
 ÓÒ¼ü
 index.template.html
