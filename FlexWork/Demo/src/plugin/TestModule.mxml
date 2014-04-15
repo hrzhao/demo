@@ -1,9 +1,42 @@
 <?xml version="1.0" encoding="utf-8"?>
-<s:Module xmlns:fx="http://ns.adobe.com/mxml/2009" 
-		  xmlns:s="library://ns.adobe.com/flex/spark" 
-		  xmlns:mx="library://ns.adobe.com/flex/mx" width="400" height="300">
+<frame:EWModule xmlns:fx="http://ns.adobe.com/mxml/2009" 
+				xmlns:s="library://ns.adobe.com/flex/spark" 
+				xmlns:mx="library://ns.adobe.com/flex/mx" xmlns:frame="frame.*" width="100%" height="100%"
+			    xmlns:components="components.*">
+	<fx:Script>
+		<![CDATA[
+			import mx.managers.ToolTipManager;
+			private function method():void{
+//				ToolTipManager.createToolTip();
+			}
+			
+			protected function button1_clickHandler(event:MouseEvent):void
+			{
+				// TODO Auto-generated method stub
+				var num1:int = outGroup.numChildren;
+				var num2:int = outGroup.numAutomationChildren;
+				var num3:int = outGroup.numElements;
+				
+				for each(var val:Object in outGroup){
+					result.text+= val.id;
+				}
+				
+			}
+			
+		]]>
+	</fx:Script>
 	<fx:Declarations>
 		<!-- 将非可视元素（例如服务、值对象）放在此处 -->
 	</fx:Declarations>
-	<s:Label text="TestModule"/>
-</s:Module>
+	<s:TextInput left="94" top="47" errorString="提示内容" />
+	<s:Group id="outGroup">
+		<s:Group id="inGroup1">
+			<s:Label id="label1"/>
+			<s:Label id="label2" />
+		</s:Group>
+		<s:Group id="inGroup2"/>
+	</s:Group>
+	<s:Button label="Click" click="button1_clickHandler(event)" top="50" />
+	<s:TextArea id="result" top="80"/>
+	
+</frame:EWModule>

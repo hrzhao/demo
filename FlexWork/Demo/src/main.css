@@ -7,6 +7,12 @@ global
 	font-family: "Microsoft YaHei";
 	fontSize: 12;
 }
+.errorTip
+{
+	borderColor:#ffff00;
+	fontSize:14;
+	color:#ff00ff;
+}
 mx|ToolTip
 {
 	font-family: "Microsoft YaHei";

@@ -137,7 +137,7 @@
 	</s:BorderContainer>
 	<s:BorderContainer top="43" left="15" right="15" bottom="10">
 		<s:Label left="53" top="21" text="模块ID："/>
-		<s:TextInput id="txt_appId" left="110" top="15" width="195" text="@{appId}" click="txt_appId_clickHandler(event)"/>
+		<s:TextInput id="txt_appId" left="110" top="15" width="195" text="@{appId}" click="txt_appId_clickHandler(event)" />
 		<s:Label left="53" top="55" text="目录ID："/>
 		<s:TextInput id="txt_categoryId" left="110" top="49" width="195" text="@{categoryId}"/>
 		<s:Label left="371" top="59" text="图标："/>
