@@ -13,6 +13,7 @@
 	<fx:Script>
 		<![CDATA[
 			import entities.AppConfig;
+			import entities.OrderColumn;
 			import entities.UserBean;
 			
 			import events.MenuClickEvent;
@@ -44,8 +45,12 @@
 				var ro:RemoteObject = new RemoteObject();
 				ro.destination = "frameService";
 				var op:AbstractOperation = ro.getOperation("getAppConfigBeanList");
-				op.send();
-				op.addEventListener(FaultEvent.FAULT,faultHandler);
+				var orderColumns:ArrayCollection = new ArrayCollection();
+				var orderColumn:OrderColumn = new OrderColumn;
+				orderColumn.ascending = false;
+				orderColumn.column = "priority";
+				orderColumns.addItem(orderColumn);
+				op.addEventListener(FaultEvent.FAULT,faultHandler,false,0,true);
 				op.addEventListener(ResultEvent.RESULT,function(event:ResultEvent):void{
 					if(event.result.state == "success"){
 						if(event.result.data is ArrayCollection){
@@ -55,8 +60,8 @@
 							}
 						}
 					}
-				});
-				
+				},false,0,true);
+				op.send(orderColumns);
 			}
 
 			protected function faultHandler(event:FaultEvent):void

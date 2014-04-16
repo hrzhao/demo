@@ -9,7 +9,7 @@ public class AppConfigBean {
 	private Boolean multiInstance;
 	private String description;
 	private String path;
-	private Integer order;
+	private Integer priority;
 	private String icon;
 	private Boolean executePower = true;
 
@@ -81,12 +81,12 @@ public class AppConfigBean {
 		this.path = path;
 	}
 
-	public Integer getOrder() {
-		return order;
+	public Integer getpriority() {
+		return priority;
 	}
 
-	public void setOrder(Integer order) {
-		this.order = order;
+	public void setPriority(Integer priority) {
+		this.priority = priority;
 	}
 
 	public String getIcon() {

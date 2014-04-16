@@ -15,6 +15,8 @@
 			
 			import entities.AppConfig;
 			
+			import events.CustomEvent;
+			
 			import mx.collections.ArrayCollection;
 			import mx.controls.Alert;
 			import mx.controls.Menu;
@@ -36,27 +38,31 @@
 			
 			[Bindable]
 			private var appConfigList:ArrayCollection = new ArrayCollection();
+			private var op_getList:AbstractOperation = null;
 			private function getAppConfigList():void{
-				var op_getList:AbstractOperation = ro.getOperation("getAppConfigBeanList");
-				op_getList.addEventListener(ResultEvent.RESULT,function(event:ResultEvent):void{
-					if(event.result.state == "success"){
-						if(event.result.data is ArrayCollection){
-							appConfigList = event.result.data;
-							hideLoading();
+				if(op_getList == null){
+					op_getList = ro.getOperation("getAppConfigBeanList");
+					op_getList.addEventListener(ResultEvent.RESULT,function(event:ResultEvent):void{
+						if(event.result.state == "success"){
+							if(event.result.data is ArrayCollection){
+								appConfigList = event.result.data;
+								hideLoading();
+							}
 						}
-					}
-				},false,0,true);//设为弱引用，让垃圾机制回收
-				op_getList.addEventListener(FaultEvent.FAULT,function(event:FaultEvent):void{
-					hideLoading();
-					MessageBox.show(event.message.toString());
-				},false,0,true);//设为弱引用，让垃圾机制回收
+					},false,0,true);//设为弱引用，让垃圾机制回收
+					op_getList.addEventListener(FaultEvent.FAULT,faultEvent,false,0,true);//设为弱引用，让垃圾机制回收
+				}
 				op_getList.send();
+				showLoading("正在查询...");
+			}
+			protected function faultEvent(event:FaultEvent):void{
+				hideLoading();
+				MessageBox.show(event.message.toString());
 			}
 			
 			protected function btn_search_clickHandler(event:MouseEvent):void
 			{
 				// TODO Auto-generated method stub
-				showLoading("正在查询...");
 				getAppConfigList()
 			}
 			
@@ -147,12 +153,14 @@
 				return result;
 			}
 			
-			private function buiildAppPanelNaviCont(label:String,mode:uint = DgcMenu.ADD,appConfig:AppConfig = null):NavigatorContent{
+			private function buildAppPanelNaviCont(label:String,mode:uint = DgcMenu.ADD,appConfig:AppConfig = null):NavigatorContent{
 				var naviCont:NavigatorContent = new NavigatorContent();
 				naviCont.percentWidth = 100;
 				naviCont.percentHeight = 100;
 				naviCont.label = label;
 				var appPanel:AppPanel = new AppPanel();
+				appPanel.addEventListener("commit",appPanelCommitHandler);
+				appPanel.addEventListener("cancel",appPanelCancelHandler);
 				appPanel.mode = mode;
 				appPanel.percentWidth = 100;
 				appPanel.percentHeight = 100;
@@ -161,17 +169,88 @@
 				return naviCont;
 			}
 			
+			private var op_getAppConfig:AbstractOperation = null;
+			private function getAppConfigFromDB(appId:String):void{
+				if(op_getAppConfig == null){
+					op_getAppConfig = ro.getOperation("getAppConfigBean");
+					op_getAppConfig.addEventListener(ResultEvent.RESULT,function(event:ResultEvent):void{
+						if(event.result.state == "success"){
+							var appConfig:AppConfig = event.result.data;
+							if(curAppPanel.mode == DgcMenu.ADD){
+								if(appConfig){
+									hideLoading();
+									MessageBox.show("模块Id已存在，不可添加相同ID的模块");
+									return;
+								}
+							}else if(curAppPanel.mode == DgcMenu.EDIT){
+								if(!appConfig){
+									hideLoading();
+									MessageBox.show("模块Id不存在或已被删除，请先检查再修改");
+									return;
+								}
+							}
+							saveOrAddAppConfig(curAppPanel.appConfig);
+						}
+					},false,0,true);//设为弱引用，让垃圾机制回收
+					op_getAppConfig.addEventListener(FaultEvent.FAULT,function(event:FaultEvent):void{
+						MessageBox.show(event.message.toString());
+						curAppPanel = null;
+					},false,0,true);//设为弱引用，让垃圾机制回收
+				}
+				op_getAppConfig.send(appId);
+				showLoading("查询记录已存在否，再保存...");
+			}
+			
+			private var curAppPanel:AppPanel = null;
+			private function appPanelCommitHandler(event:CustomEvent):void{
+				curAppPanel = event.target as AppPanel;
+				var appId:String = event.data as String;
+				getAppConfigFromDB(appId);
+				
+				
+			}
+			
+			
+			private var op_saveAppConfig:AbstractOperation = null;
+			private function saveOrAddAppConfig(appConfig:AppConfig):void{
+				if(op_saveAppConfig == null){
+					op_saveAppConfig = ro.getOperation("saveOrAddAppConfigBean");
+					op_saveAppConfig.addEventListener(ResultEvent.RESULT,function(event:ResultEvent):void{
+						if(event.result.state == "success"){
+							hideLoading();
+							MessageBox.show("保存成功");
+							if(curAppPanel != null){
+								if(curAppPanel.mode == DgcMenu.ADD){
+									curAppPanel.mode = DgcMenu.EDIT;
+								}
+								curAppPanel = null;
+							}
+						}
+					},false,0,true);//设为弱引用，让垃圾机制回收
+					op_saveAppConfig.addEventListener(FaultEvent.FAULT,function(event:FaultEvent):void{
+						hideLoading();
+						MessageBox.show("保存失败\r\n"+event.message.toString());
+						curAppPanel = null;
+					},false,0,true);//设为弱引用，让垃圾机制回收
+				}
+				op_saveAppConfig.send(appConfig);
+				showLoading("正在保存...");
+			}
+			
+			private function appPanelCancelHandler(event:CustomEvent):void{
+				viewStack.removeElement(((event.target as AppPanel).owner as NavigatorContent));
+			}
 			private function addApp():void{
 				var label:String = "添加模块";
 				var naviCont:NavigatorContent = findNaviContByLable(label);
 				if(naviCont == null){
-					naviCont = buiildAppPanelNaviCont(label);
+					naviCont = buildAppPanelNaviCont(label);
 					viewStack.addElement(naviCont);
 				}
 				viewStack.selectedChild = naviCont;
 			}
 			private function editApp(appConfig:AppConfig):void{
-				var naviCont:NavigatorContent = buiildAppPanelNaviCont(appConfig.name,DgcMenu.EDIT,appConfig);
+				var naviCont:NavigatorContent = buildAppPanelNaviCont(appConfig.name,DgcMenu.EDIT,appConfig);
 				if(naviCont != null){
 					viewStack.addElement(naviCont);
 					viewStack.selectedChild = naviCont;
@@ -192,19 +271,22 @@
 				progressLabel.visible = false;
 			}
 			
+			private var op_del:AbstractOperation;
 			private function delAppConfigBeanByAppId(appId:String):void{
-				var op_del:AbstractOperation = ro.getOperation("delAppConfigBeanByAppId");
-				op_del.addEventListener(ResultEvent.RESULT,function(event:ResultEvent):void{
-					if(event.result.state == "success"){
+				if(op_del == null){
+						op_del = ro.getOperation("delAppConfigBeanByAppId");
+					op_del.addEventListener(ResultEvent.RESULT,function(event:ResultEvent):void{
+						if(event.result.state == "success"){
+							hideLoading();
+							MessageBox.show("删除成功");
+							appConfigList.removeItemAt(dg_appConfig.selectedIndex);
+						}
+					},false,0,true);
+					op_del.addEventListener(FaultEvent.FAULT,function(event:FaultEvent):void{
 						hideLoading();
-						MessageBox.show("删除成功");
-						appConfigList.removeItemAt(dg_appConfig.selectedIndex);
-					}
-				},false,0,true);
-				op_del.addEventListener(FaultEvent.FAULT,function(event:FaultEvent):void{
-					hideLoading();
-					MessageBox.show(event.message.toString());
-				},false,0,true);
+						MessageBox.show("删除失败\r\n"+event.message.toString());
+					},false,0,true);
+				}
 				op_del.send(appId);
 			}
 			
@@ -214,49 +296,6 @@
 //				MessageBox.show("click"+event.localX+"_"+event.localY);
 			}
 			
-			/*
-			protected function button1_clickHandler(event:Event):void
-			{
-				// TODO Auto-generated method stub
-				txt_rs.text += "button1#"+event.type+"#"+event.bubbles+"\r\n";
-				
-			}
-			
-			protected function button2_clickHandler(event:Event):void
-			{
-				// TODO Auto-generated method stub
-				txt_rs.text += "button2#"+event.type+"#"+event.bubbles+"\r\n";
-			}
-			
-			protected function inCont_clickHandler(event:Event):void
-			{
-				// TODO Auto-generated method stub
-				txt_rs.text += "inCont#"+event.type+"#"+event.bubbles+"\r\n";
-			}
-			
-			protected function outCont_clickHandler(event:Event):void
-			{
-				// TODO Auto-generated method stub
-				txt_rs.text += "outCont#"+event.type+"#"+event.bubbles+"\r\n";
-			}
-			
-			protected function button3_clickHandler(event:MouseEvent):void
-			{
-				// TODO Auto-generated method stub
-				button1.dispatchEvent(new Event("MyEvent",false,false));
-			}
-			
-			private function eventDemoTest():void{
-				inCont.addEventListener("MyEvent",inCont_clickHandler,true,0,true);	
-				outCont.addEventListener("MyEvent",outCont_clickHandler,true,0,true);	
-				button1.addEventListener("MyEvent",button1_clickHandler,true,0,true);	
-				button2.addEventListener("MyEvent",button2_clickHandler,true,0,true);	
-				inCont.addEventListener("MyEvent",inCont_clickHandler,false,0,true);	
-				outCont.addEventListener("MyEvent",outCont_clickHandler,false,0,true);	
-				button1.addEventListener("MyEvent",button1_clickHandler,false,0,true);	
-				button2.addEventListener("MyEvent",button2_clickHandler,false,0,true);	
-			}
-			*/
 		
 			
 		]]>
@@ -297,7 +336,7 @@
 						<mx:AdvancedDataGridColumn dataField="multiInstance" headerText="多实例" width="60"/>
 						<mx:AdvancedDataGridColumn dataField="description" headerText="说明" width="120"/>
 						<mx:AdvancedDataGridColumn dataField="path" headerText="路径" width="80"/>
-						<mx:AdvancedDataGridColumn dataField="order" headerText="排序" width="40"/>
+						<mx:AdvancedDataGridColumn dataField="priority" headerText="排序" width="40"/>
 						<mx:AdvancedDataGridColumn dataField="icon" headerText="图标" width="80"/>
 						
 					</mx:columns>

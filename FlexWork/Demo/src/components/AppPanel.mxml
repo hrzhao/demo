@@ -16,6 +16,9 @@
 			
 			import mx.events.FlexEvent;
 			import mx.utils.UIDUtil;
+			
+			import utils.MessageBox;
+			import utils.ToolsUtil;
 			private var _appConfig:AppConfig;
 			private var _mode:uint;
 			[Bindable]
@@ -25,7 +28,7 @@
 			[Bindable]
 			private var categoryId:String;
 			[Bindable]
-			private var order:int;
+			private var priority:int;
 			[Bindable]
 			private var description:String;
 			[Bindable]
@@ -48,7 +51,7 @@
 				appConfig.path =path;
 				appConfig.description = description;
 				appConfig.visible = visible_;
-				appConfig.order = order;
+				appConfig.priority = priority;
 				appConfig.multiInstance = multiInstance;
 				appConfig.param = param;
 				appConfig.categoryId = categoryId;
@@ -65,7 +68,7 @@
 					path = value.path;
 					description = value.description;
 					visible_ = value.visible;
-					order = value.order;
+					priority = value.priority;
 					multiInstance = value.multiInstance;
 					param = value.param;
 					categoryId = value.categoryId;
@@ -93,7 +96,7 @@
 			protected function group1_creationCompleteHandler(event:FlexEvent):void
 			{
 				// TODO Auto-generated method stub
-				
+				this.mode = this.mode;
 			}
 			
 			
@@ -107,9 +110,17 @@
 			protected function btn_save_clickHandler(event:MouseEvent):void
 			{
 				// TODO Auto-generated method stub
+				var checkResult:Array = checkData();
+				if(checkResult.length >0){
+					var msg:String = "";
+					for(var i:int=0;i<checkResult.length;i++){
+						msg += (i+1) + "、" + checkResult[i] + "\r\n";
+					}
+					MessageBox.show(msg);
+					return;
+				}
 				var data:Object = {};
-				data.operation = mode;
-				data.data = appConfig;
+				data = appConfig.appId;
 				this.dispatchEvent(new CustomEvent("commit",data));
 			}
 			
@@ -122,6 +133,27 @@
 			}
 			private function getNewAppId():String{
 				return UIDUtil.createUID();
+			}
+			private function checkData():Array{
+				var result:Array = [];
+				if(txt_appId.text == ""){
+					result.push("模块ID不能为空");
+				}
+				if(txt_categoryId.text != ""){
+					if(txt_icon.text == ""){
+						result.push("存在目录ID时，图标不能为空，请填入图标的相对路径");
+					}
+					if(txt_path.text == ""){
+						result.push("存在目录ID时，模块路径不能为空，请填入对应的Swf文件路径");
+					}
+				}
+				if(txt_name.text == ""){
+					result.push("模块名称不能为空");
+				}
+				if(txt_param.text != "" && ToolsUtil.jsonToObject(txt_param.text) == null){
+					result.push("参数不符合Json表达式格式");
+				}
+				return result;
 			}
 			
 		]]>
@@ -136,10 +168,10 @@
 		</s:HGroup>
 	</s:BorderContainer>
 	<s:BorderContainer top="43" left="15" right="15" bottom="10">
-		<s:Label left="53" top="21" text="模块ID："/>
+		<s:Label left="53" top="21" text="* 模块ID：" color="red"/>
 		<s:TextInput id="txt_appId" left="110" top="15" width="195" text="@{appId}" click="txt_appId_clickHandler(event)" />
 		<s:Label left="53" top="55" text="目录ID："/>
-		<s:TextInput id="txt_categoryId" left="110" top="49" width="195" text="@{categoryId}"/>
+		<s:TextInput id="txt_categoryId" left="110" top="49" width="195" text="@{categoryId}" toolTip="若不填，为添加一个目录，而非具体的模块"/>
 		<s:Label left="371" top="59" text="图标："/>
 		<s:TextInput id="txt_icon" left="418" top="51" width="190" text="@{icon}"/>
 		<s:Label left="43" top="89" text="模块路径："/>
@@ -147,10 +179,29 @@
 		<s:Label left="32" top="118" text="是否多实例："/>
 		<s:CheckBox id="chBox_multiInstance" x="111" y="112" selected="@{multiInstance}"/>
 		
-		<s:Label left="350" top="25" text="模块名称："/>
+		<s:Label left="350" top="25" text="* 模块名称："  color="red"/>
 		<s:TextInput id="txt_name" left="418" top="17" width="190" text="@{name_}"/>
 		<s:Label left="373" top="88" text="排序："/>
-		<s:ComboBox id="cmBox_order" x="418" y="82" width="79" selectedItem="@{order}"/>
+		<s:ComboBox id="cmBox_priority" x="418" y="82" width="79" selectedItem="@{priority}">
+			<s:ArrayList>
+				<fx:int>0</fx:int>
+				<fx:int>1</fx:int>
+				<fx:int>2</fx:int>
+				<fx:int>3</fx:int>
+				<fx:int>4</fx:int>
+				<fx:int>5</fx:int>
+				<fx:int>6</fx:int>
+				<fx:int>7</fx:int>
+				<fx:int>8</fx:int>
+				<fx:int>9</fx:int>
+				<fx:int>10</fx:int>
+				<fx:int>11</fx:int>
+				<fx:int>12</fx:int>
+				<fx:int>13</fx:int>
+				<fx:int>14</fx:int>
+				<fx:int>15</fx:int>
+			</s:ArrayList>
+		</s:ComboBox>
 		<s:Label left="349" top="118" text="是否可见："/>
 		<s:CheckBox id="chBox_visiable" x="420" y="115" selected="@{visible_}"/>
 		<s:Label left="66" top="149" text="参数："/>
