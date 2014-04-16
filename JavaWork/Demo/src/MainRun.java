@@ -9,6 +9,7 @@ import hrzhao.dao.MessageBeanDao;
 import hrzhao.dao.UserBeanDao;
 import hrzhao.services.FrameService;
 import hrzhao.services.MessageFilter;
+import hrzhao.services.MessageServices;
 import hrzhao.utils.ConfigHelper;
 import hrzhao.utils.HiberHelper;
 import hrzhao.utils.HibernateSessionFactory;
@@ -44,8 +45,8 @@ public class MainRun {
 	}
 
 	public static void main(String[] args) {
-		// TODO Auto-generated method stub
 
+		new MessageServices().getMessageBeanList();
 //		UserService userService = new UserService();
 //		userService.checkUser("admin", "202cb962ac59075b964b07152d234b70");
 //		System.out.print(Config.getConfig("token"));
@@ -75,7 +76,7 @@ public class MainRun {
 //		mthod5();
 //		mthod6();
 //		mthod7();
-		FrameService fs = new FrameService();
+//		FrameService fs = new FrameService();
 //		AppConfigBean appBean = new AppConfigBean();
 //		appBean.setAppId("abc");
 //		appBean.setName("abcname");
@@ -89,7 +90,7 @@ public class MainRun {
 //		appBean.setPath("pa");;
 //		appBean.setParam("par");
 //		fs.saveOrAddAppConfigBean(appBean);
-		fs.delAppConfigBeanByAppId("a");
+//		fs.delAppConfigBeanByAppId("a");
 //		AppConfigBean appBean;
 //		AppConfigBeanDao appDao = new AppConfigBeanDao();
 //		AppConfigBean appBean = appDao.getAppConfigBean("4d7665a6-175c-49e1-b89d-d8628157355e");

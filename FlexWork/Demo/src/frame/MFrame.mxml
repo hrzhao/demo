@@ -81,6 +81,7 @@
 					MessageBox.show("AppID为空");
 					return;
 				}
+				header.selectedAppId = null;
 				header.selectedAppId = appId;
 				if(appDic != null &&
 					appDic.hasOwnProperty(appId) &&
@@ -88,6 +89,7 @@
 					appDic[appId] is AppConfig)
 				{
 					var appConfig:AppConfig = appDic[appId];
+					header.runningApp = appConfig.name;
 					if(appConfig.multiInstance){
 						runApp(appId);
 					}else{
@@ -105,6 +107,7 @@
 					}
 				}else{
 					header.selectedAppId = null;
+					header.runningApp = "";
 				}
 			}
 			private function runApp(appId:String):void{
@@ -129,7 +132,13 @@
 			private function modulError(e:ModuleEvent):void
 			{
 				// TODO Auto Generated method stub
-				MessageBox.show(e.errorText);
+				var errorMsg:String = "";
+				if(e.errorText == null){
+					errorMsg = "加载模块时出错，未知错误原因\r\n" +  e.toString();
+				}else{
+					errorMsg = e.errorText;
+				}
+				MessageBox.show(errorMsg);
 			}
 			
 			private function modulSetup(e:ModuleEvent):void
@@ -206,6 +215,8 @@
 					navi.moduleInfo.unload();
 				}
 				viewStack.removeAllElements();
+				header.selectedAppId = null;
+				header.runningApp = "";
 			}
 			
 			protected function header_menuClickHandler(event:MenuClickEvent):void

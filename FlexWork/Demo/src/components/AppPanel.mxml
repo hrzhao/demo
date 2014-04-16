@@ -130,6 +130,7 @@
 				if(appId == null || appId ==""){
 					appId = getNewAppId(); 
 				}
+				txt_appId.selectAll();
 			}
 			private function getNewAppId():String{
 				return UIDUtil.createUID();
@@ -172,15 +173,15 @@
 		<s:TextInput id="txt_appId" left="110" top="15" width="195" text="@{appId}" click="txt_appId_clickHandler(event)" />
 		<s:Label left="53" top="55" text="目录ID："/>
 		<s:TextInput id="txt_categoryId" left="110" top="49" width="195" text="@{categoryId}" toolTip="若不填，为添加一个目录，而非具体的模块"/>
-		<s:Label left="371" top="59" text="图标："/>
-		<s:TextInput id="txt_icon" left="418" top="51" width="190" text="@{icon}"/>
 		<s:Label left="43" top="89" text="模块路径："/>
 		<s:TextInput id="txt_path" left="110" top="82" width="195" text="@{path}"/>
 		<s:Label left="32" top="118" text="是否多实例："/>
 		<s:CheckBox id="chBox_multiInstance" x="111" y="112" selected="@{multiInstance}"/>
-		
 		<s:Label left="350" top="25" text="* 模块名称："  color="red"/>
 		<s:TextInput id="txt_name" left="418" top="17" width="190" text="@{name_}"/>
+		<s:Label left="371" top="59" text="图标："/>
+		<s:TextInput id="txt_icon" left="418" top="51" width="190" text="@{icon}"/>
+		
 		<s:Label left="373" top="88" text="排序："/>
 		<s:ComboBox id="cmBox_priority" x="418" y="82" width="79" selectedItem="@{priority}">
 			<s:ArrayList>

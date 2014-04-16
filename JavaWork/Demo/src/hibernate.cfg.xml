@@ -23,7 +23,6 @@
         <property name="hbm2ddl.auto">create</property>
         -->
 		<mapping resource="hrzhao/beans/AppConfigBean.hbm.xml"/>
-		<mapping resource="hrzhao/beans/CategoryBean.hbm.xml"/>
 		<mapping resource="hrzhao/beans/Event.hbm.xml"/>
 		<mapping resource="hrzhao/beans/ReqMessageBean.hbm.xml"/>
 		<mapping resource="hrzhao/beans/ConfigBean.hbm.xml"/>

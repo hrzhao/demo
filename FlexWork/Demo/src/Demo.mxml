@@ -3,7 +3,7 @@
 			   xmlns:s="library://ns.adobe.com/flex/spark" 
 			   xmlns:mx="library://ns.adobe.com/flex/mx" 
 			   creationComplete="application1_creationCompleteHandler(event)" 
-			   minWidth="800" minHeight="600"
+			   minWidth="600" minHeight="400"
 			   xmlns:frame="frame.*"
 			   >
 	<fx:Style source="main.css"/>

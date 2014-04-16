@@ -19,7 +19,7 @@ public class AppConfigBeanDao {
 	public void saveAppConfigBean(AppConfigBean appConfigBean){
 		Session session = HiberHelper.getSession();
 		Transaction tx = session.beginTransaction();
-		session.save(appConfigBean);
+		session.saveOrUpdate(appConfigBean);
 		tx.commit();
 		session.close();
 	}

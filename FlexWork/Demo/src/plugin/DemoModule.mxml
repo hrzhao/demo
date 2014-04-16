@@ -1,0 +1,52 @@
+<?xml version="1.0" encoding="utf-8"?>
+<frame:EWModule xmlns:fx="http://ns.adobe.com/mxml/2009" 
+				xmlns:s="library://ns.adobe.com/flex/spark" 
+				xmlns:mx="library://ns.adobe.com/flex/mx" xmlns:frame="frame.*" width="100%" height="100%">
+	<fx:Script>
+		<![CDATA[
+			public var title:String = "";
+		]]>
+	</fx:Script>
+	<fx:Declarations>
+		<!-- 将非可视元素（例如服务、值对象）放在此处 -->
+	</fx:Declarations>
+	<s:Line top="27" right="0" left="0">
+		<s:stroke>
+			<s:SolidColorStroke color="0xb4cadc" weight="1" />
+		</s:stroke>
+	</s:Line>
+	<common:CloseableTabBar id="tabbar" left="5" top="3" maxWidth="955" dataProvider="{this.viewStack}" 
+							lockedTabCount="1" height="25" buttonMode="true" labelField="label">
+	</common:CloseableTabBar>
+	<mx:ViewStack id="viewStack" width="100%" top="28" height="100%">
+		<s:NavigatorContent width="100%" height="100%" label="{title}">
+			<s:Group  width="100%" height="100%" >
+				<s:BorderContainer backgroundColor="#DDDDDD" borderColor="#808080" 
+								   top="8" left="15" right="15" height="30">
+					<s:Label left="28" top="8" text="名称："/>
+					<s:TextInput id="txt_moduleName" left="88" top="3" width="180"/>
+					<s:Button id="btn_search" right="10" top="3" label="查询" click="btn_search_clickHandler(event)"/>
+				</s:BorderContainer>
+				<s:BorderContainer top="43" left="15" right="15" bottom="10">
+					<mx:AdvancedDataGrid id="dg_appConfig" top="43" left="15" right="15" bottom="10"
+										 horizontalScrollPolicy="auto" verticalScrollPolicy="auto"
+										 sortExpertMode="true"
+										 >
+						<mx:columns>
+							<mx:AdvancedDataGridColumn dataField="appId" headerText="应用ID" width="200"/>
+							<mx:AdvancedDataGridColumn dataField="name" headerText="名称" width="120"/>
+							<mx:AdvancedDataGridColumn dataField="categoryId" headerText="目录ID" width="150"/>
+							<mx:AdvancedDataGridColumn dataField="param" headerText="参数" width="120"/>
+							<mx:AdvancedDataGridColumn dataField="multiInstance" headerText="多实例" width="60"/>
+							<mx:AdvancedDataGridColumn dataField="description" headerText="说明" width="120"/>
+							<mx:AdvancedDataGridColumn dataField="path" headerText="路径" width="80"/>
+							<mx:AdvancedDataGridColumn dataField="priority" headerText="排序" width="40"/>
+							<mx:AdvancedDataGridColumn dataField="icon" headerText="图标" width="80"/>
+						</mx:columns>
+					</mx:AdvancedDataGrid>
+				</s:BorderContainer>
+				
+			</s:Group>
+		</s:NavigatorContent>
+	</mx:ViewStack>
+</frame:EWModule>

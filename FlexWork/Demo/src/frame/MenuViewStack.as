@@ -80,8 +80,10 @@ package frame
 			}
 		}
 		protected function menuButtonClick(event:MouseEvent):void{
+//			var i:int = this.selectedIndex;
 			var appId:String = (event.target as MenuButton).appId;
 			this.dispatchEvent(new MenuClickEvent(MenuClickEvent.MENUCLICK,appId,false));
+			
 		}
 
 		public function set dataProvider(value:ArrayCollection):void

@@ -15,6 +15,7 @@
 			[Bindable]
 			public var appConfigList:ArrayCollection = new ArrayCollection();
 			private var _selectedAppId:String;
+			private var _runningApp:String = "";
 			protected function btn_home_clickHandler(event:MouseEvent):void
 			{
 				// TODO Auto-generated method stub
@@ -36,6 +37,23 @@
 				// TODO Auto-generated method stub
 				dispatchEvent(event);
 			}
+
+			[Bindable]
+			public function get runningApp():String
+			{
+				return _runningApp;
+			}
+
+			public function set runningApp(value:String):void
+			{
+				if(value == null || value ==""){
+					lbl_runningApp.visible = false;
+				}else{
+					lbl_runningApp.visible = true;
+				}
+				_runningApp = value;
+			}
+
 			
 		]]>
 	</fx:Script>
@@ -47,9 +65,10 @@
 		<s:Button id="btn_home" click="btn_home_clickHandler(event)" 
 				  height="90" width="100" right="0" label="HOME" fontSize="24"/>
 		<s:VGroup top="0" bottom="0" left="250" right="100" gap="0">
-			<s:Group width="100%" >
-				<s:TabBar id="tabBar" dataProvider="{menuViewStack}" height="26"/>
-			</s:Group>
+			<s:HGroup width="100%" >
+				<s:TabBar id="tabBar" dataProvider="{menuViewStack}" height="26" maxWidth="600"/>
+				<s:Label id="lbl_runningApp" top="8" right="0" fontSize="14" fontWeight="bold" text="{runningApp}" width="35%" textAlign="left"/>
+			</s:HGroup>
 			<frame:MenuViewStack id="menuViewStack" height="100%" width="100%" 
 								 dataProvider="{appConfigList}" selectedAppId="{selectedAppId}" 
 								 menuClick="menuViewStack_menuClickHandler(event)"/>

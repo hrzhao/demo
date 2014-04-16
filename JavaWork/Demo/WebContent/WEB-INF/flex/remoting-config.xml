@@ -40,5 +40,10 @@
   			<source>hrzhao.services.FrameService</source>
   		</properties>  
     </destination>
+     <destination id="messageServices">
+  		<properties>
+  			<source>hrzhao.services.MessageServices</source>
+  		</properties>  
+    </destination>
 
 </service>

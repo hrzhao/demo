@@ -28,15 +28,10 @@ public class MessageBeanDao {
 		return null;
 	}
 	public ArrayList<ReqMessageBean> getMessageList(){
-		ArrayList<ReqMessageBean> messageList = null;
 		Session session = HiberHelper.getSession();
-		
 		Criteria cr = session.createCriteria(ReqMessageBean.class);
-		messageList = (ArrayList<ReqMessageBean>) cr.list();
+		return (ArrayList<ReqMessageBean>) cr.list();
 		
-		session.getTransaction().commit();
-		session.close();
-		return messageList;
 	}
 
 }

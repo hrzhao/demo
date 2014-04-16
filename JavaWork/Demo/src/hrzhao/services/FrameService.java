@@ -1,6 +1,5 @@
 package hrzhao.services;
 
-import java.util.HashMap;
 import java.util.List;
 
 import hrzhao.beans.AppConfigBean;
