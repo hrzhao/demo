@@ -1,6 +1,5 @@
 package hrzhao.beans;
 
-import hrzhao.adapter.CDataAdapter;
 import hrzhao.adapter.TimestampAdapter;
 
 import java.util.Date;
@@ -15,6 +14,14 @@ import com.sun.xml.txw2.annotation.XmlCDATA;
 @XmlRootElement(name = "xml")
 public class ReqMessageBean {
 	private int id;
+	private Date intime;
+	public Date getIntime() {
+		return intime;
+	}
+	public void setIntime(Date intime) {
+		this.intime = intime;
+	}
+
 	private String toUserName;
 	private String fromUserName;
 	private Date createTime;
@@ -26,6 +33,42 @@ public class ReqMessageBean {
 	
 	private int innerType;
 	
+	//地里位置
+	private Long locationX;
+	private Long locationY;
+	private Integer locationScale;
+	private String locationLabel;
+	
+	
+	public Long getLocationX() {
+		return locationX;
+	}
+	@XmlElement(name = "Location_X")
+	public void setLocationX(Long locationX) {
+		this.locationX = locationX;
+	}
+	public Long getLocationY() {
+		return locationY;
+	}
+	@XmlElement(name = "Location_Y")
+	public void setLocationY(Long locationY) {
+		this.locationY = locationY;
+	}
+	public Integer getLocationScale() {
+		return locationScale;
+	}
+	@XmlElement(name = "Scale")
+	public void setLocationScale(Integer locationScale) {
+		this.locationScale = locationScale;
+	}
+	public String getLocationLabel() {
+		return locationLabel;
+	}
+	@XmlCDATA
+	@XmlElement(name = "Label")
+	public void setLocationLabel(String locationLabel) {
+		this.locationLabel = locationLabel;
+	}
 	public String getPicURL() {
 		return picURL;
 	}

@@ -1,3 +1,14 @@
+<xml>
+  <ToUserName><![CDATA[gh_5a402ba88fa0]]></ToUserName>
+  <FromUserName><![CDATA[oBx4Dt37J4GSXlt32V4zGf-EDQQM]]></FromUserName>
+  <CreateTime>1395410148</CreateTime><MsgType><![CDATA[location]]></MsgType>
+  <Location_X>22.556987</Location_X>
+  <Location_Y>113.954374</Location_Y>
+  <Scale>17</Scale>
+  <Label><![CDATA[中国深圳市南山区西丽松坪山路口 邮政编码: 518055]]></Label>
+  <MsgId>5993240950366614975</MsgId>
+</xml>
+
 -----------------------------
 接收文本消息 
 <xml>

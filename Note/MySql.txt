@@ -1,0 +1,128 @@
+我们可以用
+select name from mysql.proc where db=’数据库名’;
+或者
+select routine_name from information_schema.routines where routine_schema='数据库名';
+或者
+show procedure status where db='数据库名';
+进行查询。
+如果我们想知道，某个存储过程的详细，那我们又该怎么做呢？是不是也可以像操作表一样用describe 表名进行查看呢？
+答案是：我们可以查看存储过程的详细，但是需要用另一种方法：
+SHOW CREATE PROCEDURE 数据库.存储过程名;
+就可以查看当前存储过程的详细。
+
+ALTER PROCEDURE
+
+DROP PROCEDURE
+
+
+----------------------------------------------------------------------
+8.      MySQL存储过程的控制语句
+(1). 变量作用域
+内部的变量在其作用域范围内享有更高的优先权，当执行到end。变量时，内部变量消失，此时已经在其作用域外，变量不再可见了，应为在存储
+过程外再也不能找到这个申明的变量，但是你可以通过out参数或者将其值指派
+给会话变量来保存其值。
+ 
+ 
+mysql > DELIMITER //  
+mysql > CREATE PROCEDURE proc3()  
+     -> begin 
+     -> declare x1 varchar(5) default 'outer';  
+     -> begin 
+     -> declare x1 varchar(5) default 'inner';  
+     -> select x1;  
+     -> end;  
+     -> select x1;  
+     -> end;  
+     -> //  
+mysql > DELIMITER ;  
+ 
+ (2). 条件语句
+Ⅰ. if-then -else语句
+ 
+ 
+ 
+mysql > DELIMITER //  
+mysql > CREATE PROCEDURE proc2(IN parameter int)  
+     -> begin 
+     -> declare var int;  
+     -> set var=parameter+1;  
+     -> if var=0 then 
+     -> insert into t values(17);  
+     -> end if;  
+     -> if parameter=0 then 
+     -> update t set s1=s1+1;  
+     -> else 
+     -> update t set s1=s1+2;  
+     -> end if;  
+     -> end;  
+     -> //  
+mysql > DELIMITER ;  
+
+Ⅱ. case语句： 
+mysql > DELIMITER //  
+mysql > CREATE PROCEDURE proc3 (in parameter int)  
+     -> begin 
+     -> declare var int;  
+     -> set var=parameter+1;  
+     -> case var  
+     -> when 0 then   
+     -> insert into t values(17);  
+     -> when 1 then   
+     -> insert into t values(18);  
+     -> else   
+     -> insert into t values(19);  
+     -> end case;  
+     -> end;  
+     -> //  
+mysql > DELIMITER ; 
+ 
+(3). 循环语句
+Ⅰ. while ···· end while：
+mysql > DELIMITER //  
+mysql > CREATE PROCEDURE proc4()  
+     -> begin 
+     -> declare var int;  
+     -> set var=0;  
+     -> while var<6 do  
+     -> insert into t values(var);  
+     -> set var=var+1;  
+     -> end while;  
+     -> end;  
+     -> //  
+mysql > DELIMITER ; 
+ 
+ 
+Ⅱ. repeat···· end repeat：
+它在执行操作后检查结果，而while则是执行前进行检查。
+mysql > DELIMITER //  
+mysql > CREATE PROCEDURE proc5 ()  
+     -> begin   
+     -> declare v int;  
+     -> set v=0;  
+     -> repeat  
+     -> insert into t values(v);  
+     -> set v=v+1;  
+     -> until v>=5  
+     -> end repeat;  
+     -> end;  
+     -> //  
+mysql > DELIMITER ;  
+ 
+
+Ⅲ. loop ·····end loop:
+loop循环不需要初始条件，这点和while 循环相似，同时和repeat循环一样不需要结束条件, leave语句的意义是离开循环。
+mysql > DELIMITER //  
+mysql > CREATE PROCEDURE proc6 ()  
+     -> begin 
+     -> declare v int;  
+     -> set v=0;  
+     -> LOOP_LABLE:loop  
+     -> insert into t values(v);  
+     -> set v=v+1;  
+     -> if v >=5 then 
+     -> leave LOOP_LABLE;  
+     -> end if;  
+     -> end loop;  
+     -> end;  
+     -> //  
+mysql > DELIMITER ;  

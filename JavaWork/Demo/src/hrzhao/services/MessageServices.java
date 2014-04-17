@@ -1,11 +1,10 @@
 package hrzhao.services;
 
-import hrzhao.beans.AppConfigBean;
 import hrzhao.beans.ReqMessageBean;
-import hrzhao.dao.AppConfigBeanDao;
 import hrzhao.dao.MessageBeanDao;
 import hrzhao.utils.ResultObject;
 
+import java.util.HashMap;
 import java.util.List;
 
 public class MessageServices {
@@ -24,6 +23,14 @@ public class MessageServices {
 			createMsgDao();
 		}
 		List<ReqMessageBean> list= msgDao.getMessageList();
+		return new ResultObject(ResultObject.SUCCESS, list);
+	}
+	public ResultObject getUserMsgList(){
+		if(msgDao == null){
+			createMsgDao();
+		}
+		
+		List<HashMap<String, Object>> list= msgDao.getUserMsgListByCall();
 		return new ResultObject(ResultObject.SUCCESS, list);
 	}
 }

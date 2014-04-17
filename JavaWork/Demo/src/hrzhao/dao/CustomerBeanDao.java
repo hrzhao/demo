@@ -17,8 +17,6 @@ public class CustomerBeanDao {
 	public CustomerBean getCustomer(String name){
 		CustomerBean customerBean = null;
 		Session session = HiberHelper.getSession();
-		session.beginTransaction();
-		
 		Criteria cr = session.createCriteria(CustomerBean.class);
 		cr.add(Restrictions.eq("name", name));
 		cr.setMaxResults(1);
@@ -26,26 +24,20 @@ public class CustomerBeanDao {
 		if(!rs.isEmpty()){
 			customerBean = rs.remove(0);
 		}
-		
-		session.getTransaction().commit();
 		session.close();
 		return customerBean;
 	}
 	public void saveCustomer(CustomerBean customerBean){
 		Session session = HiberHelper.getSession();
 		session.beginTransaction();
-		
 		session.save(customerBean);
-		
 		session.getTransaction().commit();
 		session.close();
 	}
 	public void updateCustomer(CustomerBean customerBean){
 		Session session = HiberHelper.getSession();
 		session.beginTransaction();
-		
 		session.update(customerBean);
-		
 		session.getTransaction().commit();
 		session.close();
 	}
@@ -53,7 +45,6 @@ public class CustomerBeanDao {
 		// TODO Auto-generated method stub
 		Session session = HiberHelper.getSession();
 		session.beginTransaction();
-		
 		Criteria cr = session.createCriteria(CustomerBean.class);
 		List<CustomerBean> customerList = cr.list();
 		session.getTransaction().commit();

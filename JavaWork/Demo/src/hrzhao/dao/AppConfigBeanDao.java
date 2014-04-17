@@ -26,6 +26,7 @@ public class AppConfigBeanDao {
 	public AppConfigBean getAppConfigBean(String appId){
 		Session session = HiberHelper.getSession();
 		AppConfigBean appBean = (AppConfigBean) session.get(AppConfigBean.class, appId);
+		session.close();
 		return appBean;
 	}
 	public List<AppConfigBean> getAppConfigBeanList(List<OrderColumn> orderColumns){
@@ -43,6 +44,7 @@ public class AppConfigBeanDao {
 		//ascending
 		cr.addOrder(Order.asc("priority"));
 		List<AppConfigBean> result = cr.list();
+		session.close();
 		return result;
 	}
 	public void deleteAppConfigBeanByAppId(String appId){
@@ -53,6 +55,7 @@ public class AppConfigBeanDao {
 			session.delete(obj);
 		}
 		tx.commit();
+		session.close();
 	}
 
 }

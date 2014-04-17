@@ -1,0 +1,107 @@
+<?xml version="1.0" encoding="utf-8"?>
+<s:Group xmlns:fx="http://ns.adobe.com/mxml/2009" 
+		 xmlns:s="library://ns.adobe.com/flex/spark" 
+		 xmlns:mx="library://ns.adobe.com/flex/mx" width="100%" height="100%"
+		 creationComplete="group1_creationCompleteHandler(event)" xmlns:UI="common.UI.*"
+		 >
+	<fx:Script>
+		<![CDATA[
+			import mx.collections.ArrayCollection;
+			import mx.events.FlexEvent;
+			import mx.rpc.AbstractOperation;
+			import mx.rpc.events.FaultEvent;
+			import mx.rpc.events.ResultEvent;
+			
+			import utils.MessageBox;
+			private function dateformate(item:Object, column:AdvancedDataGridColumn):String  
+			{
+				return df.format(item[column.dataField]);
+			}
+			[Bindable]
+			private var userMsgList:ArrayCollection;
+			
+			protected function group1_creationCompleteHandler(event:FlexEvent):void
+			{
+				// TODO Auto-generated method stub
+				
+				
+			}
+			
+			protected function btn_search_clickHandler(event:MouseEvent):void
+			{
+				// TODO Auto-generated method stub
+				getUserMsgList();
+			}
+			private function faultHandler(event:FaultEvent):void{
+				hideLoading();
+				MessageBox.show(event.message.toString());
+			}
+			private function showLoading(notice:String):void{
+				if(notice != null){
+					progressLabel.notice = notice;
+				}
+				progressLabel.visible = true;
+				
+			}
+			private function hideLoading():void{
+				progressLabel.visible = false;
+			}
+			
+			protected function ewmodule1_creationCompleteHandler(event:FlexEvent):void
+			{
+				// TODO Auto-generated method stub
+				
+				
+			}
+			private var op_getUserMsgList:AbstractOperation = null;
+			private function getUserMsgList():void{
+				if(op_getUserMsgList == null){
+					op_getUserMsgList = ro.getOperation("getUserMsgList");
+					op_getUserMsgList.addEventListener(FaultEvent.FAULT,faultHandler,false,0,true);
+					op_getUserMsgList.addEventListener(ResultEvent.RESULT,op_getUserMsgList_resultHandler,false,0,true);
+				}
+				op_getUserMsgList.send();
+				showLoading("正在查询...");
+			}
+			private function op_getUserMsgList_resultHandler(event:ResultEvent):void{
+				if(event.result.state == "success"){
+					if(event.result.data is ArrayCollection){
+						userMsgList = event.result.data;
+						hideLoading();
+					}
+				}
+			}
+			
+		]]>
+	</fx:Script>
+	<fx:Declarations>
+		<!-- 将非可视元素（例如服务、值对象）放在此处 -->
+		<s:RemoteObject id="ro" destination="messageServices"/> 
+		<s:DateTimeFormatter id="df" dateTimePattern="yyyy-MM-dd HH:mm:ss"/>
+	</fx:Declarations>
+	<s:BorderContainer backgroundColor="#DDDDDD" borderColor="#808080" 
+					   top="8" left="15" right="15" height="30">
+		<s:Label left="28" top="8" text="客户名称："/>
+		<s:TextInput id="txt_customerName" left="88" top="3" width="180"/>
+		<s:Button id="btn_search" right="10" top="3" label="查询" click="btn_search_clickHandler(event)"/>
+	</s:BorderContainer>
+	<mx:AdvancedDataGrid id="dg_appConfig" top="43" left="15" right="15" bottom="10"
+						 horizontalScrollPolicy="auto" verticalScrollPolicy="auto"
+						 dataProvider="{userMsgList}"
+						 sortExpertMode="true">
+		<mx:columns>
+			<mx:AdvancedDataGridColumn dataField="name" headerText="微信客户ID" width="250"/>
+			<mx:AdvancedDataGridColumn dataField="realname" headerText="客户名称" width="250"/>
+			<mx:AdvancedDataGridColumn dataField="toUserName" headerText="公众号ID" width="120"/>
+			<mx:AdvancedDataGridColumn dataField="lastTime" headerText="最后更新时间" width="140" labelFunction="{dateformate}"/>
+			<mx:AdvancedDataGridColumn dataField="intime" headerText="首次访问时间" width="140" labelFunction="{dateformate}"/>
+			<mx:AdvancedDataGridColumn dataField="amount" headerText="消息数量" width="120"/>
+		</mx:columns>
+	</mx:AdvancedDataGrid>
+	<!---
+	<s:BorderContainer top="43" left="15" right="15" bottom="10">
+	</s:BorderContainer>
+	-->
+	
+	<UI:LabelProgress id="progressLabel" visible="false" />
+</s:Group>

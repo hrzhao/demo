@@ -3,6 +3,7 @@ import hrzhao.beans.CustomerBean;
 import hrzhao.beans.Event;
 import hrzhao.beans.ReqMessageBean;
 import hrzhao.beans.TestBean;
+import hrzhao.beans.UserBean;
 import hrzhao.dao.AppConfigBeanDao;
 import hrzhao.dao.CustomerBeanDao;
 import hrzhao.dao.MessageBeanDao;
@@ -46,7 +47,25 @@ public class MainRun {
 
 	public static void main(String[] args) {
 
-		new MessageServices().getMessageBeanList();
+		new MessageBeanDao().getUserMsgListByCall();
+//		Session session = HiberHelper.getSession();
+//		UserBean ub = (UserBean) session.get(UserBean.class, 1);
+//		System.out.println(ub.toString());
+//		session.close();
+//		
+//		session = HiberHelper.getSession();
+//		UserBean ub1 = (UserBean) session.get(UserBean.class, 1);
+//		System.out.println(ub1.toString());
+////		session1.close();
+//		HiberHelper.closeFactory();
+//		
+//		Session session2 = HiberHelper.getSession();
+//		UserBean ub2 = (UserBean) session2.get(UserBean.class, 1);
+//		System.out.println(ub2.toString());
+//		session2.close();
+//		HiberHelper.closeFactory();
+		
+//		new MessageServices().getMessageBeanList();
 //		UserService userService = new UserService();
 //		userService.checkUser("admin", "202cb962ac59075b964b07152d234b70");
 //		System.out.print(Config.getConfig("token"));
