@@ -1,0 +1,80 @@
+<?xml version="1.0" encoding="utf-8"?>
+<mx:HBox xmlns:fx="http://ns.adobe.com/mxml/2009" 
+		 xmlns:s="library://ns.adobe.com/flex/spark" 
+		 xmlns:mx="library://ns.adobe.com/flex/mx"
+		 cornerRadius="0" 
+		 borderVisible="false"
+		 horizontalAlign="right" 
+		 verticalAlign="middle" 
+		 width="100%"
+		 >
+	<fx:Metadata>
+		[Event(name="pageChange", type="flash.events.Event")]
+	</fx:Metadata>
+	<fx:Script>
+		<![CDATA[
+			import mx.rpc.events.FaultEvent;
+			import mx.rpc.events.ResultEvent;
+			//分页参数
+			[Bindable]public var pageSize:int=10;//每页显示行数
+			[Bindable]private var totalPage:int=0;//总页数
+			[Bindable]private var currentPage:int=0;//当前页
+			private var _totalRow:int=0;//总记录数
+			
+			//*************************************|分页begin|***********************************
+			//查询总记录条数
+			
+			[Bindable]
+			public function get totalRow():int
+			{
+				return _totalRow;
+			}
+
+			public function set totalRow(value:int):void
+			{
+				_totalRow = value;
+				this.totalPage =Math.ceil(_totalRow/this.pageSize);
+			}
+			public function get firstResultIndex():int{
+			 	return this.currentPage * this.pageSize
+			}
+			
+			protected function loadData( pageNum:int):void{
+				if(pageNum>=0 && pageNum<this.totalPage)
+				{
+					this.currentPage=pageNum;//重新为当前页的变量赋值
+					this.dispatchEvent(new Event("pageChange"));
+				}
+			}
+			//改变pagesize后调整分页条状态
+			private function changePagesize():void{
+				this.pageSize = setPageSize.selectedItem.data as Number; 
+				this.totalPage =Math.ceil(this.totalRow/this.pageSize);
+				this.currentPage = 0;
+				this.dispatchEvent(new Event("pageChange"));
+			}
+		]]>
+	</fx:Script>
+	<fx:Declarations>
+		<!-- 将非可视元素（例如服务、值对象）放在此处 -->
+	</fx:Declarations>
+		
+		<mx:Text text="{'  第'+(totalPage>0?(currentPage+1):0)+'页/共'+totalPage+'页'+'  共'+(totalRow)+'条记录'}" fontSize="12"/>
+		<mx:LinkButton id="lbtnFirst" label="首页" click="loadData(0)" enabled="{lbtnPrevious.enabled}" fontSize="12"/>
+		<mx:LinkButton id="lbtnPrevious" label="上一页" click="loadData(currentPage-1)" enabled="{currentPage!=0?true:false}" fontSize="12"/>
+		<mx:LinkButton id="lbtnNext" label="下一页" click="loadData(currentPage+1)" enabled="{totalPage>(currentPage+1)?true:false}" fontSize="12"/>
+		<mx:LinkButton id="lbtnLast" label="尾页" click="loadData(totalPage-1)" enabled="{lbtnNext.enabled}" fontSize="12"/>
+		<mx:Label   text="每页显示："/>
+		<mx:ComboBox id="setPageSize" change="changePagesize()" selectedIndex="0">
+			<mx:dataProvider>
+				<fx:Array>
+					<fx:Object label="10" data="10" />                                                                                                         
+					<fx:Object label="15" data="15" />
+					<fx:Object label="20" data="20" />    
+				</fx:Array>
+			</mx:dataProvider>
+		</mx:ComboBox>
+		<mx:Label   text="条"/>
+		<mx:NumericStepper id="nsPageNum" stepSize="1" minimum="1" maximum="{totalPage}" enabled="{lbtnJump.enabled}" cornerRadius="0"/>
+		<mx:LinkButton id="lbtnJump" label="跳转" click="loadData(nsPageNum.value-1)" enabled="{totalPage>1?true:false}" fontSize="12"/>
+</mx:HBox>

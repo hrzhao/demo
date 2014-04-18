@@ -6,6 +6,11 @@
 				>
 	<fx:Script>
 		<![CDATA[
+			import components.MsgDetailPanel;
+			
+			import events.DgcMenuEvent;
+			import events.StateEvent;
+			
 			import mx.collections.ArrayCollection;
 			import mx.events.FlexEvent;
 			import mx.rpc.AbstractOperation;
@@ -36,8 +41,14 @@
 			protected function ewmodule1_creationCompleteHandler(event:FlexEvent):void
 			{
 				// TODO Auto-generated method stub
-				
-				
+				this.addEventListener(StateEvent.WAITINGRESULT,waittingResultHandler,false,0,true);
+				this.addEventListener(StateEvent.GOTRESULT,gotResultHandler,false,0,true);
+			}
+			private function waittingResultHandler(event:StateEvent):void{
+				showLoading(event.msg);
+			}
+			private function gotResultHandler(event:StateEvent):void{
+				hideLoading();
 			}
 			private var op_getMessageList:AbstractOperation = null;
 			private function getMessageList():void{
@@ -66,6 +77,45 @@
 			{
 				return df.format(item[column.dataField]);
 			}
+			private var labelCount:int = 0;
+			protected function userMsgListPanel_viewMsgDetailHandler(event:DgcMenuEvent):void
+			{
+				// TODO Auto-generated method stub
+				var data:Object = event.selectedItem;
+				var name:String = "navigatorContent_index_"+event.selectedIndex;
+				var naviCont:NavigatorContent = findNaviContByName(name);
+				if(naviCont == null){
+					var label:String = "消息详情" + (++labelCount);
+					naviCont = buildMsgDetailNaviCont(label,data,name);
+					viewStack.addElement(naviCont);
+				}
+				viewStack.selectedChild = naviCont;
+			}
+			private function findNaviContByName(name:String):NavigatorContent{
+				var result:NavigatorContent = null;
+				if(name == null) return result;
+				for each(var naviCont:NavigatorContent in viewStack.getChildren()){
+					if(naviCont.name == name){
+						result = naviCont;
+					}
+				}
+				return result;
+			}
+			
+			private function buildMsgDetailNaviCont(label:String,data:Object = null,name:String = null):NavigatorContent{
+				var naviCont:NavigatorContent = new NavigatorContent();
+				naviCont.percentWidth = 100;
+				naviCont.percentHeight = 100;
+				naviCont.label = label;
+				naviCont.name = name;
+				var msgDetail:MsgDetailPanel = new MsgDetailPanel();
+				msgDetail.percentWidth = 100;
+				msgDetail.percentHeight = 100;
+				msgDetail.dataProvider = data;
+				naviCont.addElement(msgDetail);
+				return naviCont;
+			}
+			
 			
 		]]>
 	</fx:Script>
@@ -91,11 +141,13 @@
 					<s:TextInput id="txt_moduleName" left="88" top="3" width="180"/>
 					<s:Button id="btn_search" right="10" top="3" label="查询" click="btn_search_clickHandler(event)"/>
 				</s:BorderContainer>
-				<mx:AdvancedDataGrid id="dg_appConfig" top="43" left="15" right="15" bottom="10"
+				<components:SuperAdvancedDataGrid id="dg_appConfig" top="43" left="15" right="15" bottom="10"
 									 horizontalScrollPolicy="auto" verticalScrollPolicy="auto"
 									 dataProvider="{messageList}"
-									 sortExpertMode="true">
-					<mx:columns>
+									 sortExpertMode="true"
+									 unselectedMenuItem="0" selectedMenuItem="0"
+									 >
+					<components:columns>
 						<mx:AdvancedDataGridColumn dataField="fromUserName" headerText="微信客户ID" width="250"/>
 						<mx:AdvancedDataGridColumn dataField="toUserName" headerText="公众号ID" width="120"/>
 						<mx:AdvancedDataGridColumn dataField="createTime" headerText="发送时间" width="140" labelFunction="{dateformate}"/>
@@ -111,8 +163,8 @@
 						<mx:AdvancedDataGridColumn dataField="location_y" headerText="纬度" width="80"/>
 						<mx:AdvancedDataGridColumn dataField="location_scale" headerText="缩放度" width="60"/>
 						<mx:AdvancedDataGridColumn dataField="location_label" headerText="捕获地址" width="300"/>
-					</mx:columns>
-				</mx:AdvancedDataGrid>
+					</components:columns>
+				</components:SuperAdvancedDataGrid>
 				<!---
 				<s:BorderContainer top="43" left="15" right="15" bottom="10">
 				</s:BorderContainer>
@@ -121,7 +173,7 @@
 			</s:Group>
 		</s:NavigatorContent>
 		<s:NavigatorContent width="100%" height="100%" label="客户消息统计">
-			<components:UserMsgListPanel id="userMsgListPanel" />
+			<components:UserMsgListPanel id="userMsgListPanel" viewMsgDetail="userMsgListPanel_viewMsgDetailHandler(event)"/>
 		</s:NavigatorContent>
 	</mx:ViewStack>
 	<UI:LabelProgress id="progressLabel" visible="false" />

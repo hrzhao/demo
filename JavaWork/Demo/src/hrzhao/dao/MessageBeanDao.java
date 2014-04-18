@@ -1,17 +1,14 @@
 package hrzhao.dao;
 
+import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
-
-
-
-
 
 import org.hibernate.Criteria;
 import org.hibernate.Query;
 import org.hibernate.Session;
-import org.hibernate.criterion.CriteriaSpecification;
-import org.hibernate.procedure.ProcedureCall;
+import org.hibernate.criterion.Order;
+import org.hibernate.criterion.Restrictions;
 import org.hibernate.transform.Transformers;
 
 import hrzhao.beans.ReqMessageBean;
@@ -19,7 +16,7 @@ import hrzhao.utils.HiberHelper;
 public class MessageBeanDao {
 //	public MessageBean messageBean;
 	public MessageBeanDao() {
-		// TODO Auto-generated constructor stub
+		
 	}
 
 	public void saveMessage(ReqMessageBean messageBean) {
@@ -29,12 +26,29 @@ public class MessageBeanDao {
 		session.getTransaction().commit();
 		session.close();
 	}
-	public ReqMessageBean getMessage(){
-		return null;
-	}
-	public List<ReqMessageBean> getMessageList(){
+	public List<ReqMessageBean> getMessage(Long msgId,Date beginTime){
 		Session session = HiberHelper.getSession();
 		Criteria cr = session.createCriteria(ReqMessageBean.class);
+		cr.add(Restrictions.gt("createTime", beginTime));
+		@SuppressWarnings("unchecked")
+		List<ReqMessageBean> list = (List<ReqMessageBean>)cr.list();
+		return list;
+	}
+//	public List<ReqMessageBean> getMessageList(){
+//		return getMessageList(null,null,-1,-1);oBx4Dt37J4GSXlt32V4zGf-EDQQM gh_5a402ba88fa0
+//	}
+	public List<ReqMessageBean> getMessageList(String fromUserName,String toUserName,int firstResult,int size){
+		Session session = HiberHelper.getSession();
+		Criteria cr = session.createCriteria(ReqMessageBean.class);
+		cr.addOrder(Order.desc("intime"));
+		if(fromUserName != null)
+			cr.add(Restrictions.eq("fromUserName", fromUserName));
+		if(toUserName != null)
+			cr.add(Restrictions.eq("toUserName", toUserName));
+		if(firstResult >= 0 && size>0){
+			cr.setFirstResult(firstResult);
+			cr.setMaxResults(size);
+		}
 		@SuppressWarnings("unchecked")
 		List<ReqMessageBean> list = (List<ReqMessageBean>)cr.list();
 		session.close();
@@ -53,27 +67,14 @@ public class MessageBeanDao {
 		List<HashMap<String, Object>> list = (List<HashMap<String, Object>>)query.list();
 		session.close();
 		return list;
-//		@SuppressWarnings("unchecked")
-//		List<Object> list = (List<Object>)query.list();
-//		session.close();
-//		return DataUtil.listToMap(list,columns);
 	}
 	public List<HashMap<String,Object>> getUserMsgListByCall(){
 		Session session = HiberHelper.getSession();
 		Query query = session.createSQLQuery("call proc_userMsgList_get()")
 				.setResultTransformer(Transformers.ALIAS_TO_ENTITY_MAP);
-//		query.setResultTransformer(CriteriaSpecification.ALIAS_TO_ENTITY_MAP);
-//		ProcedureCall proceCall = session.createStoredProcedureCall("");
 		@SuppressWarnings("unchecked")
 		List<HashMap<String,Object>> list = (List<HashMap<String,Object>>)query.list();
 		session.close();
 		return list;
 	}
-//	private String[] columns = {
-//			"name",
-//			"amount",
-//			"realname",
-//			"toUserName",
-//			"intime",
-//			"lastTime"};
 }

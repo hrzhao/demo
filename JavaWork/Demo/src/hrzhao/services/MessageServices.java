@@ -22,14 +22,24 @@ public class MessageServices {
 		if(msgDao == null){
 			createMsgDao();
 		}
-		List<ReqMessageBean> list= msgDao.getMessageList();
+		List<ReqMessageBean> list= msgDao.getMessageList(null,null,-1,-1);
 		return new ResultObject(ResultObject.SUCCESS, list);
+	}
+	public ResultObject getMessageBeanList(String fromUserName,String toUserName,int firstResult,int size){
+		if(msgDao == null){
+			createMsgDao();
+		}
+		List<ReqMessageBean> list= msgDao.getMessageList(fromUserName, toUserName, firstResult, size);
+		HashMap<String , Object> data = new HashMap<String,Object>();
+		int total =msgDao.getMessageList(fromUserName, toUserName, -1, -1).size();
+		data.put("data", list);
+		data.put("total", total);
+		return new ResultObject(ResultObject.SUCCESS,data);
 	}
 	public ResultObject getUserMsgList(){
 		if(msgDao == null){
 			createMsgDao();
 		}
-		
 		List<HashMap<String, Object>> list= msgDao.getUserMsgListByCall();
 		return new ResultObject(ResultObject.SUCCESS, list);
 	}

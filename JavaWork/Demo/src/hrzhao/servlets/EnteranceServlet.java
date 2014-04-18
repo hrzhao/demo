@@ -68,7 +68,6 @@ public class EnteranceServlet extends HttpServlet {
 	 * @see HttpServlet#doPost(HttpServletRequest request, HttpServletResponse response)
 	 */
 	protected void doPost(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
-		// TODO Auto-generated method stub
 		response.setCharacterEncoding("UTF-8");
 		String msg = "";
 		try{			
@@ -77,6 +76,9 @@ public class EnteranceServlet extends HttpServlet {
 			MessageFilter msgFilter = new MessageFilter();
 			
 			msg = msgFilter.receiveMessage(reqBean);
+			if(msg == null){
+				return;
+			}
 			
 			RespMessageBean respBean = createRespBean(reqBean,msg);
 			responseMessage(response, respBean);
@@ -93,7 +95,6 @@ public class EnteranceServlet extends HttpServlet {
 		JAXBContext jc = JAXBContext.newInstance(ReqMessageBean.class);
 		Unmarshaller u = jc.createUnmarshaller();
 //		ReqMessageBean reqBean = (ReqMessageBean) u.unmarshal(request.getInputStream());
-		
 		BufferedReader bReader;
 		try {
 			bReader = new BufferedReader(
@@ -103,11 +104,11 @@ public class EnteranceServlet extends HttpServlet {
 			String srcXML = "";
 			while((line = bReader.readLine())!=null){  
 				srcXML += line;
-			}  
+			}
+			//保存原消息
 			DebugHelper.log("SrcXML",srcXML);
 			reqBean = (ReqMessageBean) u.unmarshal(new StringReader(srcXML));
 		} catch (IOException e) {
-			// TODO Auto-generated catch block
 			DebugHelper.log("getReqMessageBean.IOException",e.toString());
 			e.printStackTrace();
 		}

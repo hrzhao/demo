@@ -2,10 +2,17 @@
 <s:Group xmlns:fx="http://ns.adobe.com/mxml/2009" 
 		 xmlns:s="library://ns.adobe.com/flex/spark" 
 		 xmlns:mx="library://ns.adobe.com/flex/mx" width="100%" height="100%"
-		 creationComplete="group1_creationCompleteHandler(event)" xmlns:UI="common.UI.*"
+		 creationComplete="group1_creationCompleteHandler(event)" xmlns:UI="common.UI.*" xmlns:components="components.*"
+		 
 		 >
+	<fx:Metadata>
+		[Event(name="viewMsgDetail", type="events.DgcMenuEvent")]
+	</fx:Metadata>
 	<fx:Script>
 		<![CDATA[
+			
+			import events.DgcMenuEvent;
+			
 			import mx.collections.ArrayCollection;
 			import mx.events.FlexEvent;
 			import mx.rpc.AbstractOperation;
@@ -23,7 +30,6 @@
 			protected function group1_creationCompleteHandler(event:FlexEvent):void
 			{
 				// TODO Auto-generated method stub
-				
 				
 			}
 			
@@ -72,6 +78,15 @@
 				}
 			}
 			
+			protected function dg_appConfig_dgcMenuClickHandler(event:DgcMenuEvent):void
+			{
+				if(event.menuItem == DgcMenu.VIEW){
+					if(event.selectedItem != null && event.selectedItem.hasOwnProperty("name")){
+					}
+					this.dispatchEvent(new DgcMenuEvent("viewMsgDetail",event.menuItem,event.selectedItem,event.selectedIndex));
+				}
+			}
+			
 		]]>
 	</fx:Script>
 	<fx:Declarations>
@@ -85,19 +100,23 @@
 		<s:TextInput id="txt_customerName" left="88" top="3" width="180"/>
 		<s:Button id="btn_search" right="10" top="3" label="查询" click="btn_search_clickHandler(event)"/>
 	</s:BorderContainer>
-	<mx:AdvancedDataGrid id="dg_appConfig" top="43" left="15" right="15" bottom="10"
+	<components:SuperAdvancedDataGrid id="dg_appConfig" top="43" left="15" right="15" bottom="10"
 						 horizontalScrollPolicy="auto" verticalScrollPolicy="auto"
 						 dataProvider="{userMsgList}"
-						 sortExpertMode="true">
-		<mx:columns>
+						 sortExpertMode="true"
+						 dgcMenuClick="dg_appConfig_dgcMenuClickHandler(event)"
+						 selectedMenuItem="{DgcMenu.VIEW}"
+						 unselectedMenuItem="0"
+						 >
+		<components:columns>
 			<mx:AdvancedDataGridColumn dataField="name" headerText="微信客户ID" width="250"/>
-			<mx:AdvancedDataGridColumn dataField="realname" headerText="客户名称" width="250"/>
+			<mx:AdvancedDataGridColumn dataField="realname" headerText="客户名称" width="120"/>
 			<mx:AdvancedDataGridColumn dataField="toUserName" headerText="公众号ID" width="120"/>
 			<mx:AdvancedDataGridColumn dataField="lastTime" headerText="最后更新时间" width="140" labelFunction="{dateformate}"/>
 			<mx:AdvancedDataGridColumn dataField="intime" headerText="首次访问时间" width="140" labelFunction="{dateformate}"/>
-			<mx:AdvancedDataGridColumn dataField="amount" headerText="消息数量" width="120"/>
-		</mx:columns>
-	</mx:AdvancedDataGrid>
+			<mx:AdvancedDataGridColumn dataField="amount" headerText="消息数量" width="60"/>
+		</components:columns>
+	</components:SuperAdvancedDataGrid>
 	<!---
 	<s:BorderContainer top="43" left="15" right="15" bottom="10">
 	</s:BorderContainer>

@@ -1,0 +1,112 @@
+<?xml version="1.0" encoding="utf-8"?>
+<s:Group xmlns:fx="http://ns.adobe.com/mxml/2009" 
+		 xmlns:s="library://ns.adobe.com/flex/spark" 
+		 xmlns:mx="library://ns.adobe.com/flex/mx" width="100%" height="100%" xmlns:components="components.*"
+		 creationComplete="group1_creationCompleteHandler(event)">
+	<fx:Script>
+		<![CDATA[
+			import events.StateEvent;
+			
+			import mx.collections.ArrayCollection;
+			import mx.events.FlexEvent;
+			import mx.rpc.AbstractOperation;
+			import mx.rpc.Fault;
+			import mx.rpc.events.FaultEvent;
+			import mx.rpc.events.ResultEvent;
+			
+			import utils.MessageBox;
+			private var _dataProvider:Object;
+
+			[Bindable]
+			public function get dataProvider():Object
+			{
+				return _dataProvider;
+			}
+
+			public function set dataProvider(value:Object):void
+			{
+				_dataProvider = value;
+			}
+			
+			public function dateformate(item:Object, column:AdvancedDataGridColumn):String  
+			{
+				return df.format(item[column.dataField]);
+			}
+
+			private var fromUserName:String = null;
+			private var toUserName:String = null;
+			protected function group1_creationCompleteHandler(event:FlexEvent):void
+			{
+				// TODO Auto-generated method stub
+				if(dataProvider != null){
+					fromUserName = dataProvider.name;
+					toUserName = dataProvider.toUserName;
+					paginBar_pageChangeHandler(null);
+				}
+				
+			}
+			[Bindable]
+			private var msgList:ArrayCollection = new ArrayCollection();
+			private var op_getMsgList:AbstractOperation = null;
+			private function getMsgList(fromUserName:String,toUserName:String):void{
+				if(op_getMsgList == null){
+					op_getMsgList = ro.getOperation("getMessageBeanList");
+					op_getMsgList.addEventListener(ResultEvent.RESULT,getMsgList_resultHandler,false,0,true);
+					op_getMsgList.addEventListener(FaultEvent.FAULT,faultHandler,false,0,true);
+				}
+				op_getMsgList.send(fromUserName,toUserName,pagingBar.firstResultIndex,pagingBar.pageSize);
+				this.dispatchEvent(new StateEvent(StateEvent.WAITINGRESULT,"正在查询...",true,true));
+			}
+			private function getMsgList_resultHandler(event:ResultEvent):void{
+				if(event.result.state == "success"){
+					this.dispatchEvent(new StateEvent(StateEvent.GOTRESULT,null,true,true));
+					msgList = event.result.data.data;
+					pagingBar.totalRow = event.result.data.total;
+				}
+			}
+			private function faultHandler(event:FaultEvent):void{
+				this.dispatchEvent(new StateEvent(StateEvent.GOTRESULT,null,true,true));
+				MessageBox.show(event.message.toString());
+			}
+			
+			protected function paginBar_pageChangeHandler(event:Event):void
+			{
+				// TODO Auto-generated method stub
+				getMsgList(fromUserName,toUserName);
+			}
+			
+		]]>
+	</fx:Script>
+	<fx:Declarations>
+		<!-- 将非可视元素（例如服务、值对象）放在此处 -->
+		<s:DateTimeFormatter id="df" dateTimePattern="yyyy-MM-dd HH:mm:ss"/>
+		<s:RemoteObject id="ro" destination="messageServices"/> 
+	</fx:Declarations>
+	<s:BorderContainer top="8" left="15" right="15" height="65">
+		<components:SuperAdvancedDataGrid id="customerInfo" dataProvider="{this.dataProvider}" 
+										  width="100%" height="100%" borderVisible="false" >
+			<components:columns>
+				<mx:AdvancedDataGridColumn dataField="name" headerText="微信客户ID" width="250"/>
+				<mx:AdvancedDataGridColumn dataField="realname" headerText="客户名称" width="120"/>
+				<mx:AdvancedDataGridColumn dataField="toUserName" headerText="公众号ID" width="120"/>
+				<mx:AdvancedDataGridColumn dataField="lastTime" headerText="最后更新时间" width="140" labelFunction="{dateformate}"/>
+				<mx:AdvancedDataGridColumn dataField="intime" headerText="首次访问时间" width="140"  labelFunction="{dateformate}"/>
+				<mx:AdvancedDataGridColumn dataField="amount" headerText="消息数量" width="60"/>
+			</components:columns>
+		</components:SuperAdvancedDataGrid>
+	</s:BorderContainer>
+	<s:BorderContainer top="78" left="15" right="15" bottom="43">
+		<!---
+		<s:Scroller left="0" right="0" verticalScrollPolicy="auto">
+			
+		</s:Scroller>
+		-->
+		<components:SuperAdvancedDataGrid id="dg_msgList" dataProvider="{msgList}" width="100%" height="100%">
+			
+		</components:SuperAdvancedDataGrid>
+		
+	</s:BorderContainer>
+	<s:BorderContainer bottom="8" left="15" right="15" height="30">
+		<components:PagingBar id="pagingBar" top="3" pageChange="paginBar_pageChangeHandler(event)"/>
+	</s:BorderContainer>
+</s:Group>

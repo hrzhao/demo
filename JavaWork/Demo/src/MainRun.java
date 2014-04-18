@@ -47,7 +47,8 @@ public class MainRun {
 
 	public static void main(String[] args) {
 
-		new MessageBeanDao().getUserMsgListByCall();
+//		oBx4Dt37J4GSXlt32V4zGf-EDQQM gh_5a402ba88fa0
+		new MessageBeanDao().getMessageList("oBx4Dt37J4GSXlt32V4zGf-EDQQM ",null, -1, -1);
 //		Session session = HiberHelper.getSession();
 //		UserBean ub = (UserBean) session.get(UserBean.class, 1);
 //		System.out.println(ub.toString());

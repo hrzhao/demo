@@ -1,0 +1,154 @@
+<?xml version="1.0" encoding="utf-8"?>
+<mx:AdvancedDataGrid xmlns:fx="http://ns.adobe.com/mxml/2009" 
+					 xmlns:s="library://ns.adobe.com/flex/spark" 
+					 xmlns:mx="library://ns.adobe.com/flex/mx"
+					 rightClick="advanceddatagrid1_rightClickHandler(event)"
+					 horizontalScrollPolicy="auto" verticalScrollPolicy="auto">
+	<fx:Metadata>
+		[Event(name="dgcMenuClick", type="events.DgcMenuEvent")]
+	</fx:Metadata>
+	<fx:Script>
+		<![CDATA[
+			import events.DgcMenuEvent;
+			import mx.controls.Menu;
+			import mx.controls.advancedDataGridClasses.AdvancedDataGridItemRenderer;
+			import mx.events.MenuEvent;
+			
+			import utils.MessageBox;
+			private var _unselectedMenuItem:uint = DgcMenu.ADD;
+			private var _selectedMenuItem:uint = DgcMenu.ADD +DgcMenu.EDIT + DgcMenu.DELETE + DgcMenu.VIEW;
+
+			/**
+			 * 对有数据的行右键时的可用选项
+			 * 一般是增加，0为全部不可用
+			 */
+			public function get unselectedMenuItem():uint
+			{
+				return _unselectedMenuItem;
+			}
+
+			public function set unselectedMenuItem(value:uint):void
+			{
+				_unselectedMenuItem = value;
+			}
+
+			/**
+			 * 对有数据的行右键时的可用选项
+			 * 删除、修改、查看，0为全部不可用
+			 */
+			public function get selectedMenuItem():uint
+			{
+				return _selectedMenuItem;
+			}
+
+			/**
+			 * @private
+			 */
+			public function set selectedMenuItem(value:uint):void
+			{
+				_selectedMenuItem = value;
+			}
+
+			/**
+			 * 当右键单击Tree的Item时，自动选择鼠标所在的当前项
+			 * @param e 自定义右键菜单事件
+			 * 
+			 */
+			private function onRightClicked(e:MouseEvent):int
+			{
+				var itemRender:AdvancedDataGridItemRenderer = null;  
+				var selectedIndex:int = -2;
+				if(!(e.target.hasOwnProperty("owner") && e.target.owner is AdvancedDataGrid))
+					return selectedIndex;
+				var dg:AdvancedDataGrid = e.target.owner as AdvancedDataGrid;
+				if(e.target is AdvancedDataGridItemRenderer){
+					itemRender = AdvancedDataGridItemRenderer(e.target);
+					if(itemRender != null) {  
+						selectedIndex = dg.itemRendererToIndex(itemRender);
+					}  
+				}else{
+					selectedIndex = -1;
+				}
+				if(this.selectedIndex != selectedIndex){
+					dg.selectedIndex = selectedIndex;
+				}
+				return selectedIndex;
+			}
+			private var menu:Menu = null;
+			private function popUpMenu(item:uint):void{
+				if(menu!=null){
+					menu.removeEventListener(MenuEvent.ITEM_CLICK,menuItemClick_Handler);
+					menu.hide();
+					menu = null;
+				}
+				
+				menu = DgcMenu.createMenu(this,item,false);
+				
+				var point:Point = localToGlobal(new Point(mouseX,mouseY));
+				menu.addEventListener(MenuEvent.ITEM_CLICK,menuItemClick_Handler);
+				menu.show(point.x,point.y);
+			}
+			
+			protected function menuItemClick_Handler(event:MenuEvent):void
+			{
+				// TODO Auto-generated method stub
+				if(event.label == DgcMenu.sADD){
+					this.dispatchEvent(new DgcMenuEvent(DgcMenuEvent.DGCMENUCLICK,DgcMenu.ADD));
+				}
+				if(event.label == DgcMenu.sEDIT){
+					if(this.selectedItem == null){
+						MessageBox.show("请选择要编辑的记录!");
+						return;
+					}
+					this.dispatchEvent(new DgcMenuEvent(DgcMenuEvent.DGCMENUCLICK,DgcMenu.EDIT,this.selectedItem,this.selectedIndex));
+				}
+				if(event.label == DgcMenu.sDELETE){
+					if(this.selectedItem == null){
+						MessageBox.show("请选择要删除的记录!");
+						return;	
+					}
+					this.dispatchEvent(new DgcMenuEvent(DgcMenuEvent.DGCMENUCLICK,DgcMenu.DELETE,this.selectedItem,this.selectedIndex));
+				}
+				if(event.label == DgcMenu.sVIEW){
+					if(this.selectedItem == null){
+						MessageBox.show("请选择要查看的记录!");
+						return;	
+					}
+					this.dispatchEvent(new DgcMenuEvent(DgcMenuEvent.DGCMENUCLICK,DgcMenu.VIEW,this.selectedItem,this.selectedIndex));
+				}
+			}
+			
+			[Inspectable(category="General", arrayType="mx.controls.advancedDataGridClasses.AdvancedDataGridColumn")]
+			override public function set columns(value:Array):void
+			{
+				// TODO Auto Generated method stub
+				super.columns = value;
+			}
+			
+			override public function get columns():Array
+			{
+				// TODO Auto Generated method stub
+				return super.columns;
+			}
+			
+			protected function advanceddatagrid1_rightClickHandler(event:MouseEvent):void
+			{
+				var item:uint;
+				if(onRightClicked(event) == -1){
+					item =unselectedMenuItem;
+				}else if(onRightClicked(event) >=0){
+					item = selectedMenuItem;
+				}else{
+					return;
+				}
+				popUpMenu(item);
+			}
+			
+		]]>
+	</fx:Script>
+	<fx:Declarations>
+		<!-- 将非可视元素（例如服务、值对象）放在此处 -->
+		
+	</fx:Declarations>
+	
+</mx:AdvancedDataGrid>
