@@ -53,19 +53,21 @@
 			protected function creationCompleteHandler(event:FlexEvent):void
 			{
 				// TODO Auto-generated method stub
-				txt_password.addEventListener(KeyboardEvent.KEY_DOWN, tbxPwd_keyDownHandler);
-				if(txt_username.text == "")
-					txt_username.setFocus();
-				else
-					txt_password.setFocus();
 				//开发时用
 				CONFIG::Debug
 				{
 					txt_username.text = "admin";
 					txt_password.text = "123";
+				}
+				txt_password.addEventListener(KeyboardEvent.KEY_DOWN, tbxPwd_keyDownHandler);
+				if(txt_username.text == "")
+					txt_username.setFocus();
+				else
+					txt_password.setFocus();
+				CONFIG::Debug
+				{
 					btn_login_clickHandler(null);
 				}
-				
 			}
 		]]>
 	</fx:Script>
