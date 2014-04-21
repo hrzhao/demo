@@ -20,12 +20,20 @@ public class CustomerBeanDao {
 		Criteria cr = session.createCriteria(CustomerBean.class);
 		cr.add(Restrictions.eq("name", name));
 		cr.setMaxResults(1);
+		@SuppressWarnings("unchecked")
 		List<CustomerBean> rs = cr.list();
 		if(!rs.isEmpty()){
 			customerBean = rs.remove(0);
 		}
 		session.close();
 		return customerBean;
+	}
+	public void saveOrUpdateCustomer(CustomerBean customerBean){
+		Session session = HiberHelper.getSession();
+		session.beginTransaction();
+		session.saveOrUpdate(customerBean);
+		session.getTransaction().commit();
+		session.close();
 	}
 	public void saveCustomer(CustomerBean customerBean){
 		Session session = HiberHelper.getSession();
@@ -46,6 +54,7 @@ public class CustomerBeanDao {
 		Session session = HiberHelper.getSession();
 		session.beginTransaction();
 		Criteria cr = session.createCriteria(CustomerBean.class);
+		@SuppressWarnings("unchecked")
 		List<CustomerBean> customerList = cr.list();
 		session.getTransaction().commit();
 		session.close();

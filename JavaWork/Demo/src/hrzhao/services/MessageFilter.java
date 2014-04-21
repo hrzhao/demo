@@ -8,7 +8,10 @@ import hrzhao.beans.CustomerBean;
 import hrzhao.beans.ReqMessageBean;
 import hrzhao.dao.CustomerBeanDao;
 import hrzhao.dao.MessageBeanDao;
+import hrzhao.process.base.ProcessFactory;
+import hrzhao.process.base.ProcessInterface;
 import hrzhao.utils.ConfigHelper;
+import hrzhao.utils.DebugHelper;
 import hrzhao.utils.HiberHelper;
 
 public class MessageFilter {
@@ -32,10 +35,64 @@ public class MessageFilter {
 		}
 		return result;
 	}
+	private Date now;
+	public String receiveMessageByProcess(ReqMessageBean reqMessageBean){
+		now = new Date();
+		if(checkRepeat(reqMessageBean)){
+			return null;
+		}
+		String checkRs = checkMsgType(reqMessageBean);
+		if(checkRs != null){
+			return checkRs;
+		}
+		reqMessageBean.setIntime(now);
+		
+		int processId = getCustomerProcessId(reqMessageBean.getFromUserName());
+		ProcessInterface processInterface = ProcessFactory.createProcess(processId);
+		
+		String msg = processInterface.doProcess(reqMessageBean);
+		return msg;
+	}
+	private int getCustomerProcessId(String fromUserName){
+		int pcsId = 0;//首次访问
+		CustomerBeanDao customerDao = new CustomerBeanDao();
+		CustomerBean customerBean = customerDao.getCustomer(fromUserName);
+		if(customerBean != null){
+			Date lastTime = customerBean.getLasttime();
+			Calendar calendar = Calendar.getInstance();
+			calendar.setTime(lastTime);
+			calendar.add(Calendar.MINUTE, 5);
+			Date bTime = calendar.getTime();
+			Boolean timeOut = bTime.getTime() < now.getTime();
+			if(customerBean.getProcessing()){
+				if(timeOut){
+					pcsId = 1;//超时，回到首页
+				}else{//正在处理，发送消息的速度过快，不处理
+					DebugHelper.log("MessageFilter.getCustomerProcessId()", "正在处理，发送消息的速度过快，不处理");
+				}
+			}else{
+				if(timeOut){
+					pcsId = 1;//超时，回到首页
+				}else{
+					pcsId = customerBean.getProcessId();
+				}
+			}
+		}
+		return pcsId;
+	}
+	private String checkMsgType(ReqMessageBean reqMessageBean){
+		String msgType = reqMessageBean.getMsgType();
+		List<String> msgTypeList = ConfigHelper.getMsgType();
+		if(!msgTypeList.contains(msgType)){
+			return "对不起，我不能处理您的这类型消息";
+		}
+		return null;
+	}
 	public String receiveMessage(ReqMessageBean reqMessageBean){
 		if(checkRepeat(reqMessageBean)){
 			return null;
 		}
+		
 		String msg = "";
 		String msgType = reqMessageBean.getMsgType();
 		Date now = new Date();

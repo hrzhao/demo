@@ -4,7 +4,6 @@ import hrzhao.beans.ConfigBean;
 import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
-import java.util.Map;
 
 import org.hibernate.Criteria;
 import org.hibernate.Session;
@@ -22,7 +21,6 @@ public final class ConfigHelper {
 			value = it.next().getValue();
 		}
 		HiberHelper.closeSession(session);
-		HiberHelper.closeFactory();
 		return value;
 	}
 	private static String originalId = null;
@@ -35,7 +33,7 @@ public final class ConfigHelper {
 	private static List<String> msgTypeList = null;
 	public static List<String> getMsgType(){
 		if(msgTypeList == null){
-			String[] msgT = {"event","image","text"};
+			String[] msgT = {"event","image","text","location"};
 			msgTypeList = new ArrayList<String>();
 			for(String val:msgT){
 				msgTypeList.add(val);

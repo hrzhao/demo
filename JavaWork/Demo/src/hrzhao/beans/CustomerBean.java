@@ -14,6 +14,24 @@ public class CustomerBean {
 	private String phone;
 	private String sex;
 	private Date lasttime;
+	private Integer processId;
+	private Boolean processing;
+
+	public Boolean getProcessing() {
+		return processing;
+	}
+
+	public void setProcessing(Boolean processing) {
+		this.processing = processing;
+	}
+
+	public Integer getProcessId() {
+		return processId;
+	}
+
+	public void setProcessId(Integer processId) {
+		this.processId = processId;
+	}
 
 	public CustomerBean() {
 		// TODO Auto-generated constructor stub

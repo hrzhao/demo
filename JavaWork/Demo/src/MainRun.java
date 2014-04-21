@@ -46,9 +46,15 @@ public class MainRun {
 	}
 
 	public static void main(String[] args) {
-
+		HttpPostTest postTest = new HttpPostTest();
+		String urlStr = "http://localhost:8080/Demo/Enterance";
+		String content = "测试内容";
+		postTest.testPost(urlStr, content,1001);
+//		CustomerBean customerBean = new CustomerBeanDao().getCustomer("oBx4Dt37J4GSXlt32V4zGf-EDQQM");
+//		System.out.println(customerBean.getRealname());
+		
 //		oBx4Dt37J4GSXlt32V4zGf-EDQQM gh_5a402ba88fa0
-		new MessageBeanDao().getMessageList("oBx4Dt37J4GSXlt32V4zGf-EDQQM ",null, -1, -1);
+//		new MessageBeanDao().getMessageList("oBx4Dt37J4GSXlt32V4zGf-EDQQM ",null, -1, -1);
 //		Session session = HiberHelper.getSession();
 //		UserBean ub = (UserBean) session.get(UserBean.class, 1);
 //		System.out.println(ub.toString());

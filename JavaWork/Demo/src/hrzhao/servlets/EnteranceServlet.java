@@ -11,10 +11,8 @@ import java.io.IOException;
 import java.io.InputStreamReader;
 import java.io.PrintWriter;
 import java.io.StringReader;
-import java.io.UnsupportedEncodingException;
 import java.io.Writer;
 import java.util.Date;
-import java.util.Scanner;
 
 import javax.servlet.ServletException;
 import javax.servlet.annotation.WebServlet;
@@ -75,7 +73,8 @@ public class EnteranceServlet extends HttpServlet {
 			
 			MessageFilter msgFilter = new MessageFilter();
 			
-			msg = msgFilter.receiveMessage(reqBean);
+//			msg = msgFilter.receiveMessage(reqBean);
+			msg = msgFilter.receiveMessageByProcess(reqBean);
 			if(msg == null){
 				return;
 			}
@@ -94,7 +93,6 @@ public class EnteranceServlet extends HttpServlet {
 		
 		JAXBContext jc = JAXBContext.newInstance(ReqMessageBean.class);
 		Unmarshaller u = jc.createUnmarshaller();
-//		ReqMessageBean reqBean = (ReqMessageBean) u.unmarshal(request.getInputStream());
 		BufferedReader bReader;
 		try {
 			bReader = new BufferedReader(

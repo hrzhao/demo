@@ -22,6 +22,8 @@
         <property name="phone" column="phone" type="string"/>
         <property name="sex" column="sex" type="string"/>
         <property name="lasttime" column="lasttime" type="timestamp"/>
+        <property name="processId" column="processId" type="integer"/>
+        <property name="processing" column="processing" type="boolean"/>
     </class>
 
 </hibernate-mapping>

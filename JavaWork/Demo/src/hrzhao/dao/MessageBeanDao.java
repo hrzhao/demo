@@ -30,6 +30,7 @@ public class MessageBeanDao {
 		Session session = HiberHelper.getSession();
 		Criteria cr = session.createCriteria(ReqMessageBean.class);
 		cr.add(Restrictions.gt("createTime", beginTime));
+		cr.add(Restrictions.eq("msgId", msgId));
 		@SuppressWarnings("unchecked")
 		List<ReqMessageBean> list = (List<ReqMessageBean>)cr.list();
 		return list;
