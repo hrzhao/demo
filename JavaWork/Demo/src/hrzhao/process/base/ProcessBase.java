@@ -52,6 +52,12 @@ public abstract class ProcessBase implements ProcessInterface {
 
 	private Integer processId;
 	
+	
+	public Integer getProcessId() {
+		return processId;
+	}
+
+
 	public void updateNextProcessId(String fromUserName,Integer processId){	
 		CustomerBeanDao customerDao = new CustomerBeanDao();
 		CustomerBean customerBean = customerDao.getCustomer(fromUserName);

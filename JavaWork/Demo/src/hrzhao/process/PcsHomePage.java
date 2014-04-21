@@ -13,6 +13,7 @@ public class PcsHomePage extends ProcessBase {
 	@Override
 	protected ProcessResult doProcessExt(ReqMessageBean msgBean) {
 		// TODO Auto-generated method stub
+//		Integer selectedId = Integer.getInteger(msgBean.getContent());
 		return null;
 	}
 

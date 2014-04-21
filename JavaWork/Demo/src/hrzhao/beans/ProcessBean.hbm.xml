@@ -14,7 +14,7 @@
         </id>
         <property name="nextId" column="nextId" type="integer"/>
         <property name="negativeId" column="negativeId" type="integer"/>
-        <property name="tips" column="tips" type="tips"/>
+        <property name="tips" column="tips" type="string"/>
     </class>
 
 </hibernate-mapping>
