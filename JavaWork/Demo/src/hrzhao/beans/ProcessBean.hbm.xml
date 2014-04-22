@@ -17,6 +17,7 @@
         <property name="tips" column="tips" type="string"/>
         <property name="useTips" column="useTips" type="boolean"/>
         <property name="className" column="className" type="string"/>
+        <property name="param" column="param" type="string"/>
     </class>
 
 </hibernate-mapping>

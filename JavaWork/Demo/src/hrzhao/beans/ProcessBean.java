@@ -7,6 +7,15 @@ public class ProcessBean {
 	private String tips;
 	private Boolean useTips;
 	private String className;
+	private String param;
+	public String getParam() {
+		return param;
+	}
+
+	public void setParam(String param) {
+		this.param = param;
+	}
+
 	public String getClassName() {
 		return className;
 	}

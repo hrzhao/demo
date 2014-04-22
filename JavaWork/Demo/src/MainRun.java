@@ -12,6 +12,7 @@ import hrzhao.services.FrameService;
 import hrzhao.services.MessageFilter;
 import hrzhao.services.MessageServices;
 import hrzhao.utils.ConfigHelper;
+import hrzhao.utils.DebugHelper;
 import hrzhao.utils.HiberHelper;
 import hrzhao.utils.HibernateSessionFactory;
 
@@ -19,6 +20,8 @@ import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.StringReader;
 import java.io.UnsupportedEncodingException;
+import java.lang.reflect.InvocationTargetException;
+import java.lang.reflect.Method;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
@@ -26,6 +29,9 @@ import java.util.List;
 import javax.xml.bind.JAXBContext;
 import javax.xml.bind.JAXBException;
 import javax.xml.bind.Unmarshaller;
+
+import net.sf.json.JSONObject;
+import net.sf.json.JsonConfig;
 
 import org.hibernate.Criteria;
 import org.hibernate.Session;
@@ -44,12 +50,52 @@ public class MainRun {
 	public MainRun() {
 		// TODO Auto-generated constructor stub
 	}
+	public static void method33(){
+		String fieldName = "Realname";
+		String content = "张三";
+		String methodName = "set" + fieldName;
+		CustomerBean customerBean = new CustomerBean();
+		Method method = null;
+		try {
+			int a1 = 1;
+			Integer a2 = 2;
+			method = CustomerBean.class.getDeclaredMethod("setProcessId",Integer.class);
+			method.invoke(customerBean,a1);
+			method = CustomerBean.class.getDeclaredMethod("setType",int.class);
+			method.invoke(customerBean,a2);
+//			Method[] methods =  CustomerBean.class.getMethods();
+//			for(int i=0; i<methods.length;i ++){
+//				if(methodName.equals(methods[i].getName())){
+//					method = methods[i];
+//					method.invoke(customerBean,new Date());
+//					break;
+//				}
+//			}
+			
+		} catch ( NoSuchMethodException |SecurityException e) {
+			System.out.println(e);
+//			DebugHelper.log("PcsPersonInfo", "doProcessExt()1\n" + e.toString());
+		} catch (IllegalAccessException | IllegalArgumentException
+				| InvocationTargetException e) {
+			System.out.println(e);
+//			DebugHelper.log("PcsPersonInfo", "doProcessExt()2\n" + e.toString());
+		}
+	}
 
 	public static void main(String[] args) {
+//		method33();
+//		JSONObject jsonObj =JSONObject.fromObject("{\"name\":\"json\",\"bool\":true1");
+//		System.out.println(jsonObj.toString());
+//		if(jsonObj.containsKey("name")){
+//			System.out.println(jsonObj.get("name"));
+//		}
 		HttpPostTest postTest = new HttpPostTest();
 		String urlStr = "http://localhost:8080/Demo/Enterance";
-		String content = "1";
-		postTest.testPost(urlStr, content,1001);
+//		String content = "1";
+		postTest.testPost(urlStr, "hi",1007);
+//		postTest.testPost(urlStr, "1",1008);
+//		postTest.testPost(urlStr, "1",1009);
+//		postTest.testPost(urlStr, "张三",1010);
 //		
 //		CustomerBean customerBean = new CustomerBeanDao().getCustomer("oBx4Dt37J4GSXlt32V4zGf-EDQQM");
 //		System.out.println(customerBean.getRealname());

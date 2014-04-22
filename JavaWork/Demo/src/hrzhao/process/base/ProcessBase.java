@@ -2,6 +2,7 @@ package hrzhao.process.base;
 
 import java.util.Date;
 
+import net.sf.json.JSONObject;
 import hrzhao.beans.CustomerBean;
 import hrzhao.beans.ProcessBean;
 import hrzhao.beans.ReqMessageBean;
@@ -19,7 +20,7 @@ public abstract class ProcessBase implements ProcessInterface {
 	@Override
 	public final String doProcess(ReqMessageBean msgBean) {
 		String msg = null;
-		ProcessBean pcsBean = getProcessData(processId);//应该放在接口里
+		getProcessData();//应该放在接口里
 		if(pcsBean == null){
 			//出错
 			DebugHelper.log("ProcessBase","getProcessData("+processId+") is null");
@@ -41,13 +42,37 @@ public abstract class ProcessBase implements ProcessInterface {
 			return "系统错误，请联系管理员";
 		}
 		nextProcessId = updateNextProcessId(msgBean.getFromUserName(),nextProcessId);
-		String tips = getTips(nextProcessId);
+		String tips = getNextTips(nextProcessId);
 		if(tips != null){
 			msg += tips;
 		}
 		return msg;
 	}
-	protected String getTips(Integer nextProcessId){
+	
+	public JSONObject getParam(){
+		JSONObject jsonObj = null;
+		try{
+			if(this.pcsBean != null)
+			{
+				jsonObj = JSONObject.fromObject(pcsBean.getParam());
+			}
+		}catch(Exception e){
+			DebugHelper.log("ProcessBase","getParam() error\n " + e.toString());
+		}
+		return jsonObj;
+	}
+	
+	@Override 
+	public String getTips(){
+		String tips = null;
+		getProcessData();
+		if(pcsBean != null && pcsBean.getUseTips()){
+			tips = pcsBean.getTips();
+		}
+		return tips;
+	}
+	
+	private String getNextTips(Integer nextProcessId){
 		String tips = ProcessFactory.createProcess(nextProcessId).getTips();
 		return tips;
 	}
@@ -74,19 +99,15 @@ public abstract class ProcessBase implements ProcessInterface {
 	public void setProcessId(Integer processId) {
 		this.processId = processId;
 	}
-	@Override 
-	public String getTips(){
-		String tips = null;
-		ProcessBean pcsBean = getProcessData(processId);
-		if(pcsBean != null && pcsBean.getUseTips()){
-			tips = pcsBean.getTips();
+	
+	private ProcessBean pcsBean = null;
+
+	@Override
+	public ProcessBean getProcessData(){
+		if(pcsBean == null){
+			ProcessBeanDao pcsDao = new ProcessBeanDao();
+			pcsBean = pcsDao.getProcessBean(processId);
 		}
-		return tips;
-	}
-
-
-	public ProcessBean getProcessData(int id){
-		ProcessBeanDao pcsDao = new ProcessBeanDao();
-		return pcsDao.getProcessBean(id);
+		return pcsBean;
 	}
 }

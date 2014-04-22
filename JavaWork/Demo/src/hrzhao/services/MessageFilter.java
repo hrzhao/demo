@@ -41,11 +41,15 @@ public class MessageFilter {
 		if(checkRepeat(reqMessageBean)){
 			return null;
 		}
+		
 		String checkRs = checkMsgType(reqMessageBean);
 		if(checkRs != null){
 			return checkRs;
 		}
-		reqMessageBean.setIntime(now);
+		
+		reqMessageBean.setIntime(now);//上移
+		MessageBeanDao msgDao = new MessageBeanDao();
+		msgDao.saveMessage(reqMessageBean);
 		
 		int processId = getCustomerProcessId(reqMessageBean);
 		ProcessInterface processInterface = ProcessFactory.createProcess(processId);

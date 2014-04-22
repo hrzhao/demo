@@ -43,7 +43,7 @@ public final class ConfigHelper {
 		return msgTypeList;
 	}
 	public static int welPcsId = 0;
-	public static int homePcsId = 0;
+	public static int homePcsId = 1;
 	
 //	public static ArrayList<String> MSGTYPE = new ArrayList(["test","voice"]);
 //	public void method(){

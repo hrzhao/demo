@@ -40,13 +40,13 @@ public class HttpPostTest {
         StringBuilder sb = new StringBuilder();
         Date date = new Date();
         Long createTime = date.getTime()/100;
-        sb.append("<xml>");
-        sb.append("<ToUserName><![CDATA[gh_5a402ba88fa0]]></ToUserName>");
-        sb.append("<FromUserName><![CDATA[aa]]></FromUserName>");
-        sb.append("<CreateTime>" + createTime + "</CreateTime>");
-        sb.append("<MsgType><![CDATA[text]]></MsgType>");
-        sb.append("<Content><![CDATA[" + content + "]]></Content>");
-        sb.append("<MsgId>"+msgId+"</MsgId>");
+        sb.append("<xml>\n");
+        sb.append("\t<ToUserName><![CDATA[gh_5a402ba88fa0]]></ToUserName>\n");
+        sb.append("\t<FromUserName><![CDATA[aa]]></FromUserName>\n");
+        sb.append("\t<CreateTime>" + createTime + "</CreateTime>\n");
+        sb.append("\t<MsgType><![CDATA[text]]></MsgType>\n");
+        sb.append("\t<Content><![CDATA[" + content + "]]></Content>\n");
+        sb.append("\t<MsgId>"+msgId+"</MsgId>\n");
         sb.append("</xml>");
         return sb.toString();
     }

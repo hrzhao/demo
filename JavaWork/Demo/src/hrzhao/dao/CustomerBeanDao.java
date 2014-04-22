@@ -14,6 +14,11 @@ public class CustomerBeanDao {
 	public CustomerBeanDao() {
 		// TODO Auto-generated constructor stub
 	}
+	public void updateInfo(String fromUserName,String fieldName,Object value){
+//		CustomerBean customerBean = getCustomer(fromUserName);
+		//待完成
+		
+	}
 	public CustomerBean getCustomer(String name){
 		CustomerBean customerBean = null;
 		Session session = HiberHelper.getSession();
