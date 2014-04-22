@@ -47,16 +47,21 @@ public class MessageFilter {
 		}
 		reqMessageBean.setIntime(now);
 		
-		int processId = getCustomerProcessId(reqMessageBean.getFromUserName());
+		int processId = getCustomerProcessId(reqMessageBean);
 		ProcessInterface processInterface = ProcessFactory.createProcess(processId);
-		
+		if(processInterface == null){
+			return "[系统错误]";
+		}
 		String msg = processInterface.doProcess(reqMessageBean);
 		return msg;
 	}
-	private int getCustomerProcessId(String fromUserName){
-		int pcsId = 0;//首次访问
+	private int homePcsId = ConfigHelper.homePcsId;
+	private int welPcsId = ConfigHelper.welPcsId;
+	private int getCustomerProcessId(ReqMessageBean msgBean){
+		String fromUserName = msgBean.getFromUserName();
 		CustomerBeanDao customerDao = new CustomerBeanDao();
 		CustomerBean customerBean = customerDao.getCustomer(fromUserName);
+		int pcsId;
 		if(customerBean != null){
 			Date lastTime = customerBean.getLasttime();
 			Calendar calendar = Calendar.getInstance();
@@ -64,20 +69,31 @@ public class MessageFilter {
 			calendar.add(Calendar.MINUTE, 5);
 			Date bTime = calendar.getTime();
 			Boolean timeOut = bTime.getTime() < now.getTime();
-			if(customerBean.getProcessing()){
-				if(timeOut){
-					pcsId = 1;//超时，回到首页
-				}else{//正在处理，发送消息的速度过快，不处理
-					DebugHelper.log("MessageFilter.getCustomerProcessId()", "正在处理，发送消息的速度过快，不处理");
-				}
+			if(timeOut){
+				customerBean.setProcessing(false);
+				customerBean.setProcessId(homePcsId);
 			}else{
-				if(timeOut){
-					pcsId = 1;//超时，回到首页
+				if(customerBean.getProcessing()){
+					//正在处理，发送消息的速度过快，不处理
+					DebugHelper.log("MessageFilter.getCustomerProcessId()", "正在处理，发送消息的速度过快，不处理");
 				}else{
-					pcsId = customerBean.getProcessId();
+					customerBean.setProcessing(true);
 				}
 			}
+			pcsId = customerBean.getProcessId();
+			customerDao.saveOrUpdateCustomer(customerBean);
+		}else{
+			pcsId = welPcsId;
 		}
+//		else{
+//			customerBean = new CustomerBean();
+//			customerBean.setIntime(now);
+//			customerBean.setLasttime(now);
+//			customerBean.setName(fromUserName);
+//			customerBean.setProcessId(welPcsId);
+//			customerBean.setProcessing(true);
+//			
+//		}
 		return pcsId;
 	}
 	private String checkMsgType(ReqMessageBean reqMessageBean){
@@ -88,6 +104,7 @@ public class MessageFilter {
 		}
 		return null;
 	}
+	//不用了的
 	public String receiveMessage(ReqMessageBean reqMessageBean){
 		if(checkRepeat(reqMessageBean)){
 			return null;

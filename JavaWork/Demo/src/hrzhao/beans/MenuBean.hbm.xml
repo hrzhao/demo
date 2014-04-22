@@ -3,14 +3,12 @@
         "-//Hibernate/Hibernate Mapping DTD 3.0//EN"
         "http://www.hibernate.org/dtd/hibernate-mapping-3.0.dtd">
 
-<hibernate-mapping
-        package="hrzhao.beans"
-        >
+<hibernate-mapping package="hrzhao.beans">
 
     <class name="MenuBean" table="menu">
 	    <composite-id>
-			<key-property name="processId" column="processId" type="integer"/>
-			<key-property name="selectItem" column="selectItem" type="integer"/>
+			<key-property name="processId" column="processId" type="int"/>
+			<key-property name="selectItem" column="selectItem" type="int"/>
 		</composite-id>
         <property name="mappingId" column="mappingId" type="integer"/>
         <property name="content" column="content" type="string"/>

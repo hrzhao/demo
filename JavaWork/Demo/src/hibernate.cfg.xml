@@ -29,6 +29,7 @@
 		<mapping resource="hrzhao/beans/UserBean.hbm.xml"/>
 		<mapping resource="hrzhao/beans/CustomerBean.hbm.xml"/>
 		<mapping resource="hrzhao/beans/ProcessBean.hbm.xml"/>
+		<mapping resource="hrzhao/beans/MenuBean.hbm.xml"/>
 		<!-- 
         <property name="hbm2ddl.auto">validate</property>
 		<class-cache

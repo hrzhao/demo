@@ -19,7 +19,7 @@ public abstract class ProcessBase implements ProcessInterface {
 	@Override
 	public final String doProcess(ReqMessageBean msgBean) {
 		String msg = null;
-		ProcessBean pcsBean = getProcessData(processId);
+		ProcessBean pcsBean = getProcessData(processId);//应该放在接口里
 		if(pcsBean == null){
 			//出错
 			DebugHelper.log("ProcessBase","getProcessData("+processId+") is null");
@@ -28,24 +28,28 @@ public abstract class ProcessBase implements ProcessInterface {
 		
 		//业务逻辑实际要处理的内容
 		ProcessResult pcsResult = doProcessExt(msgBean);
-		
-		Integer nextProcessId = 0;
+		Integer nextProcessId;
 		if(pcsResult != null){
 			if(pcsResult.getResult()){
 				nextProcessId = pcsBean.getNextId();
 			}else{
 				nextProcessId = pcsBean.getNegativeId();
 			}
-			msg = pcsResult.getMsg();
+			msg = pcsResult.getMsg()+"\n";
 		}else{
 			DebugHelper.log("ProcessBase","doProcessExt() is null");
 			return "系统错误，请联系管理员";
 		}
-		updateNextProcessId(msgBean.getFromUserName(),nextProcessId);
-		ProcessBean nextPcsBean = getProcessData(nextProcessId);
-		if(nextPcsBean.getTips() != null)
-			msg += "\n" + nextPcsBean.getTips();
+		nextProcessId = updateNextProcessId(msgBean.getFromUserName(),nextProcessId);
+		String tips = getTips(nextProcessId);
+		if(tips != null){
+			msg += tips;
+		}
 		return msg;
+	}
+	protected String getTips(Integer nextProcessId){
+		String tips = ProcessFactory.createProcess(nextProcessId).getTips();
+		return tips;
 	}
 	
 	protected abstract ProcessResult doProcessExt(ReqMessageBean msgBean);
@@ -56,20 +60,28 @@ public abstract class ProcessBase implements ProcessInterface {
 	public Integer getProcessId() {
 		return processId;
 	}
-
-
-	public void updateNextProcessId(String fromUserName,Integer processId){	
+	
+	protected Integer updateNextProcessId(String fromUserName,Integer processId){	
 		CustomerBeanDao customerDao = new CustomerBeanDao();
 		CustomerBean customerBean = customerDao.getCustomer(fromUserName);
 		customerBean.setProcessId(processId);
 		customerBean.setLasttime(new Date());
 		customerBean.setProcessing(false);
-		customerDao.saveCustomer(customerBean);
+		customerDao.saveOrUpdateCustomer(customerBean);
+		return processId;
 	}
 	@Override
 	public void setProcessId(Integer processId) {
-		// TODO Auto-generated method stub
 		this.processId = processId;
+	}
+	@Override 
+	public String getTips(){
+		String tips = null;
+		ProcessBean pcsBean = getProcessData(processId);
+		if(pcsBean != null && pcsBean.getUseTips()){
+			tips = pcsBean.getTips();
+		}
+		return tips;
 	}
 
 

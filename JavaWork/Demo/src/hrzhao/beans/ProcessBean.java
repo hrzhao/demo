@@ -4,11 +4,28 @@ public class ProcessBean {
 	private int id;
 	private Integer nextId;
 	private Integer negativeId;
-	
 	private String tips;
+	private Boolean useTips;
+	private String className;
+	public String getClassName() {
+		return className;
+	}
 
-	
-	
+	public void setClassName(String className) {
+		this.className = className;
+	}
+
+
+	public Boolean getUseTips() {
+		return useTips;
+	}
+
+
+	public void setUseTips(Boolean useTips) {
+		this.useTips = useTips;
+	}
+
+
 	public String getTips() {
 		return tips;
 	}

@@ -35,14 +35,14 @@ public class HttpPostTest {
             e.printStackTrace();
         }
     }
-
+    //oBx4Dt37J4GSXlt32V4zGf-EDQQM
     private String getXmlInfo(String content,int msgId) {
         StringBuilder sb = new StringBuilder();
         Date date = new Date();
         Long createTime = date.getTime()/100;
         sb.append("<xml>");
         sb.append("<ToUserName><![CDATA[gh_5a402ba88fa0]]></ToUserName>");
-        sb.append("<FromUserName><![CDATA[oBx4Dt37J4GSXlt32V4zGf-EDQQM]]></FromUserName>");
+        sb.append("<FromUserName><![CDATA[aa]]></FromUserName>");
         sb.append("<CreateTime>" + createTime + "</CreateTime>");
         sb.append("<MsgType><![CDATA[text]]></MsgType>");
         sb.append("<Content><![CDATA[" + content + "]]></Content>");

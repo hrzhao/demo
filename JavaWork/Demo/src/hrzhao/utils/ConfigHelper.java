@@ -15,6 +15,7 @@ public final class ConfigHelper {
 		Criteria criteria = session.createCriteria(ConfigBean.class);
 		criteria.add(Restrictions.eq("name", name));//eq是等于，gt是大于，lt是小于,or是或
 		criteria.setMaxResults(1);
+		@SuppressWarnings("unchecked")
 		List<ConfigBean> rs = criteria.list();
 		Iterator<ConfigBean> it = rs.iterator();
 		if(it.hasNext()){
@@ -41,6 +42,9 @@ public final class ConfigHelper {
 		}
 		return msgTypeList;
 	}
+	public static int welPcsId = 0;
+	public static int homePcsId = 0;
+	
 //	public static ArrayList<String> MSGTYPE = new ArrayList(["test","voice"]);
 //	public void method(){
 //		String[] arr = new String[2].["abc","123"];

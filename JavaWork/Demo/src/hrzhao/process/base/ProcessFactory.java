@@ -1,7 +1,11 @@
 package hrzhao.process.base;
 
-import hrzhao.process.PcsHomePage;
-import hrzhao.process.PcsSaveName;
+import java.util.Iterator;
+import java.util.List;
+
+import hrzhao.beans.ProcessBean;
+import hrzhao.dao.ProcessBeanDao;
+import hrzhao.utils.DebugHelper;
 
 public class ProcessFactory {
 
@@ -9,29 +13,33 @@ public class ProcessFactory {
 	}
 	public static ProcessInterface createProcess(int processId){
 		ProcessInterface pcs = null;
-		switch(processId)
-		{
-		case 0:
-			break;
-		case 1:
-			pcs = new PcsHomePage();
-			break;
-		case 201://姓名
-			pcs = new PcsSaveName();
-			break;
-		case 202://电话
-			pcs = new PcsSaveName();
-			break;
-		case 203://住址
-			pcs = new PcsSaveName();
-			break;
-		default :
-			break;
+		List<ProcessBean> processList = getProcessList();
+		String className = "hrzhao.process.";
+		Iterator<ProcessBean> it = processList.iterator();
+		while(it.hasNext()){
+			ProcessBean pcsBean = it.next();
+			if(pcsBean.getId() == processId){
+				className += pcsBean.getClassName();
+				try {
+					@SuppressWarnings("unchecked")
+					Class<ProcessInterface> clazz = (Class<ProcessInterface>) Class.forName(className);
+					pcs = clazz.newInstance();
+					pcs.setProcessId(processId);
+				} catch (ClassNotFoundException | InstantiationException | IllegalAccessException e) {
+					DebugHelper.log("ProcessFactory",e.toString());
+				}
+				break;
+			}
 		}
-		if(pcs != null){
-			pcs.setProcessId(processId);
-		}
+// 		if(pcs != null){
+//			pcs.setProcessId(processId);
+//		}
 		return pcs;
+	}
+	public static List<ProcessBean> getProcessList(){
+		ProcessBeanDao pcsDao = new ProcessBeanDao();
+		List<ProcessBean> list = pcsDao.getProcessList();
+		return list;
 	}
 
 }

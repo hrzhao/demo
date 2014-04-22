@@ -1,6 +1,11 @@
 package hrzhao.beans;
 
-public class MenuBean {
+import java.io.Serializable;
+public class MenuBean implements Serializable{
+	/**
+	 * 
+	 */
+	private static final long serialVersionUID = 1L;
 	private Integer processId;
 	private Integer selectItem;
 	private Integer mappingId;
