@@ -3,8 +3,10 @@ package hrzhao.process;
 import java.util.Iterator;
 import java.util.List;
 
+import hrzhao.beans.CustomerBean;
 import hrzhao.beans.MenuBean;
 import hrzhao.beans.ReqMessageBean;
+import hrzhao.dao.CustomerBeanDao;
 import hrzhao.dao.MenuBeanDao;
 import hrzhao.process.base.ProcessBase;
 import hrzhao.process.base.ProcessResult;
@@ -12,7 +14,7 @@ import hrzhao.process.base.ProcessResult;
 public class PcsMenu extends ProcessBase {
 
 	public PcsMenu() {
-		// TODO Auto-generated constructor stub
+
 	}
 
 	private Boolean isfound= false;
@@ -20,6 +22,7 @@ public class PcsMenu extends ProcessBase {
 	@Override
 	protected ProcessResult doProcessExt(ReqMessageBean msgBean) {
 		String msg = "";
+		checkCustomerInfo(msgBean.getFromUserName());
 		Integer selectedId = -1;
 		isfound = false;
 		try{
@@ -49,7 +52,7 @@ public class PcsMenu extends ProcessBase {
 		return new ProcessResult(msg,true);
 	}
 	@Override
-	public Integer updateNextProcessId(String fromUserName,Integer processId){
+	public CustomerBean updateNextProcessId(String fromUserName,Integer processId){
 		if(isfound){
 			processId = mappingId;
 		}
@@ -57,24 +60,32 @@ public class PcsMenu extends ProcessBase {
 	}
 	
 	@Override 
-	public String getTips(){
-		String tips = null;
-		String superTips = super.getTips();
-		if(superTips != null){
-			tips = superTips;
-		}
+	public String getTips(CustomerBean customerBean){
+		String tips = "";
+		tips += super.getTips(customerBean);//先加上父类的Tips
+		
 		List<MenuBean> list = getMenuList();
 		if(list != null && list.size()>0){
 			Iterator<MenuBean> it = list.iterator();
-			if(tips == null){
-				tips = "";
-			}
 			while(it.hasNext()){
 				MenuBean menuBean = it.next();
 				tips += "\n" + menuBean.getSelectItem() + "、"+menuBean.getContent();
 			}
 		}
 		return tips;
+	}
+	private String checkCustomerInfo(String fromUserName){
+		CustomerBeanDao customerDao = new CustomerBeanDao();
+		CustomerBean customerBean = customerDao.getCustomer(fromUserName);
+		if(customerBean != null){
+			String realname = customerBean.getRealname();
+			if(realname== null || realname.equals("")){
+				return "姓名未填写，请完善姓名其它资料\n";
+			}
+		}else{
+			return "[系统错误#1]";
+		}
+		return "";
 	}
 	public List<MenuBean> getMenuList(){
 		MenuBeanDao menuDao = new MenuBeanDao();

@@ -8,18 +8,33 @@ import hrzhao.beans.ProcessBean;
 import hrzhao.beans.ReqMessageBean;
 import hrzhao.dao.CustomerBeanDao;
 import hrzhao.dao.ProcessBeanDao;
+import hrzhao.utils.ConfigHelper;
 import hrzhao.utils.DebugHelper;
 
 
 public abstract class ProcessBase implements ProcessInterface {
 	
 	public ProcessBase() {
+		
+	}
+	private String returnHomePage(String fromUserName){
+		CustomerBeanDao customerDao = new CustomerBeanDao();
+		CustomerBean customerBean = customerDao.getCustomer(fromUserName);
+		customerBean.setProcessId(ConfigHelper.homePcsId);
+		customerBean.setLasttime(new Date());
+		customerBean.setProcessing(false);
+		customerDao.saveOrUpdateCustomer(customerBean);
+		String tips = getNextTips(customerBean);
+		return tips==null? "":tips;
 	}
 	
 	
 	@Override
 	public final String doProcess(ReqMessageBean msgBean) {
-		String msg = null;
+		String msg = "";
+		if(ConfigHelper.returnSignal.equals(msgBean.getContent())){
+			return returnHomePage(msgBean.getFromUserName());
+		}
 		getProcessData();//应该放在接口里
 		if(pcsBean == null){
 			//出错
@@ -41,17 +56,22 @@ public abstract class ProcessBase implements ProcessInterface {
 			DebugHelper.log("ProcessBase","doProcessExt() is null");
 			return "系统错误，请联系管理员";
 		}
-		nextProcessId = updateNextProcessId(msgBean.getFromUserName(),nextProcessId);
-		String tips = getNextTips(nextProcessId);
-		if(tips != null){
-			msg += tips;
+		CustomerBean customerBean = updateNextProcessId(msgBean.getFromUserName(),nextProcessId);
+		String nextTips = getNextTips(customerBean);
+		
+		if(nextTips == null){
+			msg += "选项有误\n";
+			nextTips = returnHomePage(customerBean.getName());
 		}
+		msg += nextTips;
+		
 		return msg;
 	}
 	
 	public JSONObject getParam(){
 		JSONObject jsonObj = null;
 		try{
+			getProcessData();
 			if(this.pcsBean != null)
 			{
 				jsonObj = JSONObject.fromObject(pcsBean.getParam());
@@ -61,20 +81,25 @@ public abstract class ProcessBase implements ProcessInterface {
 		}
 		return jsonObj;
 	}
+
 	
 	@Override 
-	public String getTips(){
-		String tips = null;
+	public String getTips(CustomerBean customerBean){
+		//默认的就不读取用户信息了
+		String tips = "";
 		getProcessData();
 		if(pcsBean != null && pcsBean.getUseTips()){
 			tips = pcsBean.getTips();
 		}
 		return tips;
 	}
-	
-	private String getNextTips(Integer nextProcessId){
-		String tips = ProcessFactory.createProcess(nextProcessId).getTips();
-		return tips;
+	//updateNextProcessId()以后customerBean.getProcessId()已是nextProcessId
+	private String getNextTips(CustomerBean customerBean){
+		ProcessInterface pcsInterface = ProcessFactory.createProcess(customerBean.getProcessId());
+		if(pcsInterface == null){
+			return null;
+		}
+		return ProcessFactory.createProcess(customerBean.getProcessId()).getTips(customerBean);
 	}
 	
 	protected abstract ProcessResult doProcessExt(ReqMessageBean msgBean);
@@ -86,14 +111,14 @@ public abstract class ProcessBase implements ProcessInterface {
 		return processId;
 	}
 	
-	protected Integer updateNextProcessId(String fromUserName,Integer processId){	
+	protected CustomerBean updateNextProcessId(String fromUserName,Integer processId){	
 		CustomerBeanDao customerDao = new CustomerBeanDao();
 		CustomerBean customerBean = customerDao.getCustomer(fromUserName);
 		customerBean.setProcessId(processId);
 		customerBean.setLasttime(new Date());
 		customerBean.setProcessing(false);
 		customerDao.saveOrUpdateCustomer(customerBean);
-		return processId;
+		return customerBean;
 	}
 	@Override
 	public void setProcessId(Integer processId) {
@@ -105,6 +130,7 @@ public abstract class ProcessBase implements ProcessInterface {
 	@Override
 	public ProcessBean getProcessData(){
 		if(pcsBean == null){
+			//在实例中只做一次
 			ProcessBeanDao pcsDao = new ProcessBeanDao();
 			pcsBean = pcsDao.getProcessBean(processId);
 		}

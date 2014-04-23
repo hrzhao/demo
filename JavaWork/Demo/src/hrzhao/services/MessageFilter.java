@@ -54,7 +54,7 @@ public class MessageFilter {
 		int processId = getCustomerProcessId(reqMessageBean);
 		ProcessInterface processInterface = ProcessFactory.createProcess(processId);
 		if(processInterface == null){
-			return "[系统错误]";
+			return "[系统错误#0]";
 		}
 		String msg = processInterface.doProcess(reqMessageBean);
 		return msg;
@@ -89,15 +89,6 @@ public class MessageFilter {
 		}else{
 			pcsId = welPcsId;
 		}
-//		else{
-//			customerBean = new CustomerBean();
-//			customerBean.setIntime(now);
-//			customerBean.setLasttime(now);
-//			customerBean.setName(fromUserName);
-//			customerBean.setProcessId(welPcsId);
-//			customerBean.setProcessing(true);
-//			
-//		}
 		return pcsId;
 	}
 	private String checkMsgType(ReqMessageBean reqMessageBean){

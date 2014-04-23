@@ -65,6 +65,7 @@ public class EnteranceServlet extends HttpServlet {
 	/**
 	 * @see HttpServlet#doPost(HttpServletRequest request, HttpServletResponse response)
 	 */
+	@SuppressWarnings("finally")
 	protected void doPost(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
 		response.setCharacterEncoding("UTF-8");
 		String msg = "";
@@ -72,19 +73,28 @@ public class EnteranceServlet extends HttpServlet {
 			ReqMessageBean reqBean = getReqMessageBean(request);
 			
 			MessageFilter msgFilter = new MessageFilter();
+			Long s = new Date().getTime();
 			
 //			msg = msgFilter.receiveMessage(reqBean);
+			
 			msg = msgFilter.receiveMessageByProcess(reqBean);
 			if(msg == null){
 				return;
 			}
+			Long e = new Date().getTime();
+			
+			msg +="\n{"+(e-s)+"}";
 			
 			RespMessageBean respBean = createRespBean(reqBean,msg);
 			responseMessage(response, respBean);
 		}catch(JAXBException e){
 			DebugHelper.log("JAXBException",e.toString());
-		}finally{
-			
+		}catch(Exception e){
+			DebugHelper.log("UnknowException","doPost\n" + e.toString());
+			e.printStackTrace();
+		}
+		finally{
+			return;
 		}
 	}
 

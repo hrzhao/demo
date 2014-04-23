@@ -19,16 +19,21 @@ public class PcsWelcome extends ProcessBase {
 	@Override
 	protected ProcessResult doProcessExt(ReqMessageBean msgBean) {
 		now = new Date();
-		CustomerBean customerBean = new CustomerBean();
-		customerBean.setIntime(now);
-		customerBean.setLasttime(now);
-		customerBean.setName(msgBean.getFromUserName());
-		customerBean.setProcessId(welPcsId);
-		customerBean.setProcessing(true);
 		CustomerBeanDao customerDao = new CustomerBeanDao();
-		customerDao.saveCustomer(customerBean);
-		
-		String msg = "欢迎您到来，这里是邑水一方人!\n若有Bug,请反馈rong17173@139.com";
+		String fromUserName = msgBean.getFromUserName();
+		CustomerBean customerBean = customerDao.getCustomer(fromUserName);
+		String msg = "";
+		if(customerBean == null){
+			customerBean = new CustomerBean();
+			customerBean.setIntime(now);
+			customerBean.setLasttime(now);
+			customerBean.setName(msgBean.getFromUserName());
+			customerBean.setProcessId(welPcsId);
+			customerBean.setProcessing(true);
+			customerDao.saveCustomer(customerBean);
+			msg += "[首次到来]\n";
+		}
+		msg += "欢迎您到来，这里是邑水一方人!\n技术员HRZhao@qq.com";
 		return new ProcessResult(msg,true);
 	}
 

@@ -31,9 +31,6 @@ public class ProcessFactory {
 				break;
 			}
 		}
-// 		if(pcs != null){
-//			pcs.setProcessId(processId);
-//		}
 		return pcs;
 	}
 	public static List<ProcessBean> getProcessList(){

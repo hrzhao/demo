@@ -2,6 +2,9 @@
 /build
 /FlexWork/.metadata
 
+/NetBeanWork/DemoApp/build
+/NetBeanWork/DemoApp/dist
+
 /FlexWork/Demo/html-template
 /FlexWork/Demo/.settings
 /FlexWork/Demo/.actionScriptProperties
@@ -34,3 +37,6 @@
 *.war
 *.ear
 *.settings
+/NetBeanWork/DemoApp/nbproject/private/
+/NetBeanWork/DemoApp/build/
+/NetBeanWork/DemoApp/dist/
