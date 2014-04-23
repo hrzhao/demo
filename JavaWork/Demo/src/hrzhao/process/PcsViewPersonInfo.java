@@ -34,12 +34,14 @@ public class PcsViewPersonInfo extends ProcessBase {
 		String address = customerBean.getAddress();
 		String building = customerBean.getBuilding();
 		String room = customerBean.getRoom();
+		String name = customerBean.getName();
 		
-		tips += "姓名：" + realname==null?"":realname +"\n";
-		tips += "电话：" + phone==null?"":phone + "\n";
-		tips += "地址：" + address==null?"":address + "\n";
-		tips += "楼号：" + building==null?"":building + "\n";
-		tips += "房号：" + room==null?"":room;
+		tips += "姓名：" + (realname==null?"":realname) +"\n";
+		tips += "电话：" + (phone==null?"":phone) + "\n";
+		tips += "地址：" + (address==null?"":address) + "\n";
+		tips += "楼号：" + (building==null?"":building) + "\n";
+		tips += "房号：" + (room==null?"":room) + "\n";
+		tips += "内部码：" + (name==null?"":name);
 		return tips;
 	}
 	

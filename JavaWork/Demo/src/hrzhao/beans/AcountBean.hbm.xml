@@ -1,0 +1,16 @@
+<?xml version="1.0"?>
+<!DOCTYPE hibernate-mapping PUBLIC
+        "-//Hibernate/Hibernate Mapping DTD 3.0//EN"
+        "http://www.hibernate.org/dtd/hibernate-mapping-3.0.dtd">
+
+<hibernate-mapping package="hrzhao.beans">
+
+    <class name="AcountBean" table="acount">
+	    <composite-id>
+			<key-property name="customerName" column="customerName" type="string"/>
+			<key-property name="productId" column="productId" type="int"/>
+		</composite-id>
+        <property name="amount" column="amount" type="int"/>
+    </class>
+
+</hibernate-mapping>

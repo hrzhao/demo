@@ -82,7 +82,7 @@ public class EnteranceServlet extends HttpServlet {
 				return;
 			}
 			Long e = new Date().getTime();
-			
+			//Debug 为了显示时间
 			msg +="\n{"+(e-s)+"}";
 			
 			RespMessageBean respBean = createRespBean(reqBean,msg);

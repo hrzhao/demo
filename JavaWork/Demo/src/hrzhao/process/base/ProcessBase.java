@@ -20,6 +20,9 @@ public abstract class ProcessBase implements ProcessInterface {
 	private String returnHomePage(String fromUserName){
 		CustomerBeanDao customerDao = new CustomerBeanDao();
 		CustomerBean customerBean = customerDao.getCustomer(fromUserName);
+		if(customerBean == null){
+			return null;
+		}
 		customerBean.setProcessId(ConfigHelper.homePcsId);
 		customerBean.setLasttime(new Date());
 		customerBean.setProcessing(false);
@@ -33,8 +36,13 @@ public abstract class ProcessBase implements ProcessInterface {
 	public final String doProcess(ReqMessageBean msgBean) {
 		String msg = "";
 		if(ConfigHelper.returnSignal.equals(msgBean.getContent())){
-			return returnHomePage(msgBean.getFromUserName());
+			//如果无此用户，直接收到 # 时，会出错
+			String returnMsg = returnHomePage(msgBean.getFromUserName());
+			if(returnMsg != null){
+				return returnMsg;
+			}//否则就是找不到用户 ，让它走PcsWelcome
 		}
+		
 		getProcessData();//应该放在接口里
 		if(pcsBean == null){
 			//出错

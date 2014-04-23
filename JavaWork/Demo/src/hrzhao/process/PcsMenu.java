@@ -22,7 +22,6 @@ public class PcsMenu extends ProcessBase {
 	@Override
 	protected ProcessResult doProcessExt(ReqMessageBean msgBean) {
 		String msg = "";
-		checkCustomerInfo(msgBean.getFromUserName());
 		Integer selectedId = -1;
 		isfound = false;
 		try{
@@ -72,6 +71,7 @@ public class PcsMenu extends ProcessBase {
 				tips += "\n" + menuBean.getSelectItem() + "、"+menuBean.getContent();
 			}
 		}
+		tips += "\n"+ checkCustomerInfo(customerBean.getName());
 		return tips;
 	}
 	private String checkCustomerInfo(String fromUserName){
@@ -80,7 +80,7 @@ public class PcsMenu extends ProcessBase {
 		if(customerBean != null){
 			String realname = customerBean.getRealname();
 			if(realname== null || realname.equals("")){
-				return "姓名未填写，请完善姓名其它资料\n";
+				return "姓名未填写，请完善资料";
 			}
 		}else{
 			return "[系统错误#1]";
