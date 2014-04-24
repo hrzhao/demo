@@ -1,6 +1,7 @@
 package hrzhao.beans;
 
 import java.util.Date;
+import java.util.Set;
 
 public class CustomerBean {
 	private int id;
@@ -16,6 +17,24 @@ public class CustomerBean {
 	private Date lasttime;
 	private Integer processId;
 	private Boolean processing;
+	private String processData;
+	private Set<AcountBean> acount;
+	
+	public String getProcessData() {
+		return processData;
+	}
+
+	public void setProcessData(String processData) {
+		this.processData = processData;
+	}
+
+	public Set<AcountBean> getAcount() {
+		return acount;
+	}
+
+	public void setAcount(Set<AcountBean> acount) {
+		this.acount = acount;
+	}
 
 	public Boolean getProcessing() {
 		return processing;

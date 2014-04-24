@@ -17,6 +17,7 @@ public abstract class ProcessBase implements ProcessInterface {
 	public ProcessBase() {
 		
 	}
+	
 	private String returnHomePage(String fromUserName){
 		CustomerBeanDao customerDao = new CustomerBeanDao();
 		CustomerBean customerBean = customerDao.getCustomer(fromUserName);
@@ -32,6 +33,20 @@ public abstract class ProcessBase implements ProcessInterface {
 	}
 	
 	
+	
+	@Override
+	public JSONObject getProcessData() {
+		// TODO Auto-generated method stub
+		return null;
+	}
+	
+
+	@Override
+	public void setProcessData(JSONObject data) {
+		// TODO Auto-generated method stub
+		
+	}
+
 	@Override
 	public final String doProcess(ReqMessageBean msgBean) {
 		String msg = "";
@@ -43,7 +58,7 @@ public abstract class ProcessBase implements ProcessInterface {
 			}//否则就是找不到用户 ，让它走PcsWelcome
 		}
 		
-		getProcessData();//应该放在接口里
+		getPcsBean();//应该放在接口里
 		if(pcsBean == null){
 			//出错
 			DebugHelper.log("ProcessBase","getProcessData("+processId+") is null");
@@ -79,7 +94,7 @@ public abstract class ProcessBase implements ProcessInterface {
 	public JSONObject getParam(){
 		JSONObject jsonObj = null;
 		try{
-			getProcessData();
+			getPcsBean();
 			if(this.pcsBean != null)
 			{
 				jsonObj = JSONObject.fromObject(pcsBean.getParam());
@@ -95,7 +110,7 @@ public abstract class ProcessBase implements ProcessInterface {
 	public String getTips(CustomerBean customerBean){
 		//默认的就不读取用户信息了
 		String tips = "";
-		getProcessData();
+		getPcsBean();
 		if(pcsBean != null && pcsBean.getUseTips()){
 			tips = pcsBean.getTips();
 		}
@@ -136,7 +151,7 @@ public abstract class ProcessBase implements ProcessInterface {
 	private ProcessBean pcsBean = null;
 
 	@Override
-	public ProcessBean getProcessData(){
+	public ProcessBean getPcsBean(){
 		if(pcsBean == null){
 			//在实例中只做一次
 			ProcessBeanDao pcsDao = new ProcessBeanDao();

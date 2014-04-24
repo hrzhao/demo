@@ -5,9 +5,9 @@
 <hibernate-configuration>
 	<session-factory>
 		<!-- 
-		<property name="connection.url"><![CDATA[jdbc:mysql://localhost:3306/test?characterEncoding=utf8&useUnicode=true]]></property>
-		 -->
 		<property name="connection.url"><![CDATA[jdbc:mysql://115.29.226.215:3306/test?characterEncoding=utf8&useUnicode=true]]></property>
+		 -->
+		<property name="connection.url"><![CDATA[jdbc:mysql://localhost:3306/test?characterEncoding=utf8&useUnicode=true]]></property>
 		<property name="connection.username">root</property>
 		<property name="connection.password">4589</property>
 		<property name="connection.driver_class">org.mariadb.jdbc.Driver</property>
@@ -31,6 +31,9 @@
 		<mapping resource="hrzhao/beans/ProcessBean.hbm.xml"/>
 		<mapping resource="hrzhao/beans/MenuBean.hbm.xml"/>
 		<mapping resource="hrzhao/beans/DebugBean.hbm.xml"/>
+		<mapping resource="hrzhao/beans/AcountBean.hbm.xml"/>
+		<mapping resource="hrzhao/beans/ProductBean.hbm.xml"/>
+		<mapping resource="hrzhao/beans/OrderBean.hbm.xml"/>
 		<!-- 
         <property name="hbm2ddl.auto">validate</property>
 		<class-cache

@@ -1,9 +1,12 @@
+import hrzhao.beans.AcountBean;
 import hrzhao.beans.AppConfigBean;
 import hrzhao.beans.CustomerBean;
 import hrzhao.beans.Event;
+import hrzhao.beans.ProductBean;
 import hrzhao.beans.ReqMessageBean;
 import hrzhao.beans.TestBean;
 import hrzhao.beans.UserBean;
+import hrzhao.dao.AcountBeanDao;
 import hrzhao.dao.AppConfigBeanDao;
 import hrzhao.dao.CustomerBeanDao;
 import hrzhao.dao.MessageBeanDao;
@@ -24,7 +27,9 @@ import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
 import java.util.ArrayList;
 import java.util.Date;
+import java.util.Iterator;
 import java.util.List;
+import java.util.Set;
 
 import javax.xml.bind.JAXBContext;
 import javax.xml.bind.JAXBException;
@@ -34,6 +39,7 @@ import net.sf.json.JSONObject;
 import net.sf.json.JsonConfig;
 
 import org.hibernate.Criteria;
+import org.hibernate.Hibernate;
 import org.hibernate.Session;
 import org.hibernate.SessionFactory;
 import org.hibernate.Transaction;
@@ -46,7 +52,6 @@ import org.hibernate.criterion.Restrictions;
 //import hrzhao.Config;
 //from bedroom
 public class MainRun {
-
 	public MainRun() {
 		// TODO Auto-generated constructor stub
 	}
@@ -81,18 +86,60 @@ public class MainRun {
 //			DebugHelper.log("PcsPersonInfo", "doProcessExt()2\n" + e.toString());
 		}
 	}
+	public static void method55(){
+		Session session = HiberHelper.getSession();
+		Criteria cr = session.createCriteria(AcountBean.class);
+		cr.add(Restrictions.eq("customerName","aa"));
+		@SuppressWarnings("unchecked")
+		List<AcountBean> list = cr.list();
+		AcountBean acountBean = list.get(0);
+		ProductBean product = acountBean.getProduct();
+		System.out.println(product.getName());
 
+		acountBean = list.get(1);
+		product = acountBean.getProduct();
+		Hibernate.initialize(product);
+//		System.out.println(product.getName());
+//		System.out.println(product);
+		System.out.println(list);
+//		return product;
+	}
+
+	public static void method44(){
+		Session session = HiberHelper.getSession();
+		Criteria cr = session.createCriteria(CustomerBean.class);
+		cr.add(Restrictions.eq("name", "aa"));
+		@SuppressWarnings("unchecked")
+		List<CustomerBean> list = cr.list();
+		if(list != null && list.size() >0 ){
+			CustomerBean customerBean = list.get(0);
+			Set<AcountBean> acountList = customerBean.getAcount();
+			System.out.println(customerBean.getRealname());
+			Iterator<AcountBean> it = acountList.iterator();
+			while(it.hasNext()){
+				AcountBean acountBean = it.next();
+				System.out.println(acountBean.getAmount());
+			}
+			
+		}
+	}
 	public static void main(String[] args) {
+		List<AcountBean> list = new AcountBeanDao().getAcountByCustomer("aa");
+//		method55();
+		for(AcountBean acount:list){
+			System.out.println(acount.getProduct().getName());
+		}
+		System.out.println("finish");
 //		method33();
 //		JSONObject jsonObj =JSONObject.fromObject("{\"name\":\"json\",\"bool\":true1");
 //		System.out.println(jsonObj.toString());
 //		if(jsonObj.containsKey("name")){
 //			System.out.println(jsonObj.get("name"));
 //		}
-		HttpPostTest postTest = new HttpPostTest();
-		String urlStr = "http://localhost:8080/Demo/Enterance";
+//		HttpPostTest postTest = new HttpPostTest();
+//		String urlStr = "http://localhost:8080/Demo/Enterance";
 //		String content = "1";
-		postTest.testPost(urlStr, "hi",1007);
+//		postTest.testPost(urlStr, "hi",1007);
 //		postTest.testPost(urlStr, "1",1008);
 //		postTest.testPost(urlStr, "1",1009);
 //		postTest.testPost(urlStr, "张三",1010);

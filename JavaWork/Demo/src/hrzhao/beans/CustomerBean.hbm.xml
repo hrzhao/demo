@@ -24,6 +24,14 @@
         <property name="lasttime" column="lasttime" type="timestamp"/>
         <property name="processId" column="processId" type="integer"/>
         <property name="processing" column="processing" type="boolean"/>
+        <property name="processData" column="processData" type="string"/>
+        
+        <!-- 
+        <set name="acount" lazy="true" inverse="true" cascade="all">
+        	<key column="customerName" not-null="true" property-ref="name"></key>
+        	<one-to-many class="AcountBean" />
+        </set>
+         -->
     </class>
 
 </hibernate-mapping>

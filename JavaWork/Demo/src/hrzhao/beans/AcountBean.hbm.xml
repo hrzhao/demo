@@ -11,6 +11,10 @@
 			<key-property name="productId" column="productId" type="int"/>
 		</composite-id>
         <property name="amount" column="amount" type="int"/>
+        <many-to-one name="product" class="ProductBean" fetch="join"
+        	insert="false" update="false">
+        	<column name="productId"></column>
+        </many-to-one>
     </class>
 
 </hibernate-mapping>
