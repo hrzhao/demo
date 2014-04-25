@@ -41,43 +41,51 @@ public class EnteranceFilter {
 			return null;
 		};
 		customer.setProcessing(true);
-		int processId = customer.getProcessId();
-		saveCustomer();
-		
+		saveCustomer();//save
+		String msg = null;
 		PcsInterface pcs = PcsFactory.createPcs(customer.getProcessId());
-		pcs.setProcessId(processId);
-		pcs.setCustomer(customer);
-		JSONObject pcsData = getJsonObjectFromString(customer.getProcessData());
-		pcs.setProcessDate(pcsData);
-		
-		String msg = pcs.doProcess();
-		
-		pcsData = pcs.getProcessData();
-		if(pcsData != null){
-			customer.setProcessData(pcsData.toString());
+		if(pcs == null){//回PcsHOME
+			DebugHelper.log("EnteranceFilter", "pcs is null");
+			customer.setProcessId(ConfigHelper.homePcsId);
+//			return null;//终止了后面的保存工作
 		}else{
-			customer.setProcessData("");
+			pcs.setCustomer(customer);//
+			
+			if(!checkReturnHome(msgBean)){
+				//或输入#则跳过doProcess
+				msg = pcs.doProcess(msgBean);
+			}else{
+				pcs.setNextProcessId(ConfigHelper.homePcsId);
+			}
+			
+			String nextTips = pcs.getNextTips();
+			if(nextTips != null && !nextTips.equals("")){
+				msg += "\n" + nextTips;
+			}
+			
+			int nextProcessId = pcs.getNextProcessId();
+			JSONObject pcsData = pcs.getProcessData();
+			if(pcsData != null){
+				customer.setProcessData(pcsData.toString());
+			}else{
+				customer.setProcessData(null);
+			}
+			customer.setProcessId(nextProcessId);
 		}
-		
-		int nextProcessId = pcs.getNextProcessId();
-		customer.setProcessId(nextProcessId);
 		customer.setLasttime(now);
 		customer.setProcessing(false);
-		saveCustomer();
+		saveCustomer();//save
 		return msg;
 	}
-	
-	private JSONObject getJsonObjectFromString(String str){
-		JSONObject jsonObj = null;
-		if(str == null)
-			return jsonObj;
-		try{
-			jsonObj = JSONObject.fromObject(str);
-		}catch(Exception e){
-			DebugHelper.log("EnteranceFilter", "getJsonObjectFromString()" + e.toString());
+	private Boolean checkReturnHome(ReqMessageBean msgBean){
+		String content = msgBean.getContent();
+		if(content != null && content.equals(ConfigHelper.returnSignal)){
+			return true;
 		}
-		return jsonObj;
+		return false;
 	}
+	
+	
 	private void saveCustomer(){
 		CustomerBeanDao customerDao = new CustomerBeanDao();
 		customerDao.saveOrUpdateCustomer(customer);
@@ -112,6 +120,7 @@ public class EnteranceFilter {
 			customer.setName(name);
 			customer.setProcessId(ConfigHelper.welPcsId);
 			customer.setIntime(new Date());
+			customer.setLasttime(now);
 			customer.setProcessing(false);
 		}
 		//选择性保存

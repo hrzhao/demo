@@ -2,6 +2,7 @@ package hrzhao.pcs.base;
 
 import hrzhao.beans.ProcessBean;
 import hrzhao.dao.ProcessBeanDao;
+import hrzhao.utils.ConfigHelper;
 import hrzhao.utils.DebugHelper;
 
 import java.util.Iterator;
@@ -26,11 +27,17 @@ public class PcsFactory {
 					@SuppressWarnings("unchecked")
 					Class<PcsInterface> clazz = (Class<PcsInterface>) Class.forName(className);
 					pcs = clazz.newInstance();
-					pcs.setProcessId(processId);
+					pcs.setPcsBean(pcsBean);
 				} catch (ClassNotFoundException | InstantiationException | IllegalAccessException e) {
 					DebugHelper.log("ProcessFactory",e.toString());
 				}
 				break;
+			}
+		}
+		if(pcs == null){//回PcsHOME
+			DebugHelper.log("PcsFactory", "pcs is null");
+			if(processId != ConfigHelper.homePcsId){
+				pcs =PcsFactory.createPcs(ConfigHelper.homePcsId);
 			}
 		}
 		return pcs;
