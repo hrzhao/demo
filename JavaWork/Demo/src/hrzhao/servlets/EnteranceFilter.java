@@ -42,7 +42,7 @@ public class EnteranceFilter {
 		};
 		customer.setProcessing(true);
 		saveCustomer();//save
-		String msg = null;
+		String msg = "";
 		PcsInterface pcs = PcsFactory.createPcs(customer.getProcessId());
 		if(pcs == null){//回PcsHOME
 			DebugHelper.log("EnteranceFilter", "pcs is null");
@@ -100,7 +100,7 @@ public class EnteranceFilter {
 		Boolean timeOut = bTime.getTime() < now.getTime();
 		if(timeOut){
 			if(customer.getProcessId() != ConfigHelper.welPcsId){//
-				customer.setProcessId(ConfigHelper.homePcsId);
+				customer.setProcessId(ConfigHelper.timeoutPcsId);
 			}
 		}else{
 			if(customer.getProcessing()){

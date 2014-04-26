@@ -17,6 +17,7 @@ public interface PcsInterface {
 	 * @return
 	 */
 	public JSONObject getProcessData();
+	public void setProcessData(JSONObject processData);
 	
 	 /**
 	  * 来自ProcessBean.param
@@ -28,5 +29,6 @@ public interface PcsInterface {
 	public String getTips();
 	public String getNextTips();
 	public int getProcessId();
+	public JSONObject getNextProcessData();
 
 }

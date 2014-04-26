@@ -27,6 +27,7 @@ import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
 import java.util.ArrayList;
 import java.util.Date;
+import java.util.HashMap;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Set;
@@ -35,6 +36,7 @@ import javax.xml.bind.JAXBContext;
 import javax.xml.bind.JAXBException;
 import javax.xml.bind.Unmarshaller;
 
+import net.sf.json.JSONArray;
 import net.sf.json.JSONObject;
 import net.sf.json.JsonConfig;
 
@@ -123,13 +125,53 @@ public class MainRun {
 			
 		}
 	}
+	
 	public static void main(String[] args) {
-		List<AcountBean> list = new AcountBeanDao().getAcountByCustomer("aa");
-//		method55();
-		for(AcountBean acount:list){
-			System.out.println(acount.getProduct().getName());
-		}
-		System.out.println("finish");
+//		String productNo = "B";
+//		JSONObject jObj = JSONObject.fromObject("{\"OrderSelection\":[{\"no\":\"A\",\"productId\":\"1\"},{\"no\":\"B\",\"productId\":\"2\"}]}");
+//		JSONArray jArr = (JSONArray )jObj.get("OrderSelection");
+//		Iterator<JSONObject> it = jArr.iterator();
+//		int selectedProductId = -1;
+//		while(it.hasNext()){
+//			JSONObject item = it.next();
+//			if(productNo.equals((String)item.get("no"))){
+//				//
+//				selectedProductId =Integer.parseInt((String)item.get("productId"));
+//				break;
+//			}
+//		}
+//		if(selectedProductId >= 0){
+//			System.out.println("已定购");
+//		}else{
+//			System.out.println("无此选项");
+//			
+//		}
+		
+		AcountBeanDao acountDao = new AcountBeanDao();
+		List<AcountBean> acountList = acountDao.getAcountByCustomer("aa");
+		AcountBean acount = acountList.get(0);
+		System.out.println(acount.getProduct().getName());
+		acount.getProduct().setName("kk");
+		acount.setAmount(acount.getAmount()-1);
+		acountDao.updateAcount(acount);
+		
+//		String src ="A-1";
+//		getOrderStrArr(src);
+//		List<AcountBean> list = new AcountBeanDao().getAcountByCustomer("aa");
+//		for(AcountBean acount:list){
+//			System.out.println(acount.getProduct().getName());
+//		}
+//		String str = "b";
+//		String str = "a-1-2-a-";
+//		String[] arr = str.split("-");
+//		for(int i = 0; i<arr.length ;i++){
+//			System.out.println(arr[i]);
+//		}
+//		System.out.println((str -1));
+//		char c = 'D';
+//		String s = 'D';
+//		int i = Integer.valueOf(s);
+//		System.out.println(Integer.valueOf(s));
 //		method33();
 //		JSONObject jsonObj =JSONObject.fromObject("{\"name\":\"json\",\"bool\":true1");
 //		System.out.println(jsonObj.toString());

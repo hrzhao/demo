@@ -12,7 +12,27 @@ public class OrderBean implements Serializable {
 	private int amount; 
 	private Date confirmTime;
 	private ProductBean product;
+	private int status;
 	
+	public static final String[] STATUS = {"未配送","正在配送","配送完成","已确认","已丢弃"};
+	
+	/**
+	 * 0、新建
+	 * 1、正在配送
+	 * 2、配送完成
+	 * 3、已确认
+	 * 4、已丢弃
+	 * @return
+	 */
+	
+	public int getStatus() {
+		return status;
+	}
+
+	public void setStatus(int status) {
+		this.status = status;
+	}
+
 	public Date getConfirmTime() {
 		return confirmTime;
 	}

@@ -18,8 +18,8 @@ public class PcsBase implements PcsInterface {
 	@Override
 	public String doProcess(ReqMessageBean msgBean) {
 		// TODO Auto-generated method stub
-		this.nextProcessId = pcsBean.getNextId();
-		return "";
+		goNextId();
+		return "";	
 	}
 	
 	@Override
@@ -48,6 +48,20 @@ public class PcsBase implements PcsInterface {
 	/**
 	 * 在PcsFatcory.createPcs()内自动调用
 	 */
+	protected void goNextId(){
+		int id = ConfigHelper.homePcsId;
+		if(pcsBean != null){
+			id = pcsBean.getNextId();
+		}
+		setNextProcessId(id);
+	}
+	protected void goNegativeId(){
+		int id = ConfigHelper.homePcsId;
+		if(pcsBean != null){
+			id = pcsBean.getNegativeId();
+		}
+		setNextProcessId(id);
+	}
 	@Override
 	public void setPcsBean(ProcessBean pcsBean) {
 		// TODO Auto-generated method stub
@@ -70,6 +84,20 @@ public class PcsBase implements PcsInterface {
 		// TODO Auto-generated method stub
 		return processData;
 	}
+	@Override
+	public void setProcessData(JSONObject processData){
+		this.processData = processData;
+	}
+	
+	private JSONObject nextProcessData= null;
+	@Override
+	public JSONObject getNextProcessData(){
+		return this.nextProcessData;
+	}
+	protected void setNextProcessData(JSONObject nextProcessData){
+		this.nextProcessData = nextProcessData;
+	}
+	
 
 	private JSONObject param;
 	@Override
@@ -100,11 +128,16 @@ public class PcsBase implements PcsInterface {
 			return "";
 		}else{
 			nextPcs.setCustomer(customer);
+			//把当前的ProcessData传给nextPcs,因为在setCustomer()时，customer前不是当前最新的
+			nextPcs.setProcessData(getProcessData());
 			if(this.nextProcessId != nextPcs.getProcessId()){
 				this.nextProcessId = nextPcs.getProcessId();
 				tips += "[系统错误，回到首页]\n";
 			}
 			tips += nextPcs.getTips();
+			if(nextPcs.getNextProcessData()!= null){
+				this.processData = nextPcs.getNextProcessData();
+			}
 			return tips; 
 		}
 	}
@@ -119,7 +152,7 @@ public class PcsBase implements PcsInterface {
 		return nextProcessId;
 	}
 
-	private JSONObject getJsonObjectFromString(String str){
+	private static JSONObject getJsonObjectFromString(String str){
 		JSONObject jsonObj = null;
 		if(str == null || str.equals(""))
 			return jsonObj;

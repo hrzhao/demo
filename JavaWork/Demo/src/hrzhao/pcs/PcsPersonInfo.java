@@ -27,20 +27,18 @@ public class PcsPersonInfo extends PcsBase {
 		String fieldName = jsonObj.getString("fieldName");
 		String name = jsonObj.getString("name");
 		String content = msgBean.getContent();
-		String fromUserName = msgBean.getFromUserName();
-		CustomerBeanDao customerDao = new CustomerBeanDao();
-		CustomerBean customerBean = customerDao.getCustomer(fromUserName);
+		CustomerBean customer = getCustomer();
 		try {
 			PropertyDescriptor pd = new PropertyDescriptor(fieldName,  CustomerBean.class);
 			Method method = pd.getWriteMethod();
 			Class<?>[] types = method.getParameterTypes();
 			if(types[0] == String.class){
-				method.invoke(customerBean,content);
+				method.invoke(customer,content);
 				msg = name+"["+content + "],已保存";
 				result = true;
 			}else if(types[0] == Integer.class || 
 					types[0] == int.class){
-				method.invoke(customerBean,Integer.parseInt(content));
+				method.invoke(customer,Integer.parseInt(content));
 				msg = name+"["+content + "],已保存";
 				result = true;
 			}else{
@@ -55,10 +53,10 @@ public class PcsPersonInfo extends PcsBase {
 			DebugHelper.log("PcsPersonInfo", "doProcessExt()1\n" + e.toString());
 			msg += "[系统错误#2]";
 		}
-		if(!result){
-			setNextProcessId(this.getProcessId());
+		if(result){
+			goNextId();
 		}else{
-			super.doProcess(msgBean);
+			goNegativeId();
 		}
 		return msg;
 	}

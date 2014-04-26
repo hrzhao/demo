@@ -18,6 +18,7 @@
         <property name="workerId" column="workerId" type="integer"/>
         <property name="amount" column="amount" type="int"/>
         <property name="confirmTime" column="confirmTime" type="timestamp"/>
+        <property name="status" column="status" type="int"/>
         <many-to-one name="product" class="ProductBean" fetch="join"
         	insert="false" update="false">
         	<column name="productId"></column>

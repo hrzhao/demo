@@ -44,6 +44,7 @@ public final class ConfigHelper {
 	}
 	public static int welPcsId = 0;
 	public static int homePcsId = 1;
+	public static int timeoutPcsId = 99;
 	public static String returnSignal = "#";
 	
 //	public static ArrayList<String> MSGTYPE = new ArrayList(["test","voice"]);

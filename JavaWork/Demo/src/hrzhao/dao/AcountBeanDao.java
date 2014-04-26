@@ -7,6 +7,7 @@ import java.util.List;
 
 import org.hibernate.Criteria;
 import org.hibernate.Session;
+import org.hibernate.Transaction;
 import org.hibernate.criterion.Order;
 import org.hibernate.criterion.Restrictions;
 import org.hibernate.sql.JoinType;
@@ -26,6 +27,13 @@ public class AcountBeanDao {
 		List<AcountBean> list = cr.list();
 		session.close();
 		return list;
+	}
+	public void updateAcount(AcountBean acount){
+		Session session = HiberHelper.getSession();
+		Transaction tx = session.beginTransaction();
+		session.update(acount);
+		tx.commit();
+		session.close();
 	}
 
 }
