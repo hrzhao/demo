@@ -153,7 +153,8 @@
 				return result;
 			}
 			
-			private function buildAppPanelNaviCont(label:String,mode:uint = DgcMenu.ADD,appConfig:AppConfig = null):NavigatorContent{
+			private function buildAppPanelNaviCont(label:String,mode:uint = DgcMenu.ADD,appConfig:AppConfig = null):NavigatorContent
+			{
 				var naviCont:NavigatorContent = new NavigatorContent();
 				naviCont.percentWidth = 100;
 				naviCont.percentHeight = 100;

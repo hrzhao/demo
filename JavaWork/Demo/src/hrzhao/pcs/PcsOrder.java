@@ -9,10 +9,10 @@ import java.util.List;
 import net.sf.json.JSONArray;
 import net.sf.json.JSONObject;
 import hrzhao.beans.AcountBean;
-import hrzhao.beans.OrderBean;
+import hrzhao.beans.OrdersBean;
 import hrzhao.beans.ReqMessageBean;
 import hrzhao.dao.AcountBeanDao;
-import hrzhao.dao.OrderBeanDao;
+import hrzhao.dao.OrdersBeanDao;
 import hrzhao.pcs.base.PcsBase;
 import hrzhao.utils.ConfigHelper;
 
@@ -56,34 +56,30 @@ public class PcsOrder extends PcsBase {
 			
 			if(selectedProductId >= 0){
 				AcountBeanDao acountDao = new AcountBeanDao();
-				List<AcountBean> list = acountDao.getAcountByCustomer(getCustomer().getName());
-				if(list != null){
-					for(int i = 0; i<list.size(); i++){
-						AcountBean acount = list.get(i);
-						if(selectedProductId == acount.getProductId()){
-							if(amount > acount.getAmount()){
-								msg += "余量不足";
-							}else{
-								//处理定购
-								acount.setAmount(acount.getAmount() - amount);
-								acountDao.updateAcount(acount);
-								OrderBeanDao orderDao = new OrderBeanDao();
-								OrderBean order = new OrderBean();
-								order.setAmount(amount);
-								order.setCustomerName(getCustomer().getName());
-								order.setIntime(new Date());
-								order.setProductId(acount.getProductId());
-								orderDao.saveOrder(order);
-								succ = true;
-								msg += "订购成功\n";
-								msg += getCustomer().getRealname()+"("+getCustomer().getName()+")，\n"+ getCustomer().getAddress() +"\n"
-										+ acount.getProduct().getName() +"，" 
-										+acount.getProduct().getCapacity() + "L，"
-										+amount +"桶";
-								
+				AcountBean acount = acountDao.getAcountByIdAndCustomer(selectedProductId,getCustomer().getName());
+				if(acount != null){
+					if(selectedProductId == acount.getProductId()){
+						if(amount > acount.getAmount()){
+							msg += "余量不足";
+						}else{
+							//处理定购
+							acount.setAmount(acount.getAmount() - amount);
+							acountDao.updateAcount(acount);
+							OrdersBeanDao orderDao = new OrdersBeanDao();
+							OrdersBean orders = new OrdersBean();
+							orders.setAmount(amount);
+							orders.setCustomerName(getCustomer().getName());
+							orders.setIntime(new Date());
+							orders.setProductId(acount.getProductId());
+							orderDao.saveOrder(orders);
+							succ = true;
+							msg += "订购成功\n";
+							msg += getCustomer().getRealname()+"("+getCustomer().getName()+")，\n"+ getCustomer().getAddress() +"\n"
+									+ acount.getProduct().getName() +"，" 
+									+acount.getProduct().getCapacity() + "L，"
+									+amount +"桶";
+							
 							}
-							break;
-						}
 					}
 				}
 				

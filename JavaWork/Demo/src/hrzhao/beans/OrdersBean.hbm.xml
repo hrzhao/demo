@@ -7,7 +7,7 @@
         package="hrzhao.beans"
         >
 
-    <class name="OrderBean" table="order">
+    <class name="OrdersBean" table="orders">
 
         <id name="id">
             <generator class="increment"/>

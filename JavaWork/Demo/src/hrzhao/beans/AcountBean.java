@@ -14,6 +14,17 @@ public class AcountBean implements Serializable {
 	private ProductBean product;
 	
 
+	
+	public String getCustomerName() {
+		return customerName;
+	}
+
+
+	public void setCustomerName(String customerName) {
+		this.customerName = customerName;
+	}
+
+
 	public ProductBean getProduct() {
 		return product;
 	}
@@ -31,16 +42,6 @@ public class AcountBean implements Serializable {
 
 	public void setCustomer(CustomerBean customer) {
 		this.customer = customer;
-	}
-
-
-	public String getCustomerName() {
-		return customerName;
-	}
-
-
-	public void setCustomerName(String customerName) {
-		this.customerName = customerName;
 	}
 
 

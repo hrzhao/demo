@@ -91,16 +91,17 @@ public class MainRun {
 	public static void method55(){
 		Session session = HiberHelper.getSession();
 		Criteria cr = session.createCriteria(AcountBean.class);
-		cr.add(Restrictions.eq("customerName","aa"));
+//		cr.add(Restrictions.eq("customerName","aa"));
+		cr.add(Restrictions.eq("id",1));
 		@SuppressWarnings("unchecked")
 		List<AcountBean> list = cr.list();
 		AcountBean acountBean = list.get(0);
 		ProductBean product = acountBean.getProduct();
 		System.out.println(product.getName());
 
-		acountBean = list.get(1);
-		product = acountBean.getProduct();
-		Hibernate.initialize(product);
+//		acountBean = list.get(1);
+//		product = acountBean.getProduct();
+//		Hibernate.initialize(product);
 //		System.out.println(product.getName());
 //		System.out.println(product);
 		System.out.println(list);
@@ -127,6 +128,12 @@ public class MainRun {
 	}
 	
 	public static void main(String[] args) {
+//		method55();
+		AcountBeanDao acountDao = new AcountBeanDao();
+//		List<AcountBean> list = acountDao.getAcountByCustomer("aa");
+//		System.out.println(list.size());
+		AcountBean acount = acountDao.getAcountByIdAndCustomer(1, "aa");
+		System.out.println(acount.getAmount());
 //		String productNo = "B";
 //		JSONObject jObj = JSONObject.fromObject("{\"OrderSelection\":[{\"no\":\"A\",\"productId\":\"1\"},{\"no\":\"B\",\"productId\":\"2\"}]}");
 //		JSONArray jArr = (JSONArray )jObj.get("OrderSelection");
@@ -146,14 +153,14 @@ public class MainRun {
 //			System.out.println("无此选项");
 //			
 //		}
-		
-		AcountBeanDao acountDao = new AcountBeanDao();
-		List<AcountBean> acountList = acountDao.getAcountByCustomer("aa");
-		AcountBean acount = acountList.get(0);
-		System.out.println(acount.getProduct().getName());
-		acount.getProduct().setName("kk");
-		acount.setAmount(acount.getAmount()-1);
-		acountDao.updateAcount(acount);
+//		
+//		AcountBeanDao acountDao = new AcountBeanDao();
+//		List<AcountBean> acountList = acountDao.getAcountByCustomer("aa");
+//		AcountBean acount = acountList.get(0);
+//		System.out.println(acount.getProduct().getName());
+//		acount.getProduct().setName("kk");
+//		acount.setAmount(acount.getAmount()-1);
+//		acountDao.updateAcount(acount);
 		
 //		String src ="A-1";
 //		getOrderStrArr(src);

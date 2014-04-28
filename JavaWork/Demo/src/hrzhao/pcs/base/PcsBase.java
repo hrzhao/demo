@@ -163,5 +163,8 @@ public class PcsBase implements PcsInterface {
 		}
 		return jsonObj;
 	}
+	protected void goThisProcess(){
+		setNextProcessId(this.getProcessId());
+	}
 
 }

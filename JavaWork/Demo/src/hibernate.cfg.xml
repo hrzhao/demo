@@ -33,7 +33,7 @@
 		<mapping resource="hrzhao/beans/DebugBean.hbm.xml"/>
 		<mapping resource="hrzhao/beans/AcountBean.hbm.xml"/>
 		<mapping resource="hrzhao/beans/ProductBean.hbm.xml"/>
-		<mapping resource="hrzhao/beans/OrderBean.hbm.xml"/>
+		<mapping resource="hrzhao/beans/OrdersBean.hbm.xml"/>
 		<!-- 
         <property name="hbm2ddl.auto">validate</property>
 		<class-cache

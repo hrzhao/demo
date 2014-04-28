@@ -28,6 +28,20 @@ public class AcountBeanDao {
 		session.close();
 		return list;
 	}
+	public AcountBean getAcountByIdAndCustomer(int id,String customerName){
+		Session session = HiberHelper.getSession();
+		Criteria cr = session.createCriteria(AcountBean.class)
+				.add(Restrictions.eq("customerName", customerName))
+				.add(Restrictions.eq("productId",id));
+		@SuppressWarnings("unchecked")
+		List<AcountBean> list = cr.list();
+		session.close();
+		AcountBean acount = null;
+		if(list != null && list.size()>0){
+			acount = list.get(0);
+		}
+		return acount;
+	}
 	public void updateAcount(AcountBean acount){
 		Session session = HiberHelper.getSession();
 		Transaction tx = session.beginTransaction();

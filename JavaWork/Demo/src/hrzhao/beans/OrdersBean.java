@@ -3,7 +3,7 @@ package hrzhao.beans;
 import java.io.Serializable;
 import java.util.Date;
 
-public class OrderBean implements Serializable {
+public class OrdersBean implements Serializable {
 	private int id;
 	private int productId;
 	private String customerName;
@@ -102,7 +102,7 @@ public class OrderBean implements Serializable {
 	 */
 	private static final long serialVersionUID = 1L;
 
-	public OrderBean() {
+	public OrdersBean() {
 		// TODO Auto-generated constructor stub
 	}
 
