@@ -34,10 +34,10 @@ public class UserBean {
 	public void setPassword(String password) {
 		this.password = password;
 	}
-	public String getrealname() {
+	public String getRealname() {
 		return realname;
 	}
-	public void setrealname(String realname) {
+	public void setRealname(String realname) {
 		this.realname = realname;
 	}
 

@@ -30,5 +30,6 @@ public interface PcsInterface {
 	public String getNextTips();
 	public int getProcessId();
 	public JSONObject getNextProcessData();
+	public String[] getAvailableMsgType();
 
 }

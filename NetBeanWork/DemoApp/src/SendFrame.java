@@ -53,6 +53,11 @@ public class SendFrame extends javax.swing.JFrame {
         jLabel5 = new javax.swing.JLabel();
         txt_msgId = new javax.swing.JTextField();
         txt_msgType = new javax.swing.JTextField();
+        txt_x = new javax.swing.JTextField();
+        txt_y = new javax.swing.JTextField();
+        txt_pic = new javax.swing.JTextField();
+        txt_scale = new javax.swing.JTextField();
+        txt_label = new javax.swing.JTextField();
 
         setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
 
@@ -111,6 +116,21 @@ public class SendFrame extends javax.swing.JFrame {
 
         txt_msgType.setText("text");
 
+        txt_x.setText("113.1986618");
+        txt_x.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                txt_xActionPerformed(evt);
+            }
+        });
+
+        txt_y.setText("22.6415015");
+
+        txt_pic.setText("http://mmbiz.qpic.cn/mmbiz/8DgJya2a4eiciagUNbStichEmr2ouIDqe8RLtxN6yc6Fvab2RQyG5L7UlBxEzGNbIticu0nW3rG0p8KbibFiaTSRYy2A/0");
+
+        txt_scale.setText("13");
+
+        txt_label.setText("广东省");
+
         javax.swing.GroupLayout layout = new javax.swing.GroupLayout(getContentPane());
         getContentPane().setLayout(layout);
         layout.setHorizontalGroup(
@@ -127,31 +147,46 @@ public class SendFrame extends javax.swing.JFrame {
                                 .addComponent(jLabel1)
                                 .addComponent(jLabel2))
                             .addComponent(jLabel3))
-                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                         .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                            .addComponent(txt_url, javax.swing.GroupLayout.PREFERRED_SIZE, 337, javax.swing.GroupLayout.PREFERRED_SIZE)
+                            .addGroup(layout.createSequentialGroup()
+                                .addComponent(txt_url, javax.swing.GroupLayout.PREFERRED_SIZE, 337, javax.swing.GroupLayout.PREFERRED_SIZE)
+                                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 31, Short.MAX_VALUE)
+                                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
+                                    .addComponent(btn_clear, javax.swing.GroupLayout.Alignment.TRAILING, javax.swing.GroupLayout.DEFAULT_SIZE, 88, Short.MAX_VALUE)
+                                    .addComponent(btn_copy, javax.swing.GroupLayout.Alignment.TRAILING, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                                    .addComponent(btn_send, javax.swing.GroupLayout.Alignment.TRAILING, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)))
                             .addGroup(layout.createSequentialGroup()
                                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING, false)
+                                    .addComponent(txt_y, javax.swing.GroupLayout.Alignment.LEADING)
+                                    .addComponent(txt_x, javax.swing.GroupLayout.Alignment.LEADING)
                                     .addComponent(txt_msgType, javax.swing.GroupLayout.Alignment.LEADING)
                                     .addComponent(txt_toUserName, javax.swing.GroupLayout.Alignment.LEADING, javax.swing.GroupLayout.DEFAULT_SIZE, 136, Short.MAX_VALUE)
                                     .addComponent(txt_fromUserName, javax.swing.GroupLayout.Alignment.LEADING))
-                                .addGap(16, 16, 16)
                                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                                    .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, layout.createSequentialGroup()
-                                        .addComponent(jLabel5)
-                                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED))
                                     .addGroup(layout.createSequentialGroup()
-                                        .addComponent(jLabel4)
-                                        .addGap(6, 6, 6)))
-                                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING, false)
-                                    .addComponent(txt_content)
-                                    .addComponent(txt_msgId, javax.swing.GroupLayout.DEFAULT_SIZE, 151, Short.MAX_VALUE))))
-                        .addGap(37, 37, 37)
-                        .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                            .addComponent(btn_stop, javax.swing.GroupLayout.Alignment.TRAILING, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                            .addComponent(btn_copy, javax.swing.GroupLayout.Alignment.TRAILING, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                            .addComponent(btn_clear, javax.swing.GroupLayout.Alignment.TRAILING, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                            .addComponent(btn_send, javax.swing.GroupLayout.Alignment.TRAILING, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))))
+                                        .addGap(232, 232, 232)
+                                        .addComponent(btn_stop, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
+                                    .addGroup(layout.createSequentialGroup()
+                                        .addGap(18, 18, 18)
+                                        .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                                            .addGroup(layout.createSequentialGroup()
+                                                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                                                    .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, layout.createSequentialGroup()
+                                                        .addComponent(jLabel5)
+                                                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED))
+                                                    .addGroup(layout.createSequentialGroup()
+                                                        .addComponent(jLabel4)
+                                                        .addGap(6, 6, 6)))
+                                                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                                                    .addComponent(txt_content, javax.swing.GroupLayout.PREFERRED_SIZE, 137, javax.swing.GroupLayout.PREFERRED_SIZE)
+                                                    .addComponent(txt_msgId, javax.swing.GroupLayout.Alignment.TRAILING, javax.swing.GroupLayout.PREFERRED_SIZE, 137, javax.swing.GroupLayout.PREFERRED_SIZE))
+                                                .addGap(0, 0, Short.MAX_VALUE))
+                                            .addComponent(txt_pic, javax.swing.GroupLayout.PREFERRED_SIZE, 1, Short.MAX_VALUE)
+                                            .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, layout.createSequentialGroup()
+                                                .addComponent(txt_scale, javax.swing.GroupLayout.PREFERRED_SIZE, 51, javax.swing.GroupLayout.PREFERRED_SIZE)
+                                                .addGap(18, 18, 18)
+                                                .addComponent(txt_label)))))))))
                 .addContainerGap())
         );
         layout.setVerticalGroup(
@@ -182,8 +217,17 @@ public class SendFrame extends javax.swing.JFrame {
                             .addComponent(btn_stop)
                             .addComponent(txt_msgType, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)))
                     .addComponent(jLabel3))
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                    .addComponent(txt_x, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                    .addComponent(txt_pic, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                    .addComponent(txt_y, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                    .addComponent(txt_scale, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                    .addComponent(txt_label, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
-                .addComponent(jScrollPane1, javax.swing.GroupLayout.DEFAULT_SIZE, 284, Short.MAX_VALUE)
+                .addComponent(jScrollPane1, javax.swing.GroupLayout.PREFERRED_SIZE, 284, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addContainerGap())
         );
 
@@ -249,6 +293,11 @@ public class SendFrame extends javax.swing.JFrame {
         String toUserName = txt_toUserName.getText();
         String msgId = txt_msgId.getText();
         String  msgType = txt_msgType.getText();
+        String picUrl = txt_pic.getText();
+        String location_x = txt_x.getText();
+        String location_y = txt_y.getText();
+        String location_scale = txt_scale.getText();
+        String location_label = txt_label.getText();
         Date date = new Date();
         Long createTime = date.getTime()/100;
         if(msgId == null || msgId.equals("")){
@@ -259,8 +308,21 @@ public class SendFrame extends javax.swing.JFrame {
         sb.append(("\t<FromUserName><![CDATA["+fromUserName+"]]></FromUserName>\n"));
         sb.append(("\t<CreateTime>" + createTime + "</CreateTime>\n"));
         sb.append(("\t<MsgType><![CDATA["+msgType+"]]></MsgType>\n"));
-        sb.append(("\t<Content><![CDATA[" + content + "]]></Content>\n"));
         sb.append(("\t<MsgId>"+msgId+"</MsgId>\n"));
+        switch (msgType) {
+            case "image":
+                sb.append(("\t<PicUrl><![CDATA[" + picUrl + "]]></PicUrl>\n"));
+                break;
+            case "location":
+                sb.append(("\t<Location_X>" + location_x + "</Location_X>\n"));
+                sb.append(("\t<Location_Y>" + location_y + "</Location_Y>\n"));
+                sb.append(("\t<Scale>" + location_scale + "</Scale>\n"));
+                sb.append(("\t<Label><![CDATA[" + location_label + "]]></Label>\n"));
+                break;
+            default:
+                sb.append(("\t<Content><![CDATA[" + content + "]]></Content>\n"));
+                break;
+        }
         sb.append(("</xml>"));
         return sb.toString();
     }
@@ -280,6 +342,10 @@ public class SendFrame extends javax.swing.JFrame {
         // TODO add your handling code here:
         txt_result.selectAll();
     }//GEN-LAST:event_btn_stopMouseClicked
+
+    private void txt_xActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_txt_xActionPerformed
+        // TODO add your handling code here:
+    }//GEN-LAST:event_txt_xActionPerformed
 
     /**
      * @param args the command line arguments
@@ -329,10 +395,15 @@ public class SendFrame extends javax.swing.JFrame {
     private javax.swing.JScrollPane jScrollPane1;
     private javax.swing.JTextField txt_content;
     private javax.swing.JTextField txt_fromUserName;
+    private javax.swing.JTextField txt_label;
     private javax.swing.JTextField txt_msgId;
     private javax.swing.JTextField txt_msgType;
+    private javax.swing.JTextField txt_pic;
     private javax.swing.JTextArea txt_result;
+    private javax.swing.JTextField txt_scale;
     private javax.swing.JTextField txt_toUserName;
     private javax.swing.JTextField txt_url;
+    private javax.swing.JTextField txt_x;
+    private javax.swing.JTextField txt_y;
     // End of variables declaration//GEN-END:variables
 }

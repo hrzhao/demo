@@ -1,0 +1,23 @@
+<?xml version="1.0"?>
+<!DOCTYPE hibernate-mapping PUBLIC
+        "-//Hibernate/Hibernate Mapping DTD 3.0//EN"
+        "http://www.hibernate.org/dtd/hibernate-mapping-3.0.dtd">
+
+<hibernate-mapping
+        package="hrzhao.beans"
+        >
+
+    <class name="LocationBean" table="location">
+
+        <id name="id">
+            <generator class="increment"/>
+        </id>
+        <property name="customerName" column="customerName" type="string"/>
+        <property name="intime" column="intime" type="timestamp"/>
+        <property name="location_x" column="location_x" type="double"/>
+        <property name="location_y" column="location_y" type="double"/>
+        <property name="location_scale" column="location_scale" type="int"/>
+        <property name="location_label" column="location_label" type="string"/>
+    </class>
+
+</hibernate-mapping>

@@ -1,3 +1,13 @@
 1398647126735	Rename type 'OrderBeanDao'
 1398647148339	Rename type 'OrderBean'
 1398647171636	Rename resource 'OrderBean.hbm.xml'
+1398736504861	Copy file
+1398736844196	Rename type 'ComnMsg'
+1398737396400	Rename local variable 'comnMsgBean'
+1398737730867	Delete element
+1398738300258	Rename type 'PcsLeaveMsg'
+1398743515314	Rename resource 'ComnMsg.hbm.xml'
+1398759001452	Copy file
+1398774569228	Delete element
+1398774579765	Delete element
+1398774626863	Rename type 'EnteranceServlet2'

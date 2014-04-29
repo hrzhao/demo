@@ -7,7 +7,7 @@ import hrzhao.utils.ConfigHelper;
 public class PcsTimeOut extends PcsBase {
 
 	public PcsTimeOut() {
-		// TODO Auto-generated constructor stub
+		this.availableMsgType = ConfigHelper.msgType;
 	}
 
 	@Override

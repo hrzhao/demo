@@ -1,7 +1,6 @@
 package hrzhao.utils;
 import hrzhao.beans.ConfigBean;
 
-import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
 
@@ -31,17 +30,7 @@ public final class ConfigHelper {
 		}
 		return originalId;
 	}
-	private static List<String> msgTypeList = null;
-	public static List<String> getMsgType(){
-		if(msgTypeList == null){
-			String[] msgT = {"event","image","text","location"};
-			msgTypeList = new ArrayList<String>();
-			for(String val:msgT){
-				msgTypeList.add(val);
-			}
-		}
-		return msgTypeList;
-	}
+	public static String[] msgType =  {"event","image","text","location"};
 	public static int welPcsId = 0;
 	public static int homePcsId = 1;
 	public static int timeoutPcsId = 99;

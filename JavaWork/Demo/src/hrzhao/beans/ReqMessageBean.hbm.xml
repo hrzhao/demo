@@ -23,9 +23,9 @@
         <property name="event" column="event" type="string"/>
         <property name="innerType" column="innerType" type="int"/>
         
-        <property name="locationX" column="location_x" type="integer"/>
-        <property name="locationY" column="location_y" type="integer"/>
-        <property name="locationScale" column="location_scale" type="integer"/>
+        <property name="locationX" column="location_x" type="double"/>
+        <property name="locationY" column="location_y" type="double"/>
+        <property name="locationScale" column="location_scale" type="int"/>
         <property name="locationLabel" column="location_label" type="string"/>
         <!-- 
          -->

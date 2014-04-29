@@ -12,6 +12,19 @@ public class PcsBase implements PcsInterface {
 	public PcsBase() {
 		// TODO Auto-generated constructor stub
 	}
+	
+	protected String[] availableMsgType ={"text"};
+	@Override
+	public String[] getAvailableMsgType() {
+		// TODO Auto-generated method stub
+		return availableMsgType;
+	}
+	
+//	protected void setAvailableMsgType(String[] availableMsgType){
+//		this.availableMsgType = availableMsgType;
+//	}
+
+
 	/**
 	 * 流程主要方法
 	 */

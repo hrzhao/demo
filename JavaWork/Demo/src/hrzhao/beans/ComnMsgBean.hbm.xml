@@ -1,0 +1,28 @@
+<?xml version="1.0"?>
+<!DOCTYPE hibernate-mapping PUBLIC
+        "-//Hibernate/Hibernate Mapping DTD 3.0//EN"
+        "http://www.hibernate.org/dtd/hibernate-mapping-3.0.dtd">
+
+<hibernate-mapping
+        package="hrzhao.beans"
+        >
+
+    <class name="ComnMsgBean" table="comnMsg">
+
+        <id name="id">
+            <generator class="increment"/>
+        </id>
+        <property name="customerName" column="customerName" type="string"/>
+        <property name="picURL" column="picURL" type="string"/>
+        <property name="msgType" column="msgType" type="string"/>
+        <property name="intime" column="intime" type="timestamp"/>
+        <property name="userId" column="userId" type="integer"/>
+        <property name="status" column="status" type="int"/>
+        <property name="content" column="content" type="string"/>
+         <many-to-one name="user" class="UserBean" fetch="select" lazy="false"
+        	insert="false" update="false">
+        	<column name="userId"></column>
+        </many-to-one>
+    </class>
+
+</hibernate-mapping>

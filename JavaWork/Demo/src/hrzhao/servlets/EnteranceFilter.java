@@ -33,13 +33,18 @@ public class EnteranceFilter {
 			return null;
 		}
 		
-		if(!checkMsgType(msgBean)){
+		if(!checkAvailableMsgType(msgBean,ConfigHelper.msgType)){
 			return "对不起，不能处理此类型消息!";
 		}
 		customer = getCustomer(msgBean.getFromUserName());
+		//处理特殊类型消息，如取消关注
+		//更长远点的做法是，将一般类型，如文本，位置，语音等，照到当前流程
+		//将点击定制菜单的转到其它的处理方法
 		if(!checkReady()){
-			return null;
+			return "系统正在处理或处理过程中出现异常\n请5分钟后再试";
 		};
+		
+		saveMsg(msgBean);//保存消息
 		customer.setProcessing(true);
 		saveCustomer();//save
 		String msg = "";
@@ -47,13 +52,16 @@ public class EnteranceFilter {
 		if(pcs == null){//回PcsHOME
 			DebugHelper.log("EnteranceFilter", "pcs is null");
 			customer.setProcessId(ConfigHelper.homePcsId);
-//			return null;//终止了后面的保存工作
 		}else{
 			pcs.setCustomer(customer);//
-			
 			if(!checkReturnHome(msgBean)){
 				//或输入#则跳过doProcess
-				msg = pcs.doProcess(msgBean);
+				if(checkAvailableMsgType(msgBean,pcs.getAvailableMsgType())){
+					msg = pcs.doProcess(msgBean);
+				}else{
+					msg = "请回复正确类型的消息";
+					pcs.setNextProcessId(pcs.getProcessId());//再输入
+				}
 			}else{
 				pcs.setNextProcessId(ConfigHelper.homePcsId);
 			}
@@ -77,6 +85,18 @@ public class EnteranceFilter {
 		saveCustomer();//save
 		return msg;
 	}
+	
+	private Boolean checkAvailableMsgType(ReqMessageBean msgBean,String[] availableMsgType){
+		if(availableMsgType != null){
+			for(String val:availableMsgType){
+				if(msgBean.getMsgType().equals(val)){
+					return true;
+				}
+			}
+		}
+		return false;
+	}
+	
 	private Boolean checkReturnHome(ReqMessageBean msgBean){
 		String content = msgBean.getContent();
 		if(content != null && content.equals(ConfigHelper.returnSignal)){
@@ -111,6 +131,10 @@ public class EnteranceFilter {
 		}
 		return true;
 	}
+	public void saveMsg(ReqMessageBean msgBean){
+		MessageBeanDao messageDao = new MessageBeanDao();
+		messageDao.saveMessage(msgBean);
+	}
 	
 	private CustomerBean getCustomer(String name){
 		CustomerBeanDao customerDao = new CustomerBeanDao();
@@ -128,14 +152,6 @@ public class EnteranceFilter {
 		return customer;
 	}
 	
-	private Boolean checkMsgType(ReqMessageBean reqMessageBean){
-		String msgType = reqMessageBean.getMsgType();
-		List<String> msgTypeList = ConfigHelper.getMsgType();
-		if(!msgTypeList.contains(msgType)){
-			return false;
-		}
-		return true;
-	}
 	
 	private Boolean checkRepeat(ReqMessageBean msgBean){
 		Boolean result = false;

@@ -2,7 +2,6 @@ package hrzhao.servlets;
 
 import hrzhao.beans.ReqMessageBean;
 import hrzhao.beans.RespMessageBean;
-import hrzhao.services.MessageFilter;
 import hrzhao.utils.DebugHelper;
 import hrzhao.utils.WeChatHelper;
 
@@ -45,7 +44,6 @@ public class EnteranceServlet extends HttpServlet {
 	 * @see HttpServlet#doGet(HttpServletRequest request, HttpServletResponse response)
 	 */
 	protected void doGet(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
-		// TODO Auto-generated method stub
 		String timestamp = request.getParameter("timestamp");
 		String nonce = request.getParameter("nonce");
 		String signature = request.getParameter("signature");
@@ -61,7 +59,7 @@ public class EnteranceServlet extends HttpServlet {
 			}
 		}
 	}
-	
+
 	/**
 	 * @see HttpServlet#doPost(HttpServletRequest request, HttpServletResponse response)
 	 */
@@ -72,16 +70,14 @@ public class EnteranceServlet extends HttpServlet {
 		try{			
 			ReqMessageBean reqBean = getReqMessageBean(request);
 			
-			MessageFilter msgFilter = new MessageFilter();
+			EnteranceFilter enFilter = new EnteranceFilter();
 			Long s = new Date().getTime();
-			
-//			msg = msgFilter.receiveMessage(reqBean);
-			
-			msg = msgFilter.receiveMessageByProcess(reqBean);
+			msg = enFilter.filterMessage(reqBean);
 			if(msg == null){
-				return;
+				return;//中止
 			}
 			Long e = new Date().getTime();
+			
 			//Debug 为了显示时间
 			msg +="\n{"+(e-s)+"}";
 			
@@ -144,7 +140,6 @@ public class EnteranceServlet extends HttpServlet {
 			m.marshal(respBean, out);
 			out.flush();
 		} catch (IOException e) {
-			// TODO Auto-generated catch block
 			DebugHelper.log("IOException",e.toString());
 		} finally {
 			if(out != null)
@@ -166,5 +161,6 @@ public class EnteranceServlet extends HttpServlet {
 		respBean.setContent(content);
 		return respBean;
 	}
+
 
 }

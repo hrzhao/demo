@@ -34,24 +34,24 @@ public class ReqMessageBean {
 	private int innerType;
 	
 	//地里位置
-	private Long locationX;
-	private Long locationY;
+	private double locationX;
+	private double locationY;
 	private Integer locationScale;
 	private String locationLabel;
 	
 	
-	public Long getLocationX() {
+	public double getLocationX() {
 		return locationX;
 	}
 	@XmlElement(name = "Location_X")
-	public void setLocationX(Long locationX) {
+	public void setLocationX(double locationX) {
 		this.locationX = locationX;
 	}
-	public Long getLocationY() {
+	public double getLocationY() {
 		return locationY;
 	}
 	@XmlElement(name = "Location_Y")
-	public void setLocationY(Long locationY) {
+	public void setLocationY(double locationY) {
 		this.locationY = locationY;
 	}
 	public Integer getLocationScale() {

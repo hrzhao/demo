@@ -140,6 +140,9 @@ public class PcsOrder extends PcsBase {
 	
 	private String[] getOrderStrArr(String src){
 		String[] result = null;
+		if(src == null){
+			return result;
+		}
 		String reg="[a-zA-Z]{1}-[0-9]{1,2}";
 		if(src.matches(reg)){
 			result = src.split("-");

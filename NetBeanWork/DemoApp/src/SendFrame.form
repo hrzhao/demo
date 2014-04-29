@@ -38,38 +38,60 @@
                           </Group>
                           <Component id="jLabel3" alignment="0" min="-2" max="-2" attributes="0"/>
                       </Group>
-                      <EmptySpace type="unrelated" max="-2" attributes="0"/>
+                      <EmptySpace max="-2" attributes="0"/>
                       <Group type="103" groupAlignment="0" attributes="0">
-                          <Component id="txt_url" alignment="0" min="-2" pref="337" max="-2" attributes="0"/>
-                          <Group type="102" alignment="0" attributes="0">
+                          <Group type="102" attributes="0">
+                              <Component id="txt_url" min="-2" pref="337" max="-2" attributes="0"/>
+                              <EmptySpace pref="31" max="32767" attributes="0"/>
+                              <Group type="103" groupAlignment="0" max="-2" attributes="0">
+                                  <Component id="btn_clear" alignment="1" pref="88" max="32767" attributes="0"/>
+                                  <Component id="btn_copy" alignment="1" max="32767" attributes="0"/>
+                                  <Component id="btn_send" alignment="1" max="32767" attributes="0"/>
+                              </Group>
+                          </Group>
+                          <Group type="102" attributes="0">
                               <Group type="103" groupAlignment="1" max="-2" attributes="0">
+                                  <Component id="txt_y" alignment="0" max="32767" attributes="0"/>
+                                  <Component id="txt_x" alignment="0" max="32767" attributes="0"/>
                                   <Component id="txt_msgType" alignment="0" max="32767" attributes="0"/>
                                   <Component id="txt_toUserName" alignment="0" pref="136" max="32767" attributes="0"/>
                                   <Component id="txt_fromUserName" alignment="0" max="32767" attributes="0"/>
                               </Group>
-                              <EmptySpace min="-2" pref="16" max="-2" attributes="0"/>
                               <Group type="103" groupAlignment="0" attributes="0">
-                                  <Group type="102" alignment="1" attributes="0">
-                                      <Component id="jLabel5" min="-2" max="-2" attributes="0"/>
-                                      <EmptySpace max="-2" attributes="0"/>
+                                  <Group type="102" alignment="0" attributes="0">
+                                      <EmptySpace min="-2" pref="232" max="-2" attributes="0"/>
+                                      <Component id="btn_stop" max="32767" attributes="0"/>
                                   </Group>
                                   <Group type="102" alignment="0" attributes="0">
-                                      <Component id="jLabel4" min="-2" max="-2" attributes="0"/>
-                                      <EmptySpace min="-2" pref="6" max="-2" attributes="0"/>
+                                      <EmptySpace min="-2" pref="18" max="-2" attributes="0"/>
+                                      <Group type="103" groupAlignment="0" attributes="0">
+                                          <Group type="102" attributes="0">
+                                              <Group type="103" groupAlignment="0" attributes="0">
+                                                  <Group type="102" alignment="1" attributes="0">
+                                                      <Component id="jLabel5" min="-2" max="-2" attributes="0"/>
+                                                      <EmptySpace max="-2" attributes="0"/>
+                                                  </Group>
+                                                  <Group type="102" alignment="0" attributes="0">
+                                                      <Component id="jLabel4" min="-2" max="-2" attributes="0"/>
+                                                      <EmptySpace min="-2" pref="6" max="-2" attributes="0"/>
+                                                  </Group>
+                                              </Group>
+                                              <Group type="103" groupAlignment="0" attributes="0">
+                                                  <Component id="txt_content" min="-2" pref="137" max="-2" attributes="0"/>
+                                                  <Component id="txt_msgId" alignment="1" min="-2" pref="137" max="-2" attributes="0"/>
+                                              </Group>
+                                              <EmptySpace min="0" pref="0" max="32767" attributes="0"/>
+                                          </Group>
+                                          <Component id="txt_pic" pref="0" max="32767" attributes="0"/>
+                                          <Group type="102" alignment="1" attributes="0">
+                                              <Component id="txt_scale" min="-2" pref="51" max="-2" attributes="0"/>
+                                              <EmptySpace type="separate" max="-2" attributes="0"/>
+                                              <Component id="txt_label" max="32767" attributes="0"/>
+                                          </Group>
+                                      </Group>
                                   </Group>
                               </Group>
-                              <Group type="103" groupAlignment="1" max="-2" attributes="0">
-                                  <Component id="txt_content" max="32767" attributes="0"/>
-                                  <Component id="txt_msgId" pref="151" max="32767" attributes="0"/>
-                              </Group>
                           </Group>
-                      </Group>
-                      <EmptySpace min="-2" pref="37" max="-2" attributes="0"/>
-                      <Group type="103" groupAlignment="0" attributes="0">
-                          <Component id="btn_stop" alignment="1" max="32767" attributes="0"/>
-                          <Component id="btn_copy" alignment="1" max="32767" attributes="0"/>
-                          <Component id="btn_clear" alignment="1" max="32767" attributes="0"/>
-                          <Component id="btn_send" alignment="1" max="32767" attributes="0"/>
                       </Group>
                   </Group>
               </Group>
@@ -111,8 +133,19 @@
                   </Group>
                   <Component id="jLabel3" alignment="0" min="-2" max="-2" attributes="0"/>
               </Group>
+              <EmptySpace max="-2" attributes="0"/>
+              <Group type="103" groupAlignment="3" attributes="0">
+                  <Component id="txt_x" alignment="3" min="-2" max="-2" attributes="0"/>
+                  <Component id="txt_pic" alignment="3" min="-2" max="-2" attributes="0"/>
+              </Group>
+              <EmptySpace max="32767" attributes="0"/>
+              <Group type="103" groupAlignment="3" attributes="0">
+                  <Component id="txt_y" alignment="3" min="-2" max="-2" attributes="0"/>
+                  <Component id="txt_scale" alignment="3" min="-2" max="-2" attributes="0"/>
+                  <Component id="txt_label" alignment="3" min="-2" max="-2" attributes="0"/>
+              </Group>
               <EmptySpace type="unrelated" max="-2" attributes="0"/>
-              <Component id="jScrollPane1" pref="284" max="32767" attributes="0"/>
+              <Component id="jScrollPane1" min="-2" pref="284" max="-2" attributes="0"/>
               <EmptySpace max="-2" attributes="0"/>
           </Group>
       </Group>
@@ -227,6 +260,34 @@
     <Component class="javax.swing.JTextField" name="txt_msgType">
       <Properties>
         <Property name="text" type="java.lang.String" value="text"/>
+      </Properties>
+    </Component>
+    <Component class="javax.swing.JTextField" name="txt_x">
+      <Properties>
+        <Property name="text" type="java.lang.String" value="113.1986618"/>
+      </Properties>
+      <Events>
+        <EventHandler event="actionPerformed" listener="java.awt.event.ActionListener" parameters="java.awt.event.ActionEvent" handler="txt_xActionPerformed"/>
+      </Events>
+    </Component>
+    <Component class="javax.swing.JTextField" name="txt_y">
+      <Properties>
+        <Property name="text" type="java.lang.String" value="22.6415015"/>
+      </Properties>
+    </Component>
+    <Component class="javax.swing.JTextField" name="txt_pic">
+      <Properties>
+        <Property name="text" type="java.lang.String" value="http://mmbiz.qpic.cn/mmbiz/8DgJya2a4eiciagUNbStichEmr2ouIDqe8RLtxN6yc6Fvab2RQyG5L7UlBxEzGNbIticu0nW3rG0p8KbibFiaTSRYy2A/0"/>
+      </Properties>
+    </Component>
+    <Component class="javax.swing.JTextField" name="txt_scale">
+      <Properties>
+        <Property name="text" type="java.lang.String" value="13"/>
+      </Properties>
+    </Component>
+    <Component class="javax.swing.JTextField" name="txt_label">
+      <Properties>
+        <Property name="text" type="java.lang.String" value="&#x5e7f;&#x4e1c;&#x7701;"/>
       </Properties>
     </Component>
   </SubComponents>

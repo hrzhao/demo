@@ -2,9 +2,6 @@ package hrzhao.utils;
 
 import hrzhao.beans.DebugBean;
 
-import java.sql.Connection;
-import java.sql.PreparedStatement;
-import java.sql.SQLException;
 import java.util.Date;
 
 import org.hibernate.Session;

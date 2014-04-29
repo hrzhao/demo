@@ -1,5 +1,6 @@
 import hrzhao.beans.AcountBean;
 import hrzhao.beans.AppConfigBean;
+import hrzhao.beans.ComnMsgBean;
 import hrzhao.beans.CustomerBean;
 import hrzhao.beans.Event;
 import hrzhao.beans.ProductBean;
@@ -12,7 +13,6 @@ import hrzhao.dao.CustomerBeanDao;
 import hrzhao.dao.MessageBeanDao;
 import hrzhao.dao.UserBeanDao;
 import hrzhao.services.FrameService;
-import hrzhao.services.MessageFilter;
 import hrzhao.services.MessageServices;
 import hrzhao.utils.ConfigHelper;
 import hrzhao.utils.DebugHelper;
@@ -128,12 +128,14 @@ public class MainRun {
 	}
 	
 	public static void main(String[] args) {
+		Session session = HiberHelper.getSession();
+		session.get(ComnMsgBean.class, 1);
 //		method55();
-		AcountBeanDao acountDao = new AcountBeanDao();
+//		AcountBeanDao acountDao = new AcountBeanDao();
 //		List<AcountBean> list = acountDao.getAcountByCustomer("aa");
 //		System.out.println(list.size());
-		AcountBean acount = acountDao.getAcountByIdAndCustomer(1, "aa");
-		System.out.println(acount.getAmount());
+//		AcountBean acount = acountDao.getAcountByIdAndCustomer(1, "aa");
+//		System.out.println(acount.getAmount());
 //		String productNo = "B";
 //		JSONObject jObj = JSONObject.fromObject("{\"OrderSelection\":[{\"no\":\"A\",\"productId\":\"1\"},{\"no\":\"B\",\"productId\":\"2\"}]}");
 //		JSONArray jArr = (JSONArray )jObj.get("OrderSelection");
@@ -267,27 +269,6 @@ public class MainRun {
 //		UserBeanDao userDao = new UserBeanDao();
 //		userDao.getUserList();
 	}
-	public static void mthod7(){
-		MessageFilter msgFilter = new MessageFilter();
-		ReqMessageBean reqBean = new ReqMessageBean();
-		String msg = "";
-		reqBean.setFromUserName("oBx4Dt37J4GSXlt32V4zGf-EDQQM");
-		reqBean.setMsgType("text");
-		
-		reqBean.setCreateTime(new Date());
-		reqBean.setContent("你好");
-		msg += msgFilter.receiveMessage(reqBean);
-		reqBean.setCreateTime(new Date());
-		reqBean.setContent("赵海荣");
-		msg += msgFilter.receiveMessage(reqBean);
-		reqBean.setCreateTime(new Date());
-		reqBean.setContent("松坪村");
-		msg += msgFilter.receiveMessage(reqBean);
-		System.out.println(msg);
-		
-		
-//		return customerBean;
-	}
 	public static void mthod6(){
 		Session session = HibernateSessionFactory.getSession();
 		Transaction tx = session.beginTransaction();
@@ -353,7 +334,6 @@ public class MainRun {
 			System.out.println(sum);
 			
 		} catch (IOException e) {
-			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}
 	}
@@ -386,7 +366,6 @@ public class MainRun {
 			MessageBeanDao msgDao = new MessageBeanDao();
 			msgDao.saveMessage(reqBean);
 		} catch (JAXBException e) {
-			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}
 		HiberHelper.closeFactory();
@@ -441,7 +420,6 @@ public class MainRun {
 			ReqMessageBean reqBean = (ReqMessageBean) u.unmarshal(new StringReader(source));
 			System.out.println(reqBean);
 		} catch (JAXBException e) {
-			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}
 		

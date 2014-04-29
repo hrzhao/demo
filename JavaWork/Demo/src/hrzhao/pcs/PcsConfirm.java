@@ -9,10 +9,8 @@ import java.util.List;
 
 import net.sf.json.JSONArray;
 import net.sf.json.JSONObject;
-import hrzhao.beans.AcountBean;
 import hrzhao.beans.OrdersBean;
 import hrzhao.beans.ReqMessageBean;
-import hrzhao.dao.AcountBeanDao;
 import hrzhao.dao.OrdersBeanDao;
 import hrzhao.pcs.base.PcsBase;
 
@@ -26,13 +24,14 @@ public class PcsConfirm extends PcsBase {
 	public String doProcess(ReqMessageBean msgBean) {
 		// TODO Auto-generated method stub
 		String content = msgBean.getContent();
+		String[] conts= parseContent(content);
 		if(content == null || content.equals("")){
 			goThisProcess();
 			return "请输入选项";
 		}
 		int selectedId = -1;
 		try{
-			selectedId = Integer.parseInt(content);
+			selectedId = Integer.parseInt(conts[1]);
 		}catch(Exception e){
 			goThisProcess();
 			return "请输入数字";
@@ -70,20 +69,39 @@ public class PcsConfirm extends PcsBase {
 		}
 		OrdersBeanDao orderDao = new OrdersBeanDao();
 		OrdersBean order = orderDao.getOrderById(orderId);
-		if(order.getStatus() < 2){
-			goThisProcess();
-			return "此订单尚未完成配送";
-		}else if(order.getStatus() >2 ){
-			goThisProcess();
-			return "此订单尚状态不正常";
-		}else{
-			order.setStatus(3);
-			String msg = dataFormate.format(order.getIntime())+"，"+order.getProduct().getName()
-					+order.getAmount() +"桶,确认成功";
-			goNextId();
-			orderDao.updateOrder(order);
-			return msg;
+		if(order == null){
+			return "无此订 单或无效";
 		}
+		
+		String msg = "";
+		if(conts[0].toUpperCase().equals("C")){
+			if(order.getStatus() < 2){
+				goThisProcess();
+				msg = "此订单尚未完成配送";
+			}else if(order.getStatus() >2 ){
+				goThisProcess();
+				msg =  "此订单尚状态不正常";
+			}else{
+				order.setStatus(3);
+				msg = dataFormate.format(order.getIntime())+"，"+order.getProduct().getName()
+						+order.getAmount() +"桶,确认成功";
+				goNextId();
+				orderDao.updateOrder(order);
+			}
+		}else if(conts[0].toUpperCase().equals("D")){
+			if(order.getStatus()==0){
+				order.setStatus(4);
+				orderDao.updateOrder(order);
+				msg = dataFormate.format(order.getIntime())+"，订单已被丢弃";
+			}else{
+				goThisProcess();
+				msg = dataFormate.format(order.getIntime())+"，此订单不允删除";
+			}
+		}else{
+			goThisProcess();
+			msg =  "选项有误";
+		}
+		return msg;
 		
 	}
 	private DateFormat dataFormate = new SimpleDateFormat("MM/dd hh:mm");
@@ -91,7 +109,6 @@ public class PcsConfirm extends PcsBase {
 
 	@Override
 	public String getTips() {
-		// TODO Auto-generated method stub
 		OrdersBeanDao orderDao = new OrdersBeanDao();
 		List<OrdersBean> list = orderDao.getOrderByCustomerName(getCustomer().getName());
 		if(list == null || list.size()<=0){
@@ -121,6 +138,17 @@ public class PcsConfirm extends PcsBase {
 			return msg;
 		}
 		//"请输入序号确认订单"
+	}
+	private String[] parseContent(String src){
+		String[] result = null;
+		if(src == null){
+			return result;
+		}
+		String reg="[c-dC-D]{1}-[0-9]{1,2}";
+		if(src.matches(reg)){
+			result = src.split("-");
+		}
+		return result;
 	}
 	
 
