@@ -1,0 +1,49 @@
+<?xml version="1.0" encoding="utf-8"?>
+<frame:EWModule xmlns:fx="http://ns.adobe.com/mxml/2009" 
+				xmlns:s="library://ns.adobe.com/flex/spark" 
+				xmlns:mx="library://ns.adobe.com/flex/mx" xmlns:frame="frame.*" width="100%" height="100%" xmlns:msg="components.msg.*">
+	<fx:Script>
+		<![CDATA[
+			import mx.events.FlexMouseEvent;
+			protected function mouseWheelChangingHandler(event:FlexMouseEvent):void
+			{
+				event.preventDefault();
+				var modifier:int = 20;
+				var delta:Number = Number(event.delta) * modifier;
+				var vPos:Number = msgGroup.verticalScrollPosition;
+				var maximum:Number = scroller.verticalScrollBar.maximum;
+				
+				if (delta < 0) 
+					scroller.viewport.verticalScrollPosition =  Math.min(vPos - delta, maximum) ;        
+				else
+					scroller.viewport.verticalScrollPosition = Math.max(vPos - delta, 0);
+			}
+			
+			
+		]]>
+	</fx:Script>
+	<fx:Declarations>
+		<!-- 将非可视元素（例如服务、值对象）放在此处 -->
+	</fx:Declarations>
+	<s:BorderContainer top="8" left="15" right="15" height="30">
+	</s:BorderContainer>
+	<s:BorderContainer top="43" left="15" right="15" bottom="10">
+		<s:Scroller width="60%" height="100%" mouseWheelChanging="mouseWheelChangingHandler(event)" id="scroller">
+			<s:VGroup id="msgGroup" width="100%">
+				<msg:TextMsgContainer content="内容" realName="名字" userName="sfasfqweasfs_0"/>
+				<msg:ReMsgContainer content="内容" realName="名字" userName="sfasfqweasfs_0"/>
+				<msg:TextMsgContainer content="内容" realName="名字" userName="sfasfqweasfs_0"/>
+				<msg:ReMsgContainer content="内容" realName="名字" userName="sfasfqweasfs_0"/>
+				<msg:TextMsgContainer content="内容" realName="名字" userName="sfasfqweasfs_0"/>
+				<msg:TextMsgContainer content="内容" realName="名字" userName="sfasfqweasfs_0"/>
+				<msg:ReMsgContainer content="内容" realName="名字" userName="sfasfqweasfs_0"/>
+				<msg:TextMsgContainer content="很多的内容内容内容很多很多很多很多" realName="名字" userName="sfasfqweasfs_0"/>
+				<msg:TextMsgContainer content="很多的内容内容内容很多很多很多很多" realName="名字" userName="sfasfqweasfs_0"/>
+				<msg:ReMsgContainer content="很多的内容内容内容很多很多很多很多" realName="名字" userName="sfasfqweasfs_0"/>
+				<msg:TextMsgContainer content="很多的内容内容内容很多很多很多很多" realName="名字" userName="sfasfqweasfs_0"/>
+				<msg:TextMsgContainer content="很多的内容内容内容很多很多很多很多" realName="名字" userName="sfasfqweasfs_0"/>
+				<msg:ReMsgContainer content="很多的内容内容内容很多很多很多很多" realName="名字" userName="sfasfqweasfs_0"/>
+			</s:VGroup>
+		</s:Scroller>
+	</s:BorderContainer>		
+</frame:EWModule>

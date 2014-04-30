@@ -33,7 +33,7 @@
 			protected function creationCompleteHandler(event:FlexEvent):void
 			{
 				// TODO Auto-generated method stub
-//				eventDemoTest();
+				getAppConfigList();
 			}
 			
 			[Bindable]
@@ -294,10 +294,16 @@
 			protected function dg_appConfig_clickHandler(event:MouseEvent):void
 			{
 				// TODO Auto-generated method stub
-//				MessageBox.show("click"+event.localX+"_"+event.localY);
 			}
 			
 		
+			
+			protected function dg_appConfig_doubleClickHandler(event:MouseEvent):void
+			{
+				// TODO Auto-generated method stub
+				editApp(dg_appConfig.selectedItem as AppConfig);
+				
+			}
 			
 		]]>
 	</fx:Script>
@@ -328,6 +334,8 @@
 									 sortExpertMode="true"
 									 rightClick="dg_appConfig_rightClickHandler(event)"
 									 click="dg_appConfig_clickHandler(event)"
+									 doubleClick="dg_appConfig_doubleClickHandler(event)"
+									 doubleClickEnabled="true"
 									 >
 					<mx:columns>
 						<mx:AdvancedDataGridColumn dataField="appId" headerText="应用ID" width="200"/>

@@ -1,0 +1,33 @@
+<?xml version="1.0" encoding="utf-8"?>
+<s:Group xmlns:fx="http://ns.adobe.com/mxml/2009"
+		 xmlns:s="library://ns.adobe.com/flex/spark"
+		 xmlns:mx="library://ns.adobe.com/flex/mx"
+		 width="100%"
+		 minHeight="95"
+		 >
+	<fx:Script>
+		<![CDATA[
+			[Bindable]
+			public var realName:String;
+			[Bindable]
+			public var userName:String;
+			[Bindable]
+			public var time:Date;
+			[Bindable]
+			public var content:String;
+		]]>
+	</fx:Script>
+	<fx:Declarations>
+		<!-- 将非可视元素（例如服务、值对象）放在此处 -->
+	</fx:Declarations>
+	
+	<s:BorderContainer left="100" top="10" right="180" bottom="10" backgroundColor="#FF66FF"  cornerRadius="5">
+		<s:Label id="lbl_content"  left="5" top="5" right="5" bottom="5" text="{content}" />
+	</s:BorderContainer>
+	<s:BorderContainer top="10" right="10" width="160" height="75" backgroundColor="#FF66FF" cornerRadius="5">
+		<s:Label id="lbl_realname" x="10" y="10" width="140" text="{realName}"/>
+		<s:Label id="lbl_name" x="10" y="29" width="140" text="{userName}"/>
+		<s:Label id="lbl_time" x="10" y="47" width="140" text="{time}"/>
+	</s:BorderContainer>
+	
+</s:Group>
