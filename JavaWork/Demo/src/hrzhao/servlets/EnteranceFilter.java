@@ -68,7 +68,11 @@ public class EnteranceFilter {
 			
 			String nextTips = pcs.getNextTips();
 			if(nextTips != null && !nextTips.equals("")){
-				msg += "\n" + nextTips;
+				if(msg == null || msg.equals("")){
+					msg = nextTips;
+				}else{
+					msg += "\n" + nextTips;
+				}
 			}
 			
 			int nextProcessId = pcs.getNextProcessId();
@@ -133,6 +137,7 @@ public class EnteranceFilter {
 	}
 	public void saveMsg(ReqMessageBean msgBean){
 		MessageBeanDao messageDao = new MessageBeanDao();
+		msgBean.setIntime(now);
 		messageDao.saveMessage(msgBean);
 	}
 	

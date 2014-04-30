@@ -9,10 +9,13 @@ import java.util.List;
 
 import net.sf.json.JSONArray;
 import net.sf.json.JSONObject;
+import hrzhao.beans.AcountBean;
 import hrzhao.beans.OrdersBean;
 import hrzhao.beans.ReqMessageBean;
+import hrzhao.dao.AcountBeanDao;
 import hrzhao.dao.OrdersBeanDao;
 import hrzhao.pcs.base.PcsBase;
+import hrzhao.utils.ConfigHelper;
 
 public class PcsConfirm extends PcsBase {
 
@@ -23,6 +26,13 @@ public class PcsConfirm extends PcsBase {
 	@Override
 	public String doProcess(ReqMessageBean msgBean) {
 		// TODO Auto-generated method stub
+		OrdersBeanDao orderDao = new OrdersBeanDao();
+		List<OrdersBean> list = orderDao.getOrderByCustomerName(getCustomer().getName());
+		if(list == null || list.size()<=0){
+			//没有订单
+			return "没有订单 ，返回首页";
+		}
+		
 		String content = msgBean.getContent();
 		String[] conts= parseContent(content);
 		if(content == null || content.equals("")){
@@ -30,9 +40,13 @@ public class PcsConfirm extends PcsBase {
 			return "请输入选项";
 		}
 		int selectedId = -1;
+		if(conts == null){
+			goThisProcess();
+			return "输入格式不正确";
+		}
 		try{
 			selectedId = Integer.parseInt(conts[1]);
-		}catch(Exception e){
+		}catch(NumberFormatException e){
 			goThisProcess();
 			return "请输入数字";
 		}
@@ -49,7 +63,7 @@ public class PcsConfirm extends PcsBase {
 				Iterator<JSONObject> it = orderSelection.iterator();
 				if(it == null || !it.hasNext()){
 					goNegativeId();
-					return "系统错误";
+					return "系统错误#4";
 				}
 				while(it.hasNext()){
 					JSONObject item = it.next();
@@ -61,13 +75,13 @@ public class PcsConfirm extends PcsBase {
 			}
 		}catch(Exception e){
 			goNegativeId();
-			return "系统错误";
+			return "系统错误#5";
 		}
 		if(orderId<0){
 			goNegativeId();
-			return "系统错误";
+			return "无此选项";
 		}
-		OrdersBeanDao orderDao = new OrdersBeanDao();
+		orderDao = new OrdersBeanDao();
 		OrdersBean order = orderDao.getOrderById(orderId);
 		if(order == null){
 			return "无此订 单或无效";
@@ -83,8 +97,8 @@ public class PcsConfirm extends PcsBase {
 				msg =  "此订单尚状态不正常";
 			}else{
 				order.setStatus(3);
-				msg = dataFormate.format(order.getIntime())+"，"+order.getProduct().getName()
-						+order.getAmount() +"桶,确认成功";
+				msg = order.getOrderNo() +"，"+order.getProduct().getName()
+						+order.getAmount() +"桶，确认成功";
 				goNextId();
 				orderDao.updateOrder(order);
 			}
@@ -92,10 +106,21 @@ public class PcsConfirm extends PcsBase {
 			if(order.getStatus()==0){
 				order.setStatus(4);
 				orderDao.updateOrder(order);
-				msg = dataFormate.format(order.getIntime())+"，订单已被丢弃";
+				AcountBeanDao acountDao = new AcountBeanDao();
+				AcountBean acount = acountDao.getAcountByIdAndCustomer(order.getProductId(), getCustomer().getName());
+				if(acount != null){
+					acount.setAmount(acount.getAmount() + order.getAmount());
+					acountDao.updateAcount(acount);
+				}else{
+					msg+="获取帐户错误\n";
+				}
+				msg += order.getOrderNo() +"，"+order.getProduct().getName()
+						+order.getAmount() +"桶，订单已被丢弃";
+				goNextId();
 			}else{
 				goThisProcess();
-				msg = dataFormate.format(order.getIntime())+"，此订单不允删除";
+				msg = order.getOrderNo() +"，"+order.getProduct().getName()
+						+order.getAmount() +"桶，订单不允删除";
 			}
 		}else{
 			goThisProcess();
@@ -113,7 +138,7 @@ public class PcsConfirm extends PcsBase {
 		List<OrdersBean> list = orderDao.getOrderByCustomerName(getCustomer().getName());
 		if(list == null || list.size()<=0){
 			//没有订单
-			return "没有未完成的订单，欢迎下单，请输入 # 返回";
+			return "没有未完成的订单，欢迎下单，请输入 "+ConfigHelper.returnSignal+" 返回";
 		}else{
 			JSONObject processData = new JSONObject();
 			List<HashMap<String, Integer>> selectList = new ArrayList<HashMap<String,Integer>>(); 
@@ -125,6 +150,7 @@ public class PcsConfirm extends PcsBase {
 				msg += i+"、"+ order.getProduct().getName() 
 						+ order.getAmount() +"桶，"
 						+ status[order.getStatus()] +"，"
+						+ order.getOrderNo() + "，"
 						+ dataFormate.format(order.getIntime())+"\n";
 				HashMap<String, Integer > hm = new HashMap<String,Integer>();
 				hm.put("key", i);

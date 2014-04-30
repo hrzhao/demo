@@ -10,13 +10,24 @@ import javax.xml.bind.annotation.XmlRootElement;
 import javax.xml.bind.annotation.adapters.XmlJavaTypeAdapter;
 
 @XmlRootElement(name = "xml")
-public class RespMessageBean {
+public class ReMessageBean {
+	private int id;
 	private String toUserName;
 	private String fromUserName;
 	private Date createTime;
 	private String msgType;
 	private String content;
 	
+	
+	
+	public int getId() {
+		return id;
+	}
+
+	public void setId(int id) {
+		this.id = id;
+	}
+
 	public String getToUserName() {
 		return toUserName;
 	}

@@ -5,6 +5,7 @@ import java.util.Date;
 
 public class OrdersBean implements Serializable {
 	private int id;
+	private String orderNo;
 	private int productId;
 	private String customerName;
 	private Date intime;
@@ -14,6 +15,15 @@ public class OrdersBean implements Serializable {
 	private ProductBean product;
 	private int status;
 	
+	
+	public String getOrderNo() {
+		return orderNo;
+	}
+
+	public void setOrderNo(String orderNo) {
+		this.orderNo = orderNo;
+	}
+
 	public static final String[] STATUS = {"未配送","正在配送","配送完成","已确认","已丢弃"};
 	
 	/**

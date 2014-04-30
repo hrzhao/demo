@@ -28,11 +28,11 @@ public class AcountBeanDao {
 		session.close();
 		return list;
 	}
-	public AcountBean getAcountByIdAndCustomer(int id,String customerName){
+	public AcountBean getAcountByIdAndCustomer(int productId,String customerName){
 		Session session = HiberHelper.getSession();
 		Criteria cr = session.createCriteria(AcountBean.class)
 				.add(Restrictions.eq("customerName", customerName))
-				.add(Restrictions.eq("productId",id));
+				.add(Restrictions.eq("productId",productId));
 		@SuppressWarnings("unchecked")
 		List<AcountBean> list = cr.list();
 		session.close();

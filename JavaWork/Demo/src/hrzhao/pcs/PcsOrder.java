@@ -60,7 +60,7 @@ public class PcsOrder extends PcsBase {
 				if(acount != null){
 					if(selectedProductId == acount.getProductId()){
 						if(amount > acount.getAmount()){
-							msg += "余量不足";
+							msg += "[余量不足]";
 						}else{
 							//处理定购
 							acount.setAmount(acount.getAmount() - amount);
@@ -73,12 +73,12 @@ public class PcsOrder extends PcsBase {
 							orders.setProductId(acount.getProductId());
 							orderDao.saveOrder(orders);
 							succ = true;
-							msg += "订购成功\n";
-							msg += getCustomer().getRealname()+"("+getCustomer().getName()+")，\n"+ getCustomer().getAddress() +"\n"
+							msg += "[订购成功]\n";
+							msg += getCustomer().getRealname()+"("+getCustomer().getName()+")，\n"
+									+ getCustomer().getAddress() +"\n"
 									+ acount.getProduct().getName() +"，" 
-									+acount.getProduct().getCapacity() + "L，"
-									+amount +"桶";
-							
+									+acount.getProduct().getCapacity() + "L，" +amount +"桶\n"
+									+ "订单号：" +orders.getOrderNo();
 							}
 					}
 				}
@@ -90,9 +90,9 @@ public class PcsOrder extends PcsBase {
 			if(succ == false){
 				setNextProcessId(this.getProcessId());
 				if(msg != null && !msg.equals("")){
-					msg = "订购失败\n" + msg;
+					msg = "[订购失败]\n" + msg;
 				}else{
-					msg = "订购失败";
+					msg = "[订购失败]";
 				}
 			}else{
 				setProcessData(null);
@@ -131,7 +131,7 @@ public class PcsOrder extends PcsBase {
 		processData.element("OrderSelection", orderList);
 		setNextProcessData(processData);
 		if(emptyAcount){
-			tips += "您所有的水已配送完毕，欢迎增订，请输入 # 返回";
+			tips += "您所有的水已配送完毕，欢迎增订，请输入 "+ConfigHelper.returnSignal+" 返回";
 		}else{
 			tips += super.getTips();
 		}

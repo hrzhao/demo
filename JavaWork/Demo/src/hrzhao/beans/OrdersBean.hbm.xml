@@ -13,6 +13,7 @@
             <generator class="increment"/>
         </id>
         <property name="productId" column="productId" type="int"/>
+        <property name="orderNo" column="orderNo" type="string"/>
         <property name="customerName" column="customerName" type="string"/>
         <property name="intime" column="intime" type="timestamp"/>
         <property name="workerId" column="workerId" type="integer"/>

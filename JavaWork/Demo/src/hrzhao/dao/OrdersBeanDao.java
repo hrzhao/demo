@@ -3,6 +3,7 @@ package hrzhao.dao;
 import java.util.List;
 
 import org.hibernate.Criteria;
+import org.hibernate.SQLQuery;
 import org.hibernate.Session;
 import org.hibernate.Transaction;
 import org.hibernate.criterion.Restrictions;
@@ -18,6 +19,14 @@ public class OrdersBeanDao {
 	public void saveOrder(OrdersBean order){
 		Session session = HiberHelper.getSession();
 		Transaction tx = session.beginTransaction();
+		//setResultTransformer(Transformers.ALIAS_TO_ENTITY_MAP);
+		String sql = "call  generate_orderNo('EM')";
+		SQLQuery q = session.createSQLQuery(sql);
+		@SuppressWarnings("unchecked")
+		List<String> list =  q.list();
+		if(list != null && list.size()>0){
+			order.setOrderNo(list.get(0));
+		}
 		session.save(order);
 		tx.commit();
 		session.close();

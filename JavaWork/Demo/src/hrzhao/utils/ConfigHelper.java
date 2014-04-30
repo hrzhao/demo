@@ -31,7 +31,7 @@ public final class ConfigHelper {
 		return originalId;
 	}
 	public static String[] msgType =  {"event","image","text","location"};
-	public static int welPcsId = 0;
+	public static int welPcsId = 100;
 	public static int homePcsId = 1;
 	public static int timeoutPcsId = 99;
 	public static String returnSignal = "#";

@@ -42,6 +42,7 @@ import net.sf.json.JsonConfig;
 
 import org.hibernate.Criteria;
 import org.hibernate.Hibernate;
+import org.hibernate.SQLQuery;
 import org.hibernate.Session;
 import org.hibernate.SessionFactory;
 import org.hibernate.Transaction;
@@ -129,7 +130,20 @@ public class MainRun {
 	
 	public static void main(String[] args) {
 		Session session = HiberHelper.getSession();
-		session.get(ComnMsgBean.class, 1);
+		//setResultTransformer(Transformers.ALIAS_TO_ENTITY_MAP);
+		String sql = "call  generate_orderNo('EM')";
+		SQLQuery q = session.createSQLQuery(sql);
+		@SuppressWarnings("unchecked")
+		List<String> list =  q.list();
+		if(list != null && list.size()>0){
+			System.out.println(list.get(0));
+		}
+		session.close();
+//		int i = Integer.parseInt("123a");
+//		JSONObject obj = new JSONObject();
+//		Object o = obj.get("k");
+//		Session session = HiberHelper.getSession();
+//		session.get(ComnMsgBean.class, 1);
 //		method55();
 //		AcountBeanDao acountDao = new AcountBeanDao();
 //		List<AcountBean> list = acountDao.getAcountByCustomer("aa");

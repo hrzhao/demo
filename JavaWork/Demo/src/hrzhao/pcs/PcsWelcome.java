@@ -1,14 +1,18 @@
 package hrzhao.pcs;
 
 
+import net.sf.json.JSONException;
 import net.sf.json.JSONObject;
 import hrzhao.beans.ReqMessageBean;
 import hrzhao.pcs.base.PcsBase;
+import hrzhao.utils.ConfigHelper;
+import hrzhao.utils.DebugHelper;
 
 public class PcsWelcome extends PcsBase {
 
 	public PcsWelcome() {
 		// TODO Auto-generated constructor stub
+		this.availableMsgType = ConfigHelper.msgType;
 	}
 
 	@Override
@@ -18,8 +22,12 @@ public class PcsWelcome extends PcsBase {
 		String msg = "";
 		JSONObject param = getParam();
 		if(param != null){
-			msg = param.getString("welcomeMsg");
-			if(msg == null){msg = "";}
+			try{
+				msg = param.getString("message");
+				if(msg == null){msg = "";}
+			}catch(JSONException e){
+				DebugHelper.log("PcsWelcome", "doProcess" + e.toString());
+			}
 		}
 		return msg;
 	}

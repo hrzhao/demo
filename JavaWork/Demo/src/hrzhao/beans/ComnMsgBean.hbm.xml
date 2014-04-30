@@ -7,7 +7,7 @@
         package="hrzhao.beans"
         >
 
-    <class name="ComnMsgBean" table="comnMsg">
+    <class name="ComnMsgBean" table="comnmsg">
 
         <id name="id">
             <generator class="increment"/>

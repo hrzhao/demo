@@ -1,7 +1,8 @@
 package hrzhao.servlets;
 
 import hrzhao.beans.ReqMessageBean;
-import hrzhao.beans.RespMessageBean;
+import hrzhao.beans.ReMessageBean;
+import hrzhao.dao.ReMessageBeanDao;
 import hrzhao.utils.DebugHelper;
 import hrzhao.utils.WeChatHelper;
 
@@ -81,8 +82,10 @@ public class EnteranceServlet extends HttpServlet {
 			//Debug 为了显示时间
 			msg +="\n{"+(e-s)+"}";
 			
-			RespMessageBean respBean = createRespBean(reqBean,msg);
-			responseMessage(response, respBean);
+			ReMessageBean reMsg = createRespBean(reqBean,msg);
+			responseMessage(response, reMsg);
+			//保存
+			new ReMessageBeanDao().save(reMsg);
 		}catch(JAXBException e){
 			DebugHelper.log("JAXBException",e.toString());
 		}catch(Exception e){
@@ -119,13 +122,13 @@ public class EnteranceServlet extends HttpServlet {
 		return reqBean;
 	}
 	
-	private void responseMessage(HttpServletResponse response,RespMessageBean respBean) throws JAXBException{
+	private void responseMessage(HttpServletResponse response,ReMessageBean respBean) throws JAXBException{
 		response.setContentType("application/xml");
 		response.setCharacterEncoding("UTF-8");
 		PrintWriter out = null;
 		try {
 			out = response.getWriter();
-			JAXBContext jc = JAXBContext.newInstance(RespMessageBean.class);
+			JAXBContext jc = JAXBContext.newInstance(ReMessageBean.class);
 			Marshaller m = jc.createMarshaller();
 			m.setProperty(Marshaller.JAXB_FORMATTED_OUTPUT, Boolean.TRUE);
 			m.setProperty(CharacterEscapeHandler.class.getName(),
@@ -152,8 +155,8 @@ public class EnteranceServlet extends HttpServlet {
 	 * @param content
 	 * @return
 	 */
-	private RespMessageBean createRespBean(ReqMessageBean reqBean, String content) {
-		RespMessageBean respBean = new RespMessageBean();
+	private ReMessageBean createRespBean(ReqMessageBean reqBean, String content) {
+		ReMessageBean respBean = new ReMessageBean();
 		respBean.setFromUserName(reqBean.getToUserName());
 		respBean.setToUserName(reqBean.getFromUserName());
 		respBean.setMsgType("text");
