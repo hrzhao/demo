@@ -30,6 +30,7 @@ public class PcsConfirm extends PcsBase {
 		List<OrdersBean> list = orderDao.getOrderByCustomerName(getCustomer().getName());
 		if(list == null || list.size()<=0){
 			//没有订单
+			setNextProcessId(ConfigHelper.homePcsId);
 			return "没有订单 ，返回首页";
 		}
 		
