@@ -2,24 +2,49 @@
 <frame:EWModule xmlns:fx="http://ns.adobe.com/mxml/2009" 
 				xmlns:s="library://ns.adobe.com/flex/spark" 
 				xmlns:mx="library://ns.adobe.com/flex/mx" xmlns:frame="frame.*" width="100%" height="100%"
-			    xmlns:components="components.*">
+			    xmlns:components="components.*"
+				creationComplete="ewmodule1_creationCompleteHandler(event)"
+				>
 	<fx:Script>
 		<![CDATA[
-			import mx.managers.ToolTipManager;
-			private function method():void{
-//				ToolTipManager.createToolTip();
+			import mx.events.FlexEvent;
+			
+			import spark.components.Image;
+			
+			protected function ewmodule1_creationCompleteHandler(event:FlexEvent):void
+			{
+//				var loader:Loader = new Loader();  
+//				var imagePath:String = "http://res4.auto.ifeng.com/s/2584/10/5/12922204621361_5.jpg" //相对路径或网络图片地址  
+//				loader.load(new URLRequest(imagePath));   //如
+//				loader.contentLoaderInfo.addEventListener(Event.COMPLETE,completeHandler);
+				image.source = "http://mmbiz.qpic.cn/mmbiz/8DgJya2a4eiciagUNbStichEmr2ouIDqe8RLtxN6yc6Fvab2RQyG5L7UlBxEzGNbIticu0nW3rG0p8KbibFiaTSRYy2A/0";
+				image.width= 400;
+				image.height = 300;
+				image.fillMode="scale";
+				var image1:Image = new Image();
+				image1.width= 400;
+				image1.height = 300;
+				image1.fillMode="scale";
+				image1.source = "http://mmbiz.qpic.cn/mmbiz/8DgJya2a4e8f750Zdmc3YVEPBbUkXphYTSPiacb6CibB982uzeTH1E2D4VsMdlMxjV2aAjk8lU8Ztssia5ibgSOIZQ/0";
+				mainGroup.addElement(image1);
 			}
 			
-			protected function button1_clickHandler(event:MouseEvent):void
+			private function completeHandler(event:Event):void
+			{
+				// TODO Auto Generated method stub
+//				var tLoader:Loader = event.target.loader as Loader;
+//				var pic:Bitmap = Bitmap(tLoader.content);
+//				mainGroup.addChild(pic);
+			}
+			[Embed(source="assets/fail.jpg")]
+			private var failImage:Class;
+			
+			protected function image_ioErrorHandler(event:IOErrorEvent):void
 			{
 				// TODO Auto-generated method stub
-				var num1:int = outGroup.numChildren;
-				var num2:int = outGroup.numAutomationChildren;
-				var num3:int = outGroup.numElements;
-				
-				for each(var val:Object in outGroup){
-					result.text+= val.id;
-				}
+				image.source = failImage;
+				image.width = image.sourceWidth;
+				image.height = image.sourceHeight;
 				
 			}
 			
@@ -28,15 +53,9 @@
 	<fx:Declarations>
 		<!-- 将非可视元素（例如服务、值对象）放在此处 -->
 	</fx:Declarations>
-	<s:TextInput left="94" top="47" errorString="提示内容" />
-	<s:Group id="outGroup">
-		<s:Group id="inGroup1">
-			<s:Label id="label1"/>
-			<s:Label id="label2" />
-		</s:Group>
-		<s:Group id="inGroup2"/>
-	</s:Group>
-	<s:Button label="Click" click="button1_clickHandler(event)" top="50" />
-	<s:TextArea id="result" top="80"/>
+	<s:HGroup width="100%" height="100%" id="mainGroup">
+		<s:Image id="image" ioError="image_ioErrorHandler(event)"/>
+	</s:HGroup>
+	
 	
 </frame:EWModule>

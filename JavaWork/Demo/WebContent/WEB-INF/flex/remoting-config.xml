@@ -45,5 +45,10 @@
   			<source>hrzhao.services.MessageServices</source>
   		</properties>  
     </destination>
+     <destination id="comnmsgService">
+  		<properties>
+  			<source>hrzhao.services.ComnMsgService</source>
+  		</properties>  
+    </destination>
 
 </service>

@@ -1,10 +1,22 @@
 <?xml version="1.0" encoding="utf-8"?>
 <frame:EWModule xmlns:fx="http://ns.adobe.com/mxml/2009" 
 				xmlns:s="library://ns.adobe.com/flex/spark" 
-				xmlns:mx="library://ns.adobe.com/flex/mx" xmlns:frame="frame.*" width="100%" height="100%" xmlns:msg="components.msg.*">
+				xmlns:mx="library://ns.adobe.com/flex/mx" xmlns:frame="frame.*" width="100%" height="100%" xmlns:msg="components.msg.*"
+				creationComplete="ewmodule1_creationCompleteHandler(event)" xmlns:UI="common.UI.*"
+				>
 	<fx:Script>
 		<![CDATA[
+			import events.CustomEvent;
+			
+			import mx.collections.ArrayCollection;
+			import mx.collections.ArrayList;
+			import mx.events.FlexEvent;
 			import mx.events.FlexMouseEvent;
+			import mx.rpc.AbstractOperation;
+			import mx.rpc.events.FaultEvent;
+			import mx.rpc.events.ResultEvent;
+			
+			import utils.MessageBox;
 			protected function mouseWheelChangingHandler(event:FlexMouseEvent):void
 			{
 				event.preventDefault();
@@ -20,30 +32,124 @@
 			}
 			
 			
+			protected function ewmodule1_creationCompleteHandler(event:FlexEvent):void
+			{
+				// TODO Auto-generated method stub
+				cmBox_customer.textInput.editable = false;
+				msgGroup.addEventListener("replyMsg",replyMsgHandler,true,0,false);
+				var op_getComnMsgList:AbstractOperation = ro.getOperation("getComnMsgList");
+				op_getComnMsgList.addEventListener(FaultEvent.FAULT,faultHandler);
+				op_getComnMsgList.addEventListener(ResultEvent.RESULT,op_getComnMsgList_resultHandler);
+				op_getComnMsgList.send(null,null,null,-1,-1);
+				showProgress(null);
+			}
+			//回复消息
+			private function replyMsgHandler(event:CustomEvent):void{
+				var customerName:String = event.data.customerName;
+				var c_realname:String = event.data.c_realname;
+				var isfound:Boolean = false;
+				for each(var obj:Object in customerNames){
+					if(obj.customerName == customerName){
+						isfound = true;
+						cmBox_customer.selectedItem = obj;
+					}
+				}
+				if(!isfound){
+					var item:Object = {label:c_realname+"("+customerName+")",customerName:customerName};
+					customerNames.addItem(item);
+					cmBox_customer.selectedItem = item;
+				}
+			}
+			protected function faultHandler(event:FaultEvent):void{
+				hideProgress();
+				MessageBox.show("请求失败\n" + event.message.toString());
+			}
+			[Bindable]
+			private var data:ArrayCollection = new ArrayCollection();
+			protected function op_getComnMsgList_resultHandler(event:ResultEvent):void{
+				hideProgress();
+				if(event.result != null){
+					if(event.result.hasOwnProperty("data")){
+						data = event.result.data;
+					}
+				}
+			}
+			protected function showProgress(msg:String):void{
+				if(msg != null){
+					progressLabel.label = msg;
+				}
+				progressLabel.visible = true;
+			}
+			protected function hideProgress():void{
+				progressLabel.visible = false;
+			}
+			[Bindable]
+			private var customerNames:ArrayCollection = new ArrayCollection();
+			private var op_sendMsg:AbstractOperation = null;
+			protected function btn_send_clickHandler(event:MouseEvent):void
+			{
+				if(cmBox_customer.selectedItem == null){
+					cmBox_customer.openDropDown();
+					cmBox_customer.toolTip = "请选择客户...";
+					return;
+				}
+				var customerName:String = cmBox_customer.selectedItem.customerName;
+//				var userId:int = this.appFrame.user.id;
+				var userId:int = 1;
+				var content:String = txt_Msg4Send.text;
+				if(content == null || content == ""){
+					txt_Msg4Send.setFocus();
+					txt_Msg4Send.toolTip = "请填写回复内容...";
+					return;
+				}
+				//加判断
+				if(op_sendMsg == null){
+					op_sendMsg = ro.getOperation("sendMsg");
+					op_sendMsg.addEventListener(ResultEvent.RESULT,sendMsg_resultHandler,false,0,true);
+					op_sendMsg.addEventListener(FaultEvent.FAULT,faultHandler,false,0,true);
+					
+				}
+				
+				cmBox_customer.toolTip = null;
+				txt_Msg4Send.toolTip = null;
+				op_sendMsg.send(customerName,userId,content);
+			}
+			private function sendMsg_resultHandler(event:ResultEvent):void{
+				//发送结果
+				if(event.result.data != null){
+					data.addItem(event.result.data);
+					txt_Msg4Send.text = null;
+				}else{
+					
+				}
+			}
+			
 		]]>
 	</fx:Script>
 	<fx:Declarations>
+		<s:RemoteObject id="ro" destination="comnmsgService"/>
 		<!-- 将非可视元素（例如服务、值对象）放在此处 -->
 	</fx:Declarations>
 	<s:BorderContainer top="8" left="15" right="15" height="30">
 	</s:BorderContainer>
 	<s:BorderContainer top="43" left="15" right="15" bottom="10">
-		<s:Scroller width="60%" height="100%" mouseWheelChanging="mouseWheelChangingHandler(event)" id="scroller">
-			<s:VGroup id="msgGroup" width="100%">
-				<msg:TextMsgContainer content="内容" realName="名字" userName="sfasfqweasfs_0"/>
-				<msg:ReMsgContainer content="内容" realName="名字" userName="sfasfqweasfs_0"/>
-				<msg:TextMsgContainer content="内容" realName="名字" userName="sfasfqweasfs_0"/>
-				<msg:ReMsgContainer content="内容" realName="名字" userName="sfasfqweasfs_0"/>
-				<msg:TextMsgContainer content="内容" realName="名字" userName="sfasfqweasfs_0"/>
-				<msg:TextMsgContainer content="内容" realName="名字" userName="sfasfqweasfs_0"/>
-				<msg:ReMsgContainer content="内容" realName="名字" userName="sfasfqweasfs_0"/>
-				<msg:TextMsgContainer content="很多的内容内容内容很多很多很多很多" realName="名字" userName="sfasfqweasfs_0"/>
-				<msg:TextMsgContainer content="很多的内容内容内容很多很多很多很多" realName="名字" userName="sfasfqweasfs_0"/>
-				<msg:ReMsgContainer content="很多的内容内容内容很多很多很多很多" realName="名字" userName="sfasfqweasfs_0"/>
-				<msg:TextMsgContainer content="很多的内容内容内容很多很多很多很多" realName="名字" userName="sfasfqweasfs_0"/>
-				<msg:TextMsgContainer content="很多的内容内容内容很多很多很多很多" realName="名字" userName="sfasfqweasfs_0"/>
-				<msg:ReMsgContainer content="很多的内容内容内容很多很多很多很多" realName="名字" userName="sfasfqweasfs_0"/>
-			</s:VGroup>
+		<s:Scroller width="60%" height="100%" left="0" mouseWheelChanging="mouseWheelChangingHandler(event)" id="scroller">
+			<s:DataGroup id="msgGroup" width="100%" height="100%" itemRenderer="itemrenderer.ComnMsgRenderer" dataProvider="{data}">
+				<s:layout>
+					<s:VerticalLayout/>
+				</s:layout>
+			</s:DataGroup>
 		</s:Scroller>
+		<s:BorderContainer id="sendMsgCont" right="10" bottom="10" maxHeight="200" width="38%" borderVisible="false" cornerRadius="15"
+						   backgroundColor="#CC99CC"
+						   >
+			<s:ComboBox id="cmBox_customer" left="20" top="10" dataProvider="{customerNames}" labelField="label"
+						/>
+			<s:TextArea id="txt_Msg4Send" left="20" top="45" right="10" bottom="45"
+						prompt="请输入要回复的内容，客户须主动查询才可阅读此消息"/>
+			<s:Button id="btn_send" right="20" bottom="10" label="发送" click="btn_send_clickHandler(event)"/>
+			
+		</s:BorderContainer>
 	</s:BorderContainer>		
+	<UI:LabelProgress id="progressLabel" width="100%" height="100%" visible="false"/>
 </frame:EWModule>

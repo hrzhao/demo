@@ -1,0 +1,38 @@
+<?xml version="1.0" encoding="utf-8"?>
+<s:ItemRenderer xmlns:fx="http://ns.adobe.com/mxml/2009" 
+				xmlns:s="library://ns.adobe.com/flex/spark" 
+				xmlns:mx="library://ns.adobe.com/flex/mx" 
+				autoDrawBackground="true" xmlns:msg="components.msg.*"
+				width="100%"
+				>
+	<fx:Script>
+		<![CDATA[
+			import components.msg.ComnMsgContainer;
+			import components.msg.ReMsgContainer;
+			[Bindable]
+			override public function get data():Object
+			{
+				// TODO Auto Generated method stub
+				return super.data;
+			}
+			
+			override public function set data(value:Object):void
+			{
+				// TODO Auto Generated method stub
+				super.data = value;
+				if(value.status == 0){
+					var comnCont:ComnMsgContainer = new ComnMsgContainer();
+					comnCont.initialize();
+					comnCont.data = value;
+					this.addElement(comnCont);
+				}else{
+					var reCont:ReMsgContainer = new ReMsgContainer();
+					reCont.data = value;
+					this.addElement(reCont);
+				}
+			}
+			
+		]]>
+	</fx:Script>
+	
+</s:ItemRenderer>

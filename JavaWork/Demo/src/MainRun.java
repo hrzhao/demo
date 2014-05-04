@@ -9,6 +9,7 @@ import hrzhao.beans.TestBean;
 import hrzhao.beans.UserBean;
 import hrzhao.dao.AcountBeanDao;
 import hrzhao.dao.AppConfigBeanDao;
+import hrzhao.dao.ComnMsgBeanDao;
 import hrzhao.dao.CustomerBeanDao;
 import hrzhao.dao.MessageBeanDao;
 import hrzhao.dao.UserBeanDao;
@@ -42,6 +43,7 @@ import net.sf.json.JsonConfig;
 
 import org.hibernate.Criteria;
 import org.hibernate.Hibernate;
+import org.hibernate.Query;
 import org.hibernate.SQLQuery;
 import org.hibernate.Session;
 import org.hibernate.SessionFactory;
@@ -50,6 +52,7 @@ import org.hibernate.boot.registry.StandardServiceRegistry;
 import org.hibernate.boot.registry.StandardServiceRegistryBuilder;
 import org.hibernate.cfg.Configuration;
 import org.hibernate.criterion.Restrictions;
+import org.hibernate.transform.Transformers;
 
 
 //import hrzhao.Config;
@@ -129,16 +132,20 @@ public class MainRun {
 	}
 	
 	public static void main(String[] args) {
+//		List<Object> list = new ComnMsgBeanDao().getComnMsgList(null, null, null, 1, 2);
 		Session session = HiberHelper.getSession();
-		//setResultTransformer(Transformers.ALIAS_TO_ENTITY_MAP);
-		String sql = "call  generate_orderNo('EM')";
-		SQLQuery q = session.createSQLQuery(sql);
-		@SuppressWarnings("unchecked")
-		List<String> list =  q.list();
-		if(list != null && list.size()>0){
-			System.out.println(list.get(0));
-		}
-		session.close();
+		String sql = "SELECT * FROM v_comnmsg where id = 7";
+		Query q = session.createSQLQuery(sql);
+//		q.setResultTransformer(Transformers.ALIAS_TO_ENTITY_MAP);
+		List<?> list = q.list();
+		System.out.println(list.size());
+		
+//		@SuppressWarnings("unchecked")
+//		List<String> list =  q.list();
+//		if(list != null && list.size()>0){
+//			System.out.println(list.get(0));
+//		}
+//		session.close();
 //		int i = Integer.parseInt("123a");
 //		JSONObject obj = new JSONObject();
 //		Object o = obj.get("k");

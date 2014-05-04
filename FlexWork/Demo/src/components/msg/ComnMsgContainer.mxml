@@ -1,0 +1,95 @@
+<?xml version="1.0" encoding="utf-8"?>
+<s:Group xmlns:fx="http://ns.adobe.com/mxml/2009"
+		 xmlns:s="library://ns.adobe.com/flex/spark"
+		 xmlns:mx="library://ns.adobe.com/flex/mx"
+		 width="100%"
+		 minHeight="95"
+		 >
+	
+	<fx:Metadata>
+		[Event(name="replyMsg", type="events.CustomerEvent")]
+	</fx:Metadata>
+	<fx:Script>
+		<![CDATA[
+			import events.CustomEvent;
+			
+			import mx.controls.Menu;
+			import mx.events.MenuEvent;
+			
+			import spark.components.Image;
+			private var _data:Object;
+			public function get data():Object{
+				return _data;
+			}
+			public function set data(value:Object):void{
+				_data = value;
+				realName = value.c_realname;
+				userName = value.customerName;
+				time = value.intime;
+				if(value.msgType == "text"){
+					lbl_content.text = value.content;
+				}else if(value.msgType == "image"){
+					borderContent.removeAllElements();
+					var image:Image = new Image();
+					image.source = value.picURL;
+					image.width= 400;
+					image.height = 300;
+					image.fillMode="scale";
+					image.top = 10;
+					image.bottom = 10;
+					image.left = 10;
+					image.right = 10;
+					image.addEventListener(IOErrorEvent.IO_ERROR,image_ioErrorHandler,false,0,true);
+					borderContent.addElement(image);
+				}else{
+					
+				}
+			}
+			[Embed(source="assets/fail.jpg")]
+			private var failImage:Class;
+			protected function image_ioErrorHandler(event:IOErrorEvent):void
+			{
+				// TODO Auto-generated method stub
+				var image:Image = event.target as Image;
+				image.source = failImage;
+				image.width = image.sourceWidth;
+				image.height = image.sourceHeight;
+				
+			}
+			[Bindable]
+			public var realName:String;
+			[Bindable]
+			public var userName:String;
+			[Bindable]
+			public var time:Date;
+			private var menu:Menu = null;
+			protected function borderContent_rightClickHandler(event:MouseEvent):void
+			{
+				// TODO Auto-generated method stub
+				if(menu ==null){
+					menu = Menu.createMenu(this ,[{label:"回复"}],true);
+					menu.addEventListener(MenuEvent.ITEM_CLICK,menuClickHandler,false,0,true);
+				}
+				var point:Point = localToGlobal(new Point(mouseX,mouseY));
+				menu.show(point.x,point.y);
+			}
+			private function menuClickHandler(event:MenuEvent):void{
+				this.dispatchEvent(new CustomEvent("replyMsg",data,true,true));
+				menu.hide();
+			}
+		]]>
+	</fx:Script>
+	<fx:Declarations>
+		<!-- 将非可视元素（例如服务、值对象）放在此处 -->
+	</fx:Declarations>
+	
+	<s:BorderContainer top="10" left="10" width="160" height="75" backgroundColor="#FFFF99" cornerRadius="5">
+		<s:Label id="lbl_realname" x="10" y="10" width="140" text="{realName}"/>
+		<s:Label id="lbl_name" x="10" y="29" width="140" text="{userName}"/>
+		<s:Label id="lbl_time" x="10" y="47" width="140" text="{time}"/>
+	</s:BorderContainer>
+	<s:BorderContainer id="borderContent" left="180" top="10" right="100" bottom="10" backgroundColor="#FFFF66"  cornerRadius="5" rightClick="borderContent_rightClickHandler(event)">
+		<s:Label id="lbl_content"  left="5" top="5" right="5" bottom="5" />
+	</s:BorderContainer>
+	
+</s:Group>
