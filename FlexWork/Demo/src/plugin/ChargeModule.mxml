@@ -1,0 +1,198 @@
+<?xml version="1.0" encoding="utf-8"?>
+<frame:EWModule xmlns:fx="http://ns.adobe.com/mxml/2009" 
+				xmlns:s="library://ns.adobe.com/flex/spark" 
+				xmlns:mx="library://ns.adobe.com/flex/mx" xmlns:frame="frame.*" 
+				xmlns:common="common.*"
+				creationComplete="ewmodule1_creationCompleteHandler(event)" xmlns:UI="common.UI.*"
+				width="100%" height="100%" xmlns:components="components.*" xmlns:ns="http://code.google.com/p/flexlib/"
+				>
+	<fx:Script>
+		<![CDATA[
+			import events.DgcMenuEvent;
+			
+			import flexlib.mdi.containers.MDIWindow;
+			
+			import mx.collections.ArrayCollection;
+			import mx.controls.Menu;
+			import mx.events.FlexEvent;
+			import mx.rpc.AbstractOperation;
+			import mx.rpc.events.FaultEvent;
+			import mx.rpc.events.ResultEvent;
+			
+			import utils.MessageBox;
+			public function dateformate(item:Object, column:AdvancedDataGridColumn):String  
+			{
+				return df.format(item[column.dataField]);
+			}
+			[Bindable]
+			private var title:String = "查找用户";
+			
+			private var op_getCustomerList:AbstractOperation = null;
+			protected function ewmodule1_creationCompleteHandler(event:FlexEvent):void
+			{
+				// TODO Auto-generated method stub
+				var menuItems:Array = [{label:"查看帐户",enabled:true,needSelected:true},
+					{label:"充值",enabled:true,needSelected:true}]
+				dg_customer.customMenu = Menu.createMenu(dg_customer,menuItems);
+			}
+			private function getCustomerList():void{
+				if(op_getCustomerList == null){
+					op_getCustomerList = ro.getOperation("getCustomerList");
+					op_getCustomerList.addEventListener(FaultEvent.FAULT,faultHandler,false,0,true);
+					op_getCustomerList.addEventListener(ResultEvent.RESULT,getCustomerList_resulttHandler,false,0,true);
+				}
+				showProgress(null);
+				op_getCustomerList.send(txt_customerName.text ==""?null:txt_customerName.text,
+					txt_realname.text == "" ?null:txt_realname.text);
+			}
+			
+			[Bindable]
+			private var customerList:ArrayCollection = new ArrayCollection();
+			
+			private function getCustomerList_resulttHandler(event:ResultEvent):void{
+				hideProgress();
+				if(event.result.state == "success"){
+					customerList = event.result.data;
+				}
+			}
+			protected function faultHandler(event:FaultEvent):void{
+				hideProgress();
+				MessageBox.show("请求失败\n" + event.message.toString());
+			}
+			protected function showProgress(msg:String):void{
+				if(msg != null){
+					progressLabel.label = msg;
+				}
+				progressLabel.visible = true;
+			}
+			protected function hideProgress():void{
+				progressLabel.visible = false;
+			}
+			
+			protected function btn_search_clickHandler(event:MouseEvent):void
+			{
+				// TODO Auto-generated method stub
+				getCustomerList();
+			}
+			
+			
+			protected function dg_appConfig_dgcMenuClickHandler(event:DgcMenuEvent):void
+			{
+				// TODO Auto-generated method stub
+				if(event.menuItem.label == "查看帐户"){
+					showViewAcountWnd();
+				}else if(event.menuItem.label == "充值"){
+				
+				}
+				
+			}
+			
+			//
+			private var viewAcountWnd:MDIWindow = null;
+			private function showViewAcountWnd():void
+			{
+				var hasInclude:Boolean = false;
+				for each(var tmp:MDIWindow in mdiCanvasHolder.windowManager.windowList )
+				{
+					if( tmp == viewAcountWnd )
+					{
+						hasInclude = true;
+						break;
+					}
+				}
+				if(viewAcountWnd==null || !hasInclude)
+				{
+					viewAcountWnd = new MDIWindow();
+					mdiCanvasHolder.windowManager.add(viewAcountWnd);
+					viewAcountWnd.title ="查看帐户";
+					viewAcountWnd.x = 50;
+					viewAcountWnd.y = 100;
+//					rightAlighMDI(viewAcountWnd);
+				}
+				viewAcountWnd.visible = true;
+			}
+			
+			private function rightTopAlighMDI(window:MDIWindow):void
+			{
+				var xpos:int = mdiCanvasHolder.width  - window.width-80;
+				var ypos:int = 10;
+				window.x = xpos
+				window.y = ypos;
+			}
+			private function rightAlighMDI(window:MDIWindow):void
+			{
+				var xpos:int = mdiCanvasHolder.width  - window.width-120;
+				var ypos:int = mdiCanvasHolder.height * 0.5 - window.height * 0.5;
+				if(ypos<0)
+				{
+					ypos =0;
+				}
+				window.x = xpos
+				window.y = ypos;
+			}
+			private function centerMDI(window:MDIWindow):void
+			{
+				var xpos:int = mdiCanvasHolder.width * 0.5 - window.width * 0.5;
+				var ypos:int = mdiCanvasHolder.height * 0.5 - window.height * 0.5;
+				if(ypos<0)
+				{
+					ypos =0;
+				}
+				window.x = xpos
+				window.y = ypos;
+			}
+			
+			
+
+		]]>
+	</fx:Script>
+	<fx:Declarations>
+		<s:RemoteObject id="ro" destination="customerService"/> 
+		<s:DateTimeFormatter id="df" dateTimePattern="yyyy-MM-dd HH:mm:ss"/>
+		<!-- 将非可视元素（例如服务、值对象）放在此处 -->
+	</fx:Declarations>
+	<s:Line top="27" right="0" left="0">
+		<s:stroke>
+			<s:SolidColorStroke color="0xb4cadc" weight="1" />
+		</s:stroke>
+	</s:Line>
+	<common:CloseableTabBar id="tabbar" left="5" top="3" maxWidth="955" dataProvider="{this.viewStack}" 
+							lockedTabCount="1" height="25" buttonMode="true" labelField="label">
+	</common:CloseableTabBar>
+	
+	<mx:ViewStack id="viewStack" width="100%" top="28" height="100%">
+		<s:NavigatorContent width="100%" height="100%" label="{title}">
+			<s:BorderContainer backgroundColor="#DDDDDD" borderColor="#808080" 
+							   top="8" left="15" right="15" height="30">
+				<s:Label left="13" top="10" text="客户名称："/>
+				<s:TextInput id="txt_realname" left="75" top="3" width="140"/>
+				<s:Label left="223" top="10" text="客户ID："/>
+				<s:TextInput id="txt_customerName" left="274" top="3" width="156"/>
+				
+				<s:Button id="btn_search" right="10" top="3" label="查询" click="btn_search_clickHandler(event)"/>
+			</s:BorderContainer>
+			<components:SuperAdvancedDataGrid id="dg_customer" top="43" left="15" right="15" bottom="10"
+								 horizontalScrollPolicy="auto" verticalScrollPolicy="auto"
+								 sortExpertMode="true"
+								 dataProvider="{customerList}"
+								 dgcMenuClick="dg_appConfig_dgcMenuClickHandler(event)"
+								 >
+				<components:columns>
+					<mx:AdvancedDataGridColumn dataField="realname" headerText="客户名称" width="80"/>
+					<mx:AdvancedDataGridColumn dataField="name" headerText="客户ID" width="220"/>
+					<mx:AdvancedDataGridColumn dataField="phone" headerText="电话" width="80"/>
+					<mx:AdvancedDataGridColumn dataField="sex" headerText="性别" width="40"/>
+					<mx:AdvancedDataGridColumn dataField="address" headerText="地址" width="150"/>
+					<mx:AdvancedDataGridColumn dataField="building" headerText="楼号" width="80"/>
+					<mx:AdvancedDataGridColumn dataField="room" headerText="房号" width="80"/>
+					<mx:AdvancedDataGridColumn dataField="intime" headerText="首次访问" labelFunction="dateformate" width="80"/>
+					<mx:AdvancedDataGridColumn dataField="lasttime" headerText="最近时间" labelFunction="dateformate"  width="80"/>
+				</components:columns>
+			</components:SuperAdvancedDataGrid>
+		</s:NavigatorContent>
+	</mx:ViewStack>
+	<ns:MDICanvas id="mdiCanvasHolder" visible="false" top="26" bottom="0" width="100%"
+				  enforceBoundaries="true">
+	</ns:MDICanvas>
+	<UI:LabelProgress id="progressLabel" width="100%" height="100%" visible="false"/>
+</frame:EWModule>

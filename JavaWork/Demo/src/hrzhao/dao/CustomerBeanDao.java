@@ -65,5 +65,20 @@ public class CustomerBeanDao {
 		session.close();
 		return customerList;
 	}
+	public List<CustomerBean> getCustomerList(String name,String realname) {
+		// TODO Auto-generated method stub
+		Session session = HiberHelper.getSession();
+		Criteria cr = session.createCriteria(CustomerBean.class);
+		if(name != null){
+			cr.add(Restrictions.like("name", "%"+name+"%"));
+		}
+		if(realname != null){
+			cr.add(Restrictions.like("realname",  "%"+realname+"%"));
+		}
+		@SuppressWarnings("unchecked")
+		List<CustomerBean> customerList = cr.list();
+		session.close();
+		return customerList;
+	}
 
 }

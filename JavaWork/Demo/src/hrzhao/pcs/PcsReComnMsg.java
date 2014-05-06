@@ -7,6 +7,7 @@ import hrzhao.beans.ComnMsgBean;
 import hrzhao.beans.ReqMessageBean;
 import hrzhao.dao.ComnMsgBeanDao;
 import hrzhao.pcs.base.PcsBase;
+import hrzhao.utils.ConfigHelper;
 
 public class PcsReComnMsg extends PcsBase {
 
@@ -17,10 +18,17 @@ public class PcsReComnMsg extends PcsBase {
 	@Override
 	public String doProcess(ReqMessageBean msgBean) {
 		// TODO Auto-generated method stub
+		String content = msgBean.getContent();
 		ComnMsgBeanDao comnMsgDao = new ComnMsgBeanDao();
-		if(comnMsgDao.hasUnReadMsg(getCustomer().getName())){
-			goThisProcess();
-			return "";
+		if(comnMsgDao.unReadMsgNum(getCustomer().getName())>0){
+			if("忽略所有".equals(content)){
+				setNextProcessId(ConfigHelper.homePcsId);
+				int num = comnMsgDao.ignoreAllReply(getCustomer().getName());
+				return "忽略"+num+"条留言回复";
+			}else{
+				goThisProcess();
+				return "";
+			}
 		}else{
 			goNextId();
 			return "没有未读回复";
@@ -34,8 +42,12 @@ public class PcsReComnMsg extends PcsBase {
 		ComnMsgBean comnMsg = comnMsgDao.readLastUnReadMsg(getCustomer().getName());
 		String tips = "";
 		if(comnMsg != null){
+			int num = comnMsgDao.unReadMsgNum(getCustomer().getName());
+			tips += "[剩"+num+"条未读]\n";
+			tips += "-------------\n";
 			tips += comnMsg.getUser().getRealname()+"["+dataFormate.format(comnMsg.getIntime())+"]：\n" 
 					+ comnMsg.getContent();
+			tips += "-------------\n";
 			tips += "\n"+super.getTips();
 		}else{
 			tips += "没有未读回复";

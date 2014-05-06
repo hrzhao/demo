@@ -84,7 +84,7 @@
 	</fx:Declarations>
 	<s:BorderContainer top="8" left="15" right="15" height="65">
 		<components:SuperAdvancedDataGrid id="customerInfo" dataProvider="{this.dataProvider}" 
-										  width="100%" height="100%" borderVisible="false" >
+										  width="100%" height="100%" borderVisible="false" menuEnable="false" >
 			<components:columns>
 				<mx:AdvancedDataGridColumn dataField="name" headerText="微信客户ID" width="250"/>
 				<mx:AdvancedDataGridColumn dataField="realname" headerText="客户名称" width="120"/>
@@ -101,7 +101,7 @@
 			
 		</s:Scroller>
 		-->
-		<components:SuperAdvancedDataGrid id="dg_msgList" dataProvider="{msgList}" width="100%" height="100%">
+		<components:SuperAdvancedDataGrid id="dg_msgList" dataProvider="{msgList}" width="100%" height="100%" menuEnable="false">
 			
 		</components:SuperAdvancedDataGrid>
 		

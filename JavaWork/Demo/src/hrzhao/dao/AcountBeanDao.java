@@ -49,5 +49,12 @@ public class AcountBeanDao {
 		tx.commit();
 		session.close();
 	}
+	public void saveOrUpdateAcount(AcountBean acount){
+		Session session = HiberHelper.getSession();
+		Transaction tx = session.beginTransaction();
+		session.saveOrUpdate(acount);
+		tx.commit();
+		session.close();
+	}
 
 }

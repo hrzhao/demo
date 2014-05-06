@@ -20,6 +20,8 @@
 					read = "[未读]";
 				}else if(value.status == 2){
 					read = "[已读]";
+				}else{
+					read = "[被忽略]";
 				}
 			}
 			[Bindable]

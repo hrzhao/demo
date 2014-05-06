@@ -8,9 +8,9 @@ package events
 	{
 		public static const DGCMENUCLICK:String = "dgcMenuClick";
 		public var selectedItem:Object;
-		public var menuItem:uint = DgcMenu.ADD;
+		public var menuItem:Object;
 		public var selectedIndex:int;
-		public function DgcMenuEvent(type:String,menuItem:uint ,selectedItem:Object = null, selectedIndex:int = -2,bubbles:Boolean=false, cancelable:Boolean=false)
+		public function DgcMenuEvent(type:String,menuItem:Object ,selectedItem:Object = null, selectedIndex:int = -2,bubbles:Boolean=false, cancelable:Boolean=false)
 		{
 			this.menuItem = menuItem
 			this.selectedItem = selectedItem;

@@ -10,6 +10,7 @@
 	<fx:Script>
 		<![CDATA[
 			import events.DgcMenuEvent;
+			
 			import mx.controls.Menu;
 			import mx.controls.advancedDataGridClasses.AdvancedDataGridItemRenderer;
 			import mx.events.MenuEvent;
@@ -31,6 +32,10 @@
 			{
 				_unselectedMenuItem = value;
 			}
+			
+			
+			public var menuEnable:Boolean = true;
+			
 
 			/**
 			 * 对有数据的行右键时的可用选项
@@ -94,22 +99,19 @@
 				// TODO Auto-generated method stub
 				if(event.label == DgcMenu.sADD){
 					this.dispatchEvent(new DgcMenuEvent(DgcMenuEvent.DGCMENUCLICK,DgcMenu.ADD));
-				}
-				if(event.label == DgcMenu.sEDIT){
+				}else if(event.label == DgcMenu.sEDIT){
 					if(this.selectedItem == null){
 						MessageBox.show("请选择要编辑的记录!");
 						return;
 					}
 					this.dispatchEvent(new DgcMenuEvent(DgcMenuEvent.DGCMENUCLICK,DgcMenu.EDIT,this.selectedItem,this.selectedIndex));
-				}
-				if(event.label == DgcMenu.sDELETE){
+				}else if(event.label == DgcMenu.sDELETE){
 					if(this.selectedItem == null){
 						MessageBox.show("请选择要删除的记录!");
 						return;	
 					}
 					this.dispatchEvent(new DgcMenuEvent(DgcMenuEvent.DGCMENUCLICK,DgcMenu.DELETE,this.selectedItem,this.selectedIndex));
-				}
-				if(event.label == DgcMenu.sVIEW){
+				}else if(event.label == DgcMenu.sVIEW){
 					if(this.selectedItem == null){
 						MessageBox.show("请选择要查看的记录!");
 						return;	
@@ -133,16 +135,42 @@
 			
 			protected function advanceddatagrid1_rightClickHandler(event:MouseEvent):void
 			{
-				var item:uint;
-				if(onRightClicked(event) == -1){
-					item =unselectedMenuItem;
-				}else if(onRightClicked(event) >=0){
-					item = selectedMenuItem;
-				}else{
-					return;
+				if(menuEnable){
+					var item:uint;
+					if(onRightClicked(event) == -1){//未选中
+						item =unselectedMenuItem;
+					}else if(onRightClicked(event) >=0){//选中
+						item = selectedMenuItem;
+					}else{
+						return;
+					}
+					//如果customMenu不为空时，用自定义菜单
+					if(customMenu == null){
+						popUpMenu(item);
+					}else{
+						popUpCustomMenu();
+					}
 				}
-				popUpMenu(item);
 			}
+			private function popUpCustomMenu():void{
+				if(customMenu!=null){
+					customMenu.addEventListener(MenuEvent.ITEM_CLICK,customMenu_clickHandler,false,0,true);
+					customMenu.hide();
+				}
+				var point:Point = localToGlobal(new Point(mouseX,mouseY));
+				customMenu.show(point.x,point.y);
+			}
+			
+			private function customMenu_clickHandler(event:MenuEvent):void{
+				if(event.item.needSelected){
+					if(this.selectedItem == null){
+						MessageBox.show("请先选择的记录!");
+						return;
+					}
+				}
+				this.dispatchEvent(new DgcMenuEvent(DgcMenuEvent.DGCMENUCLICK,event.item,this.selectedItem,this.selectedIndex));
+			}
+			public var customMenu:Menu = null;
 			
 		]]>
 	</fx:Script>

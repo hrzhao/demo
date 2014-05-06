@@ -132,14 +132,16 @@ public class MainRun {
 	}
 	
 	public static void main(String[] args) {
-//		List<Object> list = new ComnMsgBeanDao().getComnMsgList(null, null, null, 1, 2);
-		Session session = HiberHelper.getSession();
-		String sql = "SELECT * FROM v_comnmsg where id = 7";
-		Query q = session.createSQLQuery(sql);
-//		q.setResultTransformer(Transformers.ALIAS_TO_ENTITY_MAP);
-		List<?> list = q.list();
-		System.out.println(list.size());
 		
+		System.out.println(new CustomerBeanDao().getCustomerList(null, "小"));
+//		List<Object> list = new ComnMsgBeanDao().getComnMsgList(null, null, null, 1, 2);
+//		Session session = HiberHelper.getSession();
+//		String sql = "SELECT * FROM v_comnmsg where id = 7";
+//		Query q = session.createSQLQuery(sql);
+//		q.setResultTransformer(Transformers.ALIAS_TO_ENTITY_MAP);
+//		List<?> list = q.list();
+//		System.out.println(list.size());
+//		
 //		@SuppressWarnings("unchecked")
 //		List<String> list =  q.list();
 //		if(list != null && list.size()>0){

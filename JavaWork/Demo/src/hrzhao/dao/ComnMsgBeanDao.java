@@ -29,7 +29,21 @@ public class ComnMsgBeanDao {
 		tx.commit();
 		session.close();
 	}
-	public Boolean hasUnReadMsg(String customerName){
+	public int ignoreAllReply(String customerName){
+		//忽略所有，数据库操作
+		Session session = HiberHelper.getSession();
+		Transaction tx = session.beginTransaction();
+		String hqlUpdate = "update ComnMsgBean set status = :status where customerName = :customerName";
+        int num = session.createQuery( hqlUpdate )
+                            .setString("status", "3" )//忽略
+                            .setString("customerName", customerName )
+                            .executeUpdate();
+        tx.commit();
+        session.close();
+		return num;
+	}
+	public int unReadMsgNum(String customerName){
+		int num = 0;
 		Session session = HiberHelper.getSession();
 		Criteria cr = session.createCriteria(ComnMsgBean.class);
 		cr.add(Restrictions.eq("customerName", customerName))
@@ -39,9 +53,9 @@ public class ComnMsgBeanDao {
 		@SuppressWarnings("unchecked")
 		List<ComnMsgBean> list =cr.list();
 		if(list != null && list.size() >0 ){
-			return true;
+			num = list.size();
 		}
-		return false;
+		return num;
 	}
 	public ComnMsgBean readLastUnReadMsg(String customerName){
 		Session session = HiberHelper.getSession();
@@ -49,7 +63,7 @@ public class ComnMsgBeanDao {
 		Criteria cr = session.createCriteria(ComnMsgBean.class);
 		cr.add(Restrictions.eq("customerName", customerName))
 			.add(Restrictions.eq("status",1))//1是回复的信息
-			.addOrder(Order.desc("intime"))
+			.addOrder(Order.asc("intime"))
 			.setMaxResults(1);
 		@SuppressWarnings("unchecked")
 		List<ComnMsgBean> list =cr.list();

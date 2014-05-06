@@ -1,0 +1,28 @@
+<?xml version="1.0"?>
+<!DOCTYPE hibernate-mapping PUBLIC
+        "-//Hibernate/Hibernate Mapping DTD 3.0//EN"
+        "http://www.hibernate.org/dtd/hibernate-mapping-3.0.dtd">
+
+<hibernate-mapping
+        package="hrzhao.beans"
+        >
+
+    <class name="ChargeBean" table="charge">
+
+        <id name="id">
+            <generator class="increment"/>
+        </id>
+        <property name="productId" column="productId" type="int"/>
+        <property name="customerName" column="customerName" type="string"/>
+        <property name="intime" column="intime" type="timestamp"/>
+        <property name="amount" column="amount" type="int"/>
+        <property name="price" column="price" type="float"/>
+        <!--  
+        <many-to-one name="product" class="ProductBean" fetch="join"
+        	insert="false" update="false">
+        	<column name="productId"></column>
+        </many-to-one>
+        -->
+    </class>
+
+</hibernate-mapping>
