@@ -1,0 +1,186 @@
+<?xml version="1.0" encoding="utf-8"?>
+<s:Group xmlns:fx="http://ns.adobe.com/mxml/2009" 
+		 xmlns:s="library://ns.adobe.com/flex/spark" 
+		 xmlns:mx="library://ns.adobe.com/flex/mx" width="100%" height="100%" xmlns:UI="common.UI.*"
+		 creationComplete="group1_creationCompleteHandler(event)"
+		 >
+	<fx:Script>
+		<![CDATA[
+			import events.CustomEvent;
+			
+			import frame.IModule;
+			
+			import mx.collections.ArrayCollection;
+			import mx.events.FlexEvent;
+			import mx.events.FlexMouseEvent;
+			import mx.rpc.AbstractOperation;
+			import mx.rpc.events.FaultEvent;
+			import mx.rpc.events.ResultEvent;
+			
+			import spark.events.IndexChangeEvent;
+			import spark.events.TextOperationEvent;
+			
+			import utils.MessageBox;
+			public var customerName:String;
+			public var realname:String;
+			
+			protected function mouseWheelChangingHandler(event:FlexMouseEvent):void
+			{
+				event.preventDefault();
+				var modifier:int = 20;
+				var delta:Number = Number(event.delta) * modifier;
+				var vPos:Number = msgGroup.verticalScrollPosition;
+				var maximum:Number = scroller.verticalScrollBar.maximum;
+				
+				if (delta < 0) 
+					scroller.viewport.verticalScrollPosition =  Math.min(vPos - delta, maximum) ;        
+				else
+					scroller.viewport.verticalScrollPosition = Math.max(vPos - delta, 0);
+			}
+			protected function group1_creationCompleteHandler(event:FlexEvent):void
+			{
+				customerLabel = realname +"("+customerName+")";
+				getComnList();
+			}
+			
+			private var op_getComnMsgList:AbstractOperation;
+			private function getComnList():void{
+				data = null;
+				if(op_getComnMsgList == null){
+					op_getComnMsgList = ro.getOperation("getComnMsgList");
+					op_getComnMsgList.addEventListener(FaultEvent.FAULT,faultHandler,false,0,true);
+					op_getComnMsgList.addEventListener(ResultEvent.RESULT,op_getComnMsgList_resultHandler,false,0,true);
+				}
+				
+				var date:Date = new Date(); 
+				date.time = date.time - 7 * 86401000;//用现在时间毫秒数减去一天毫秒数
+				//customerName,beginTime,endTime,start,size,status,reverse
+				op_getComnMsgList.send(customerName,date,null,0,100,null,true);//获取后一百条 
+				showProgress(null);
+			}
+			//回复消息
+			protected function faultHandler(event:FaultEvent):void{
+				hideProgress();
+				MessageBox.show("请求失败\n" + event.message.toString());
+			}
+			[Bindable]
+			private var data:ArrayCollection = new ArrayCollection();
+			protected function op_getComnMsgList_resultHandler(event:ResultEvent):void{
+				hideProgress();
+				if(event.result != null){
+					if(event.result.hasOwnProperty("data")){
+						data = event.result.data;
+						msgGroup.callLater(toTheEnd);
+					}
+				}
+			}
+			protected function showProgress(msg:String):void{
+				if(msg != null){
+					progressLabel.label = msg;
+				}
+				progressLabel.visible = true;
+			}
+			protected function hideProgress():void{
+				progressLabel.visible = false;
+			}
+			public var module:IModule;
+			[Bindable]
+			private var customerNames:ArrayCollection = new ArrayCollection();
+			private var op_sendMsg:AbstractOperation = null;
+			protected function btn_send_clickHandler(event:MouseEvent):void
+			{
+				var userId:int = this.module.appFrame.user.id;
+				var content:String = txt_Msg4Send.text;
+				if(content == null || content == ""){
+					txt_Msg4Send.setFocus();
+					txt_Msg4Send.errorString = "请填写回复内容...";
+					return;
+				}
+				//加判断
+				if(op_sendMsg == null){
+					op_sendMsg = ro.getOperation("sendMsg");
+					op_sendMsg.addEventListener(ResultEvent.RESULT,sendMsg_resultHandler,false,0,true);
+					op_sendMsg.addEventListener(FaultEvent.FAULT,faultHandler,false,0,true);
+					
+				}
+				
+				txt_Msg4Send.errorString = null;
+				showProgress("正在发送...");
+				op_sendMsg.send(customerName,userId,content);
+			}
+			private function sendMsg_resultHandler(event:ResultEvent):void{
+				hideProgress();
+				//发送结果
+				if(event.result.data != null){
+					data.addItem(event.result.data);
+					txt_Msg4Send.text = null;
+					msgGroup.callLater(toTheEnd);
+				}else{
+					
+				}
+			}
+			
+			private function toTheEnd():void{
+				msgGroupVerticalLayout.verticalScrollPosition=msgGroup.contentHeight-msgGroup.height;
+			}
+			protected function txt_Msg4Send_changeHandler(event:TextOperationEvent):void
+			{
+				// TODO Auto-generated method stub
+				if(txt_Msg4Send.text != null &&  txt_Msg4Send.text != ""){
+					txt_Msg4Send.errorString = null;
+				}else{
+					txt_Msg4Send.errorString = "请填写回复内容...";
+				}
+			}
+			
+			
+			protected function txt_Msg4Send_keyDownHandler(event:KeyboardEvent):void
+			{
+				// TODO Auto-generated method stub
+				if(event.ctrlKey && event.keyCode == 13){
+					btn_send_clickHandler(null);
+				}
+			}
+			
+			protected function btn_refresh_clickHandler(event:MouseEvent):void
+			{
+				getComnList();
+			}
+			
+			[Bindable]
+			private var customerLabel:String;
+			
+		]]>
+	</fx:Script>
+	<fx:Declarations>
+		<s:RemoteObject id="ro" destination="comnmsgService"/>
+		<!-- 将非可视元素（例如服务、值对象）放在此处 -->
+	</fx:Declarations>
+	<s:BorderContainer top="8" left="15" right="15" height="30">
+		<s:Button id="btn_refresh" right="10" top="3" label="刷新" click="btn_refresh_clickHandler(event)" />
+	</s:BorderContainer>
+	<s:BorderContainer top="43" left="15" right="15" bottom="10">
+		<s:Scroller width="60%" height="100%" left="0" mouseWheelChanging="mouseWheelChangingHandler(event)" id="scroller">
+			<s:DataGroup id="msgGroup" width="100%" height="100%" itemRenderer="itemrenderer.ComnMsgRenderer" dataProvider="{data}">
+				<s:layout>
+					<s:VerticalLayout id="msgGroupVerticalLayout"/>
+				</s:layout>
+			</s:DataGroup>
+		</s:Scroller>
+		<s:Label text="只显示最近7天100条以内的留言" top="50" right="50"/>
+		<s:BorderContainer id="sendMsgCont" right="10" bottom="10" maxHeight="200" width="38%" borderVisible="false" cornerRadius="15"
+						   backgroundColor="#CC99CC"
+						   >
+			<s:TextInput top="12" right="20" left="20" editable="false" text="{customerLabel}"/>
+			<s:TextArea id="txt_Msg4Send" left="20" top="45" right="10" bottom="45"
+						prompt="请输入要回复的内容，客户须主动查询才可阅读此消息" change="txt_Msg4Send_changeHandler(event)" 
+						keyDown="txt_Msg4Send_keyDownHandler(event)"
+						/>
+			<s:Button id="btn_send" right="20" bottom="10" label="发送" 
+					  click="btn_send_clickHandler(event)"
+					  />
+			
+		</s:BorderContainer>
+	</s:BorderContainer>	
+	<UI:LabelProgress id="progressLabel" width="100%" height="100%" visible="false"/>
+</s:Group>

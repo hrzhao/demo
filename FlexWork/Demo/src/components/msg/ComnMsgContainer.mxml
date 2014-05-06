@@ -80,15 +80,22 @@
 		]]>
 	</fx:Script>
 	<fx:Declarations>
+		<s:DateTimeFormatter id="df" dateTimePattern="yyyy-MM-dd HH:mm:ss"/>
 		<!-- 将非可视元素（例如服务、值对象）放在此处 -->
 	</fx:Declarations>
 	
-	<s:BorderContainer top="10" left="10" width="160" height="75" backgroundColor="#FFFF99" cornerRadius="5">
-		<s:Label id="lbl_realname" x="10" y="10" width="140" text="{realName}"/>
-		<s:Label id="lbl_name" x="10" y="29" width="140" text="{userName}"/>
-		<s:Label id="lbl_time" x="10" y="47" width="140" text="{time}"/>
+	<s:BorderContainer top="10" left="10" width="160" height="75" 
+					   backgroundColor="#FFFF99" cornerRadius="5"
+					   borderVisible="false"
+					   >
+		<s:Label id="lbl_realname" x="10" y="6" width="140" text="{realName}"/>
+		<s:Label id="lbl_name" x="10" y="26" width="140" text="{userName}"/>
+		<s:Label id="lbl_time" x="10" y="58" width="140" text="{df.format(time)}" />
 	</s:BorderContainer>
-	<s:BorderContainer id="borderContent" left="180" top="10" right="100" bottom="10" backgroundColor="#FFFF66"  cornerRadius="5" rightClick="borderContent_rightClickHandler(event)">
+	<s:BorderContainer id="borderContent" 
+					   left="180" top="10" right="100" bottom="10"
+					   borderVisible="false"
+					   backgroundColor="#FFFF66"  cornerRadius="5" rightClick="borderContent_rightClickHandler(event)">
 		<s:Label id="lbl_content"  left="5" top="5" right="5" bottom="5" />
 	</s:BorderContainer>
 	

@@ -20,6 +20,8 @@
 			{
 				// TODO Auto Generated method stub
 				super.data = value;
+				if(data == null)
+					return;
 				if(value.status == 0){
 					var comnCont:ComnMsgContainer = new ComnMsgContainer();
 					comnCont.initialize();

@@ -162,6 +162,7 @@
 					var iModule:IModule = (module as IModule);
 					iModule.param = param;
 					iModule.appId = appConfig.appId;
+					iModule.appFrame = this;
 					
 					var naviCont:MainNavigatorContent = new MainNavigatorContent();
 					naviCont.top = 0;

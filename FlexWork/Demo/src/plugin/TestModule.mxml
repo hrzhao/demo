@@ -17,16 +17,6 @@
 //				var imagePath:String = "http://res4.auto.ifeng.com/s/2584/10/5/12922204621361_5.jpg" //相对路径或网络图片地址  
 //				loader.load(new URLRequest(imagePath));   //如
 //				loader.contentLoaderInfo.addEventListener(Event.COMPLETE,completeHandler);
-				image.source = "http://mmbiz.qpic.cn/mmbiz/8DgJya2a4eiciagUNbStichEmr2ouIDqe8RLtxN6yc6Fvab2RQyG5L7UlBxEzGNbIticu0nW3rG0p8KbibFiaTSRYy2A/0";
-				image.width= 400;
-				image.height = 300;
-				image.fillMode="scale";
-				var image1:Image = new Image();
-				image1.width= 400;
-				image1.height = 300;
-				image1.fillMode="scale";
-				image1.source = "http://mmbiz.qpic.cn/mmbiz/8DgJya2a4e8f750Zdmc3YVEPBbUkXphYTSPiacb6CibB982uzeTH1E2D4VsMdlMxjV2aAjk8lU8Ztssia5ibgSOIZQ/0";
-				mainGroup.addElement(image1);
 			}
 			
 			private function completeHandler(event:Event):void
@@ -36,16 +26,12 @@
 //				var pic:Bitmap = Bitmap(tLoader.content);
 //				mainGroup.addChild(pic);
 			}
-			[Embed(source="assets/fail.jpg")]
-			private var failImage:Class;
 			
-			protected function image_ioErrorHandler(event:IOErrorEvent):void
+			protected function input_keyDownHandler(event:KeyboardEvent):void
 			{
 				// TODO Auto-generated method stub
-				image.source = failImage;
-				image.width = image.sourceWidth;
-				image.height = image.sourceHeight;
-				
+				 
+				textArea.text += "ctrl"+event.ctrlKey+",key:"+event.keyCode+"\n";
 			}
 			
 		]]>
@@ -54,7 +40,10 @@
 		<!-- 将非可视元素（例如服务、值对象）放在此处 -->
 	</fx:Declarations>
 	<s:HGroup width="100%" height="100%" id="mainGroup">
-		<s:Image id="image" ioError="image_ioErrorHandler(event)"/>
+		<s:TextArea id="textArea" />
+		<s:TextInput id="input" keyDown="input_keyDownHandler(event)"/>
+		
+
 	</s:HGroup>
 	
 	

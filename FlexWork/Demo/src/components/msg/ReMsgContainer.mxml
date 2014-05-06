@@ -16,7 +16,14 @@
 				realName = value.u_realname;
 				time = value.intime;
 				content = value.content;
+				if(value.status == 1){
+					read = "[未读]";
+				}else if(value.status == 2){
+					read = "[已读]";
+				}
 			}
+			[Bindable]
+			private var read:String;
 			[Bindable]
 			public var realName:String;
 			[Bindable]
@@ -27,14 +34,16 @@
 	</fx:Script>
 	<fx:Declarations>
 		<!-- 将非可视元素（例如服务、值对象）放在此处 -->
+		<s:DateTimeFormatter id="df" dateTimePattern="yyyy-MM-dd HH:mm:ss"/>
 	</fx:Declarations>
 	
-	<s:BorderContainer left="100" top="10" right="180" bottom="10" backgroundColor="#0099CC"  cornerRadius="5">
+	<s:BorderContainer left="100" top="10" right="180" bottom="10" backgroundColor="#0099CC"  cornerRadius="5" borderVisible="false">
 		<s:Label id="lbl_content"  left="5" top="5" right="5" bottom="5" text="{content}" />
 	</s:BorderContainer>
-	<s:BorderContainer top="10" right="10" width="160" height="75" backgroundColor="#CC99CC" cornerRadius="5">
+	<s:BorderContainer top="10" right="10" width="160" height="75" backgroundColor="#CC99CC" cornerRadius="5" borderVisible="false">
 		<s:Label id="lbl_realname" x="10" y="10" width="140" text="{realName}"/>
-		<s:Label id="lbl_time" x="10" y="29" width="140" text="{time}"/>
+		<s:Label id="lbl_time" x="10" y="29" width="140" text="{df.format(time)}"/>
+		<s:Label id="lbl_read" x="10" y="48" width="140" text="{read}"/>
 	</s:BorderContainer>
 	
 </s:Group>

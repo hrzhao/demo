@@ -21,14 +21,15 @@ package frame
 		{
 			this._appId = value;
 		}
-		
+		private var _appFrame:IAppFrame;
 		public function set appFrame(value:IAppFrame):void
 		{
+			this._appFrame = value;
 		}
 		
 		public function get appFrame():IAppFrame
 		{
-			return null;
+			return this._appFrame;
 		}
 		
 		public function set param(value:Object):void

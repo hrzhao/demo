@@ -85,18 +85,22 @@ public class ComnMsgBeanDao {
 		return null;
 	}
 	private DateFormat dateFormate = new SimpleDateFormat("yyyy-MM-dd hh:mm:ss");
-	public List<Object> getComnMsgList(String customerName,Date beginTime,Date endTime,int firstResult,int size){
+	public List<Object> getComnMsgList(String customerName,Date beginTime,Date endTime,int firstResult,int size,String status){
 		Session session = HiberHelper.getSession();
 		String sql = "SELECT * FROM v_comnmsg where 1=1 ";
+		if(status != null ){
+			sql += " and status = "+ status; 
+		}
 		if(customerName != null){
 			sql += " and customerName = '"+customerName+"' ";
 		}
 		if(beginTime != null){
-			sql += " and beginTime > '"+dateFormate.format(beginTime)+"' ";
+			sql += " and intime > '"+dateFormate.format(beginTime)+"' ";
 		}
 		if(endTime != null){
-			sql += " and endTime <= '"+dateFormate.format(endTime)+"' ";
+			sql += " and intime <= '"+dateFormate.format(endTime)+"' ";
 		}
+		sql += "order by intime ";
 		Query q = session.createSQLQuery(sql);
 		if(firstResult >= 0){
 			q.setFirstResult(firstResult);
