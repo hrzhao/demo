@@ -100,14 +100,14 @@
 						break;
 					}
 				}
-				if(viewAcountWnd==null || !hasInclude)
+				if(viewAcountWnd == null || !hasInclude)
 				{
 					viewAcountWnd = new MDIWindow();
 					mdiCanvasHolder.windowManager.add(viewAcountWnd);
 					viewAcountWnd.title ="查看帐户";
-					viewAcountWnd.x = 50;
-					viewAcountWnd.y = 100;
-//					rightAlighMDI(viewAcountWnd);
+//					viewAcountWnd.x = 50;
+//					viewAcountWnd.y = 100;
+					rightAlighMDI(viewAcountWnd);
 				}
 				viewAcountWnd.visible = true;
 			}
@@ -191,7 +191,7 @@
 			</components:SuperAdvancedDataGrid>
 		</s:NavigatorContent>
 	</mx:ViewStack>
-	<ns:MDICanvas id="mdiCanvasHolder" visible="false" top="26" bottom="0" width="100%"
+	<ns:MDICanvas id="mdiCanvasHolder" visible="true" top="26" bottom="0" width="100%"
 				  enforceBoundaries="true">
 	</ns:MDICanvas>
 	<UI:LabelProgress id="progressLabel" width="100%" height="100%" visible="false"/>
