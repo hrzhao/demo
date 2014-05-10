@@ -1,0 +1,213 @@
+<?xml version="1.0" encoding="utf-8"?>
+<s:Group xmlns:fx="http://ns.adobe.com/mxml/2009" 
+		 xmlns:s="library://ns.adobe.com/flex/spark" 
+		 xmlns:mx="library://ns.adobe.com/flex/mx" width="100%" height="100%"
+		 creationComplete="group1_creationCompleteHandler(event)" xmlns:UI="common.UI.*"
+		 >
+	<fx:Metadata>
+		[Event(name="showCustomerAcounts", type="events.CustomerEvent")]
+	</fx:Metadata>
+	<fx:Script>
+		<![CDATA[
+			import events.CustomEvent;
+			
+			import mx.collections.ArrayCollection;
+			import mx.controls.Alert;
+			import mx.events.FlexEvent;
+			import mx.rpc.AbstractOperation;
+			import mx.rpc.events.FaultEvent;
+			import mx.rpc.events.ResultEvent;
+			
+			import spark.events.IndexChangeEvent;
+			import spark.events.TextOperationEvent;
+			
+			import utils.MessageBox;
+			[Bindable]
+			public var customerName:String;
+			
+			private var op_getCustomer:AbstractOperation = null;
+			protected function group1_creationCompleteHandler(event:FlexEvent):void
+			{
+				// TODO Auto-generated method stub
+				if(op_getCustomer == null){		
+					op_getCustomer = ro.getOperation("getCustomerByName");
+					op_getCustomer.addEventListener(FaultEvent.FAULT,faultHandler,false,0,true);
+					op_getCustomer.addEventListener(ResultEvent.RESULT,getCustomer_resultHandler,false,0,true);
+				}
+				progressLabel.visible = true;
+				op_getCustomer.send(customerName);
+				
+			}
+			private function getCustomer_resultHandler(event:ResultEvent):void{
+				progressLabel.visible = false;
+				var data:Object = event.result.data;
+				if(data != null){
+					txt_realname.text = data.realname;
+					txt_address.text = data.address;
+					txt_phone.text = data.phone;
+					getProductList();
+				}else{
+					MessageBox.show("查询用户信息失败");
+				}
+			}
+			private var op_getProductList:AbstractOperation = null;
+			private function getProductList():void{
+				if(op_getProductList == null){
+					op_getProductList = ro.getOperation("getProductList");
+					op_getProductList.addEventListener(FaultEvent.FAULT,faultHandler,false,0,true);
+					op_getProductList.addEventListener(ResultEvent.RESULT,op_getProductList_resultHandler,false,0,true);
+				}
+				op_getProductList.send();
+			}
+			[Bindable]
+			private var productList:ArrayCollection = new ArrayCollection();
+			private function op_getProductList_resultHandler(event:ResultEvent):void{
+				progressLabel.visible = false;
+				var data:ArrayCollection = event.result.data as ArrayCollection;
+				if(data != null){
+					productList = data;
+				}else{
+					MessageBox.show("查询产品列表失败");
+				}
+			}
+			private function faultHandler(event:FaultEvent):void{
+				progressLabel.visible = false;
+				MessageBox.show(event.message.toString());
+			}
+
+			
+			protected function btn_showCustomerAcounts_clickHandler(event:MouseEvent):void
+			{
+				// TODO Auto-generated method stub
+				this.dispatchEvent(new CustomEvent("showCustomerAcounts",customerName));
+			}
+			
+			protected function btn_commit_clickHandler(event:MouseEvent):void
+			{
+				// TODO Auto-generated method stub
+				if(ddl_product.selectedItem == null){
+					ddl_product.selectedIndex = -1;
+					//刷亲订阅记录
+					
+					Alert.yesLabel = "好";
+					Alert.show("请选择产品","",Alert.YES);
+				}else{
+					var item:Object = ddl_product.selectedItem;
+					addCharge(item.id,nstp_amount.value as int,Number(txt_finalTotal.text));
+				}
+			}
+			private var op_addCharge :AbstractOperation = null;
+			private function addCharge(productId:int,amount:int,totalPrice:Number):void{
+				if(op_addCharge == null){
+					op_addCharge = ro.getOperation("addCharge");
+					op_addCharge.addEventListener(FaultEvent.FAULT,faultHandler,false,0,true);
+					op_addCharge.addEventListener(ResultEvent.RESULT,addCharge_resultHandler,false,0,true);
+				}
+				op_addCharge.send(customerName,productId,amount,totalPrice);
+			}
+			private function addCharge_resultHandler(event:ResultEvent):void{
+				if(event.result.state == "success"){
+					ddl_product.selectedIndex = -1;
+					Alert.yesLabel = "好";
+					Alert.show("添加成功","",Alert.YES);
+				}else{
+					Alert.yesLabel = "好";
+					Alert.show("添加失败","",Alert.YES);
+				}
+			}
+			private function ddl_product_labelfunction(item:Object):String{
+				if(item != null){
+					return item.name;
+				}
+				return "";
+			}
+			
+			protected function ddl_product_changeHandler(event:IndexChangeEvent):void
+			{
+				// TODO Auto-generated method stub
+				
+				txt_price.text = ddl_product.selectedItem.price;
+				txt_autoTotal.text = nstp_amount.value * Number(txt_price.text) +"";
+				cal_finalTotal();
+			}
+			
+			protected function nstp_amount_changeHandler(event:Event):void
+			{
+				// TODO Auto-generated method stub
+				if(txt_price.text != null && txt_price.text != ""){
+					txt_autoTotal.text = nstp_amount.value * Number(txt_price.text) +"";
+				}else{
+					txt_autoTotal.text = "";
+				}
+				cal_finalTotal();
+			}
+			
+//			protected function txt_autoTotal_changeHandler(event:TextOperationEvent):void
+//			{
+//				// TODO Auto-generated method stub
+//				cal_finalTotal();
+//			}
+			
+			protected function ckBox_discount_changeHandler(event:Event):void
+			{
+				// TODO Auto-generated method stub
+				cal_finalTotal();
+			}
+			
+			protected function txt_minuesPrice_changeHandler(event:TextOperationEvent):void
+			{
+				// TODO Auto-generated method stub
+				cal_finalTotal();
+			}
+			
+			private function cal_finalTotal():void{
+				if(ckBox_discount.selected){
+					txt_finalTotal.text = (Number(txt_autoTotal.text) - Number(txt_minuesPrice.text)) + ""; 
+				}else{
+					txt_finalTotal.text = txt_autoTotal.text;
+				}
+			}
+			
+			
+		]]>
+	</fx:Script>
+	<fx:Declarations>
+		<s:RemoteObject id="ro" destination="customerService"/> 
+		<!-- 将非可视元素（例如服务、值对象）放在此处 -->
+	</fx:Declarations>
+	<s:BorderContainer top="8" left="15" right="15" height="30">
+		<s:HGroup gap="15" right="10" height="100%" verticalAlign="middle" horizontalAlign="right">
+			
+		</s:HGroup>
+	</s:BorderContainer>
+	<s:BorderContainer top="43" left="15" right="15" bottom="10">
+		<s:Label x="31" y="18" text="客户名称"/>
+		<s:TextInput id="txt_realname" x="88" y="10" width="162" editable="false"/>
+		<s:Label x="263" y="15" text="客户ID"/>
+		<s:TextInput id="txt_customerName" x="305" y="10" width="164" editable="false" text="{customerName}"/>
+		<s:Label x="50" y="47" text="电话"/>
+		<s:TextInput id="txt_phone" x="87" y="41" width="163" editable="false"/>
+		<s:Label x="51" y="80" text="地址"/>
+		<s:TextInput id="txt_address" x="88" y="76" width="381" editable="false"/>
+		<mx:HRule x="0" y="112" width="100%"/>
+		<s:Label x="30" y="128" text="产品选择"/>
+		<s:DropDownList id="ddl_product" x="88" y="124" width="128" dataProvider="{productList}" 
+						labelFunction="ddl_product_labelfunction"
+						change="ddl_product_changeHandler(event)"
+						/>
+		<s:NumericStepper id="nstp_amount" x="224" y="122" minimum="1" maximum="1000" stepSize="1" change="nstp_amount_changeHandler(event)"/>
+		<s:Label x="309" y="129" text="单价"/>
+		<s:TextInput id="txt_price" x="340" y="124" editable="false"/>
+		<s:Label x="47" y="172" text="总价" />
+		<s:TextInput id="txt_autoTotal" x="87" y="167" editable="false"/>
+		<s:CheckBox id="ckBox_discount" x="34" y="212" label="折减" change="ckBox_discount_changeHandler(event)"/>
+		<s:TextInput id="txt_minuesPrice" x="87" y="210" enabled="{ckBox_discount.selected}" change="txt_minuesPrice_changeHandler(event)"/>
+		<s:Label x="50" y="255" text="实收"/>
+		<s:TextInput id="txt_finalTotal" x="87" y="251" editable="false"/>
+		<s:Button id="btn_showCustomerAcounts" x="374" y="45" width="93" label="查看帐户"
+				  click="btn_showCustomerAcounts_clickHandler(event)"/>
+		<s:Button id="btn_commit" x="371" y="253" label="提交" click="btn_commit_clickHandler(event)"/>
+		<mx:HRule x="0" y="294" width="100%"/>
+	</s:BorderContainer>
+	<UI:LabelProgress id="progressLabel" visible="false" label="正在查询..."/>
+</s:Group>

@@ -80,5 +80,19 @@ public class CustomerBeanDao {
 		session.close();
 		return customerList;
 	}
+	public CustomerBean getCustomerByName(String name) {
+		// TODO Auto-generated method stub
+		Session session = HiberHelper.getSession();
+		Criteria cr = session.createCriteria(CustomerBean.class);
+		cr.add(Restrictions.eq("name", name));
+		@SuppressWarnings("unchecked")
+		List<CustomerBean> customerList = cr.list();
+		CustomerBean customer = null;
+		if(customerList != null && customerList.size()>0){
+			customer =customerList.get(0);
+		}
+		session.close();
+		return customer;
+	}
 
 }

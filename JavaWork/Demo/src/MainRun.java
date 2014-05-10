@@ -22,15 +22,21 @@ import hrzhao.utils.HibernateSessionFactory;
 
 import java.io.BufferedReader;
 import java.io.IOException;
+import java.io.InputStreamReader;
+import java.io.OutputStreamWriter;
 import java.io.StringReader;
 import java.io.UnsupportedEncodingException;
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
+import java.net.MalformedURLException;
+import java.net.URL;
+import java.net.URLConnection;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.Iterator;
 import java.util.List;
+import java.util.Map;
 import java.util.Set;
 
 import javax.xml.bind.JAXBContext;
@@ -61,10 +67,51 @@ public class MainRun {
 	public MainRun() {
 		// TODO Auto-generated constructor stub
 	}
+	
+	public static void main(String[] args) {
+		getRequest("101110101");
+	}
+	
+	public static String getRequest(String cityCode){
+		String urlStr = "http://m.weather.com.cn/data/"+cityCode+".html";
+		String result = "";
+        BufferedReader in = null;
+		 try {
+	            URL url = new URL(urlStr);
+	            URLConnection con = url.openConnection();
+	            con.setDoOutput(true);
+	            con.setRequestProperty("Pragma:", "no-cache");
+	            con.setRequestProperty("Cache-Control", "no-cache");
+	            con.setRequestProperty("Content-Type", "text/xml");
+	            Map<String, List<String>> map = con.getHeaderFields();
+	            // 遍历所有的响应头字段
+	            for (String key : map.keySet()) {
+	                System.out.println(key + "--->" + map.get(key));
+	            }
+	            // 定义 BufferedReader输入流来读取URL的响应
+	            in = new BufferedReader(new InputStreamReader(
+	            		con.getInputStream()));
+	            String line;
+	            while ((line = in.readLine()) != null) {
+	                result += line;
+	            }
+	        } catch (MalformedURLException e) {
+	            e.printStackTrace();
+	        } catch (IOException e) {
+	            e.printStackTrace();
+	        } finally {
+                if (in != null) {
+                    try {
+						in.close();
+					} catch (IOException e) {
+						// TODO Auto-generated catch block
+						e.printStackTrace();
+					}
+                }
+	        }
+		 return result;
+	}
 	public static void method33(){
-		String fieldName = "Realname";
-		String content = "张三";
-		String methodName = "set" + fieldName;
 		CustomerBean customerBean = new CustomerBean();
 		Method method = null;
 		try {
@@ -131,167 +178,6 @@ public class MainRun {
 		}
 	}
 	
-	public static void main(String[] args) {
-		
-		System.out.println(new CustomerBeanDao().getCustomerList(null, "小"));
-//		List<Object> list = new ComnMsgBeanDao().getComnMsgList(null, null, null, 1, 2);
-//		Session session = HiberHelper.getSession();
-//		String sql = "SELECT * FROM v_comnmsg where id = 7";
-//		Query q = session.createSQLQuery(sql);
-//		q.setResultTransformer(Transformers.ALIAS_TO_ENTITY_MAP);
-//		List<?> list = q.list();
-//		System.out.println(list.size());
-//		
-//		@SuppressWarnings("unchecked")
-//		List<String> list =  q.list();
-//		if(list != null && list.size()>0){
-//			System.out.println(list.get(0));
-//		}
-//		session.close();
-//		int i = Integer.parseInt("123a");
-//		JSONObject obj = new JSONObject();
-//		Object o = obj.get("k");
-//		Session session = HiberHelper.getSession();
-//		session.get(ComnMsgBean.class, 1);
-//		method55();
-//		AcountBeanDao acountDao = new AcountBeanDao();
-//		List<AcountBean> list = acountDao.getAcountByCustomer("aa");
-//		System.out.println(list.size());
-//		AcountBean acount = acountDao.getAcountByIdAndCustomer(1, "aa");
-//		System.out.println(acount.getAmount());
-//		String productNo = "B";
-//		JSONObject jObj = JSONObject.fromObject("{\"OrderSelection\":[{\"no\":\"A\",\"productId\":\"1\"},{\"no\":\"B\",\"productId\":\"2\"}]}");
-//		JSONArray jArr = (JSONArray )jObj.get("OrderSelection");
-//		Iterator<JSONObject> it = jArr.iterator();
-//		int selectedProductId = -1;
-//		while(it.hasNext()){
-//			JSONObject item = it.next();
-//			if(productNo.equals((String)item.get("no"))){
-//				//
-//				selectedProductId =Integer.parseInt((String)item.get("productId"));
-//				break;
-//			}
-//		}
-//		if(selectedProductId >= 0){
-//			System.out.println("已定购");
-//		}else{
-//			System.out.println("无此选项");
-//			
-//		}
-//		
-//		AcountBeanDao acountDao = new AcountBeanDao();
-//		List<AcountBean> acountList = acountDao.getAcountByCustomer("aa");
-//		AcountBean acount = acountList.get(0);
-//		System.out.println(acount.getProduct().getName());
-//		acount.getProduct().setName("kk");
-//		acount.setAmount(acount.getAmount()-1);
-//		acountDao.updateAcount(acount);
-		
-//		String src ="A-1";
-//		getOrderStrArr(src);
-//		List<AcountBean> list = new AcountBeanDao().getAcountByCustomer("aa");
-//		for(AcountBean acount:list){
-//			System.out.println(acount.getProduct().getName());
-//		}
-//		String str = "b";
-//		String str = "a-1-2-a-";
-//		String[] arr = str.split("-");
-//		for(int i = 0; i<arr.length ;i++){
-//			System.out.println(arr[i]);
-//		}
-//		System.out.println((str -1));
-//		char c = 'D';
-//		String s = 'D';
-//		int i = Integer.valueOf(s);
-//		System.out.println(Integer.valueOf(s));
-//		method33();
-//		JSONObject jsonObj =JSONObject.fromObject("{\"name\":\"json\",\"bool\":true1");
-//		System.out.println(jsonObj.toString());
-//		if(jsonObj.containsKey("name")){
-//			System.out.println(jsonObj.get("name"));
-//		}
-//		HttpPostTest postTest = new HttpPostTest();
-//		String urlStr = "http://localhost:8080/Demo/Enterance";
-//		String content = "1";
-//		postTest.testPost(urlStr, "hi",1007);
-//		postTest.testPost(urlStr, "1",1008);
-//		postTest.testPost(urlStr, "1",1009);
-//		postTest.testPost(urlStr, "张三",1010);
-//		
-//		CustomerBean customerBean = new CustomerBeanDao().getCustomer("oBx4Dt37J4GSXlt32V4zGf-EDQQM");
-//		System.out.println(customerBean.getRealname());
-//		
-//		oBx4Dt37J4GSXlt32V4zGf-EDQQM gh_5a402ba88fa0
-//		new MessageBeanDao().getMessageList("oBx4Dt37J4GSXlt32V4zGf-EDQQM ",null, -1, -1);
-//		Session session = HiberHelper.getSession();
-//		UserBean ub = (UserBean) session.get(UserBean.class, 1);
-//		System.out.println(ub.toString());
-//		session.close();
-//		
-//		session = HiberHelper.getSession();
-//		UserBean ub1 = (UserBean) session.get(UserBean.class, 1);
-//		System.out.println(ub1.toString());
-////		session1.close();
-//		HiberHelper.closeFactory();
-//		
-//		Session session2 = HiberHelper.getSession();
-//		UserBean ub2 = (UserBean) session2.get(UserBean.class, 1);
-//		System.out.println(ub2.toString());
-//		session2.close();
-//		HiberHelper.closeFactory();
-		
-//		new MessageServices().getMessageBeanList();
-//		UserService userService = new UserService();
-//		userService.checkUser("admin", "202cb962ac59075b964b07152d234b70");
-//		System.out.print(Config.getConfig("token"));
-//		System.out.println(WeChatHelper.checkSafe("token", "timestamp", "nonce", "signature"));
-//		method4hibernate();
-//		System.out.println(ConfigHelper.getConfig("token"));
-//		method2saveConfig();
-//		Date date = new Date(1348831860L);
-//		Long dateL = date.getTime();
-//		System.out.println(date);
-//		System.out.println(dateL);
-		
-//		Session session = HiberHelper.getSession();
-//		session.close();
-//		HiberHelper.closeFactory();
-		
-//		session.beginTransaction();
-//		MessageBeanDao msgDao = new MessageBeanDao();
-//		ArrayList<MessageBean> msgList = msgDao.getMessageList();
-//		System.out.println(msgList);
-//		method2saveConfig();
-	
-//		Date date = new Date();
-//		System.out.print(date.getTime());
-//		saveCustomer("ABCEDELS");
-//		method3();
-//		mthod5();
-//		mthod6();
-//		mthod7();
-//		FrameService fs = new FrameService();
-//		AppConfigBean appBean = new AppConfigBean();
-//		appBean.setAppId("abc");
-//		appBean.setName("abcname");
-//		appBean.setCategoryId("ca");
-//		appBean.setDescription("de");
-//		appBean.setIcon("icon");
-//		appBean.setMultiInstance(true);
-//		appBean.setName("na");
-//		appBean.setPriority(1);
-//		appBean.setVisible(true);
-//		appBean.setPath("pa");;
-//		appBean.setParam("par");
-//		fs.saveOrAddAppConfigBean(appBean);
-//		fs.delAppConfigBeanByAppId("a");
-//		AppConfigBean appBean;
-//		AppConfigBeanDao appDao = new AppConfigBeanDao();
-//		AppConfigBean appBean = appDao.getAppConfigBean("4d7665a6-175c-49e1-b89d-d8628157355e");
-//		appBean = null;
-//		UserBeanDao userDao = new UserBeanDao();
-//		userDao.getUserList();
-	}
 	public static void mthod6(){
 		Session session = HibernateSessionFactory.getSession();
 		Transaction tx = session.beginTransaction();

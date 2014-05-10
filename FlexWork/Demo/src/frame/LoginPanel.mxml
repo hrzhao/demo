@@ -11,6 +11,7 @@
 			import events.LoginEvent;
 			
 			import mx.controls.Alert;
+			import mx.events.CloseEvent;
 			import mx.events.FlexEvent;
 			import mx.rpc.events.FaultEvent;
 			import mx.rpc.events.ResultEvent;
@@ -26,6 +27,7 @@
 			}
 			protected function ro_resultHandler(event:ResultEvent):void
 			{
+				txt_password.removeEventListener(KeyboardEvent.KEY_DOWN, tbxPwd_keyDownHandler);
 				progressLabel.visible = false;
 				// TODO Auto-generated method stub
 				var data:Object = event.result.data;
@@ -35,11 +37,13 @@
 						this.dispatchEvent(new LoginEvent("loginSuccess",user));
 					}
 				}else{
-					Alert.show("密码或用户名有错");
+					Alert.show("密码或用户名有错","",4,this,alertFaultHandler);
 					txt_password.setFocus();
 				}
 			}
-			
+			private function alertFaultHandler(event:CloseEvent):void{
+				txt_password.addEventListener(KeyboardEvent.KEY_DOWN, tbxPwd_keyDownHandler);
+			}
 			protected function tbxPwd_keyDownHandler(event:KeyboardEvent):void
 			{
 				if(event.keyCode == 13 && btn_login.enabled)

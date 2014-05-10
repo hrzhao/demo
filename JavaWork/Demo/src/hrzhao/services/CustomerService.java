@@ -28,13 +28,22 @@ public class CustomerService {
 		}
 		return rso;
 	}
+	
+	//getCustomerByName
+	public ResultObject getCustomerByName(String name){
+		return new ResultObject(ResultObject.SUCCESS,
+				new CustomerBeanDao().
+				getCustomerByName(name)
+				);
+	}
+	
 	public ResultObject getCustomerList(String name,String realname){
 		CustomerBeanDao customerDao = new CustomerBeanDao();
 		List<CustomerBean> list = customerDao.getCustomerList(name,realname);
 		return new ResultObject(ResultObject.SUCCESS,list);
 	}
 	
-	public ResultObject addCharge(String customerName,int amount,int productId,float price){
+	public ResultObject addCharge(String customerName,int productId,int amount,float price){
 		AcountBeanDao acountDao = new AcountBeanDao();
 		AcountBean acount = acountDao.getAcountByIdAndCustomer(productId, customerName);
 		if(acount == null){
@@ -62,6 +71,15 @@ public class CustomerService {
 		acountDao.saveOrUpdateAcount(acount);
 		chargeDao.saveCharge(charge);
 		return new ResultObject(ResultObject.SUCCESS,null);
+	}
+	public ResultObject getCustomerAcounts(String customerName){
+		AcountBeanDao acountDao = new AcountBeanDao();
+		List<Object> list = acountDao.getCustomerAcounts(customerName);
+		return new ResultObject(ResultObject.SUCCESS,list);
+	}
+	public ResultObject getProductList(){
+		List<ProductBean> list = new ProductBeanDao().getProductList(1);
+		return new ResultObject(ResultObject.SUCCESS,list);
 	}
 
 }

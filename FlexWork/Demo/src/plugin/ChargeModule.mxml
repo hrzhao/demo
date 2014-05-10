@@ -8,6 +8,9 @@
 				>
 	<fx:Script>
 		<![CDATA[
+			import components.ChargePanel;
+			
+			import events.CustomEvent;
 			import events.DgcMenuEvent;
 			
 			import flexlib.mdi.containers.MDIWindow;
@@ -20,6 +23,8 @@
 			import mx.rpc.events.ResultEvent;
 			
 			import utils.MessageBox;
+			
+			import windows.ViewAcountWnd;
 			public function dateformate(item:Object, column:AdvancedDataGridColumn):String  
 			{
 				return df.format(item[column.dataField]);
@@ -75,21 +80,44 @@
 				getCustomerList();
 			}
 			
+			private function showCustomerAcounts_handler(event:CustomEvent):void{
+				getCustomerAcounts(event.data as String);
+			}
+
 			
-			protected function dg_appConfig_dgcMenuClickHandler(event:DgcMenuEvent):void
+			private var op_getCustomerAcounts:AbstractOperation = null;
+			private function getCustomerAcounts(customerName:String):void{
+				if(op_getCustomerAcounts == null){
+					op_getCustomerAcounts = ro.getOperation("getCustomerAcounts");
+					op_getCustomerAcounts.addEventListener(ResultEvent.RESULT,getCustomerAcounts_resultHandler,false,0,true);
+					op_getCustomerAcounts.addEventListener(FaultEvent.FAULT,faultHandler,false,0,true);
+				}
+				op_getCustomerAcounts.send(customerName);
+			}
+			private function getCustomerAcounts_resultHandler(event:ResultEvent):void{
+				if(event.result.state == "success" && event.result.data is ArrayCollection){
+					showViewAcountWnd(event.result.data as ArrayCollection);
+				}else{
+					showViewAcountWnd(null);
+				}
+			}
+			
+			protected function dg_customer_dgcMenuClickHandler(event:DgcMenuEvent):void
 			{
 				// TODO Auto-generated method stub
+				var customerName:String = dg_customer.selectedItem.name;
 				if(event.menuItem.label == "查看帐户"){
-					showViewAcountWnd();
+					getCustomerAcounts(customerName);
 				}else if(event.menuItem.label == "充值"){
-				
+					openChargePanel(customerName);
 				}
 				
 			}
 			
+			
 			//
-			private var viewAcountWnd:MDIWindow = null;
-			private function showViewAcountWnd():void
+			private var viewAcountWnd:ViewAcountWnd = null;
+			private function showViewAcountWnd(data:ArrayCollection):void
 			{
 				var hasInclude:Boolean = false;
 				for each(var tmp:MDIWindow in mdiCanvasHolder.windowManager.windowList )
@@ -102,14 +130,37 @@
 				}
 				if(viewAcountWnd == null || !hasInclude)
 				{
-					viewAcountWnd = new MDIWindow();
+					viewAcountWnd = new ViewAcountWnd();
 					mdiCanvasHolder.windowManager.add(viewAcountWnd);
 					viewAcountWnd.title ="查看帐户";
-//					viewAcountWnd.x = 50;
-//					viewAcountWnd.y = 100;
-					rightAlighMDI(viewAcountWnd);
+					viewAcountWnd.addEventListener("showChargePanel",showChargePanel_handler,false,0,true);
 				}
+				rightAlighMDI(viewAcountWnd);
+				viewAcountWnd.customerName = dg_customer.selectedItem.name;
+				viewAcountWnd.dataProvider = data;
 				viewAcountWnd.visible = true;
+			}
+			
+			private var labelCount:int = 0;
+			private function showChargePanel_handler(event:CustomEvent):void{
+				//充值
+				var customerName:String = event.data as String;
+				openChargePanel(customerName);
+				
+			}
+			private  function openChargePanel(customerName:String):void{
+				if(viewStack.numElements ==1 ){
+					labelCount = 0;
+				}
+				if(customerName != null && customerName != ""){
+					var naviCont:NavigatorContent = findNaviContByName(customerName);
+					if(naviCont == null){
+						var label:String = "充值窗口" + (++labelCount);
+						naviCont = buildPanelNaviCont(label,customerName);
+						viewStack.addElement(naviCont);
+					}
+					viewStack.selectedChild = naviCont;
+				}
 			}
 			
 			private function rightTopAlighMDI(window:MDIWindow):void
@@ -141,6 +192,31 @@
 				window.x = xpos
 				window.y = ypos;
 			}
+			private function findNaviContByName(name:String):NavigatorContent{
+				var result:NavigatorContent = null;
+				if(name == null) return result;
+				for each(var naviCont:NavigatorContent in viewStack.getChildren()){
+					if(naviCont.name == name){
+						result = naviCont;
+					}
+				}
+				return result;
+			}
+			
+			private function buildPanelNaviCont(label:String,name:String = null):NavigatorContent{
+				var naviCont:NavigatorContent = new NavigatorContent();
+				naviCont.percentWidth = 100;
+				naviCont.percentHeight = 100;
+				naviCont.label = label;
+				naviCont.name = name;
+				var panel:ChargePanel = new ChargePanel();
+				panel.addEventListener("showCustomerAcounts",showCustomerAcounts_handler,false,0,true);
+				panel.percentWidth = 100;
+				panel.percentHeight = 100;
+				panel.customerName = name;
+				naviCont.addElement(panel);
+				return naviCont;
+			}
 			
 			
 
@@ -167,16 +243,14 @@
 				<s:Label left="13" top="10" text="客户名称："/>
 				<s:TextInput id="txt_realname" left="75" top="3" width="140"/>
 				<s:Label left="223" top="10" text="客户ID："/>
-				<s:TextInput id="txt_customerName" left="274" top="3" width="156"/>
-				
+				<s:TextInput id="txt_customerName" left="274" top="3" width="156" restrict="1"/>
 				<s:Button id="btn_search" right="10" top="3" label="查询" click="btn_search_clickHandler(event)"/>
 			</s:BorderContainer>
 			<components:SuperAdvancedDataGrid id="dg_customer" top="43" left="15" right="15" bottom="10"
 								 horizontalScrollPolicy="auto" verticalScrollPolicy="auto"
 								 sortExpertMode="true"
 								 dataProvider="{customerList}"
-								 dgcMenuClick="dg_appConfig_dgcMenuClickHandler(event)"
-								 >
+								 dgcMenuClick="dg_customer_dgcMenuClickHandler(event)">
 				<components:columns>
 					<mx:AdvancedDataGridColumn dataField="realname" headerText="客户名称" width="80"/>
 					<mx:AdvancedDataGridColumn dataField="name" headerText="客户ID" width="220"/>
