@@ -13,6 +13,7 @@
 			import mx.controls.Alert;
 			import mx.events.CloseEvent;
 			import mx.events.FlexEvent;
+			import mx.graphics.BitmapScaleMode;
 			import mx.rpc.events.FaultEvent;
 			import mx.rpc.events.ResultEvent;
 			import mx.utils.StringUtil;
@@ -53,7 +54,7 @@
 			{
 				// TODO Auto-generated method stub
 				if(!progressLabel.visible ){
-					progressLabel.visible  = false;
+					progressLabel.visible  = true;
 					var username:String = StringUtil.trim(txt_username.text);
 					var password:String = MD5.getMD5(txt_password.text);
 					ro.checkUser(username,password);
@@ -79,6 +80,15 @@
 					btn_login_clickHandler(null);
 				}
 			}
+//			private function method():void{
+//				var myShape:Shape = new Shape();
+//				var gradientBoxMatrix:Matrix = new Matrix();
+//				gradientBoxMatrix.createGradientBox(200, 200, Math.PI*0.5, 0, 0);//Math.PI*0.5是设置渐变转动９０度为垂直（默认为水平,也可设任意角度)
+//				//参数填充类型，颜色数组，alpha数组，渐变比率
+//				myShape.graphics.beginGradientFill(GradientType.LINEAR, [0xFF0000, 0x00FF00], [0, 1], [0, 128], gradientBoxMatrix);
+//				myShape.graphics.drawRect(0, 0, 200, 200);
+//				myShape.graphics.endFill();
+//			}
 		]]>
 	</fx:Script>
 	<fx:Metadata>
@@ -88,36 +98,30 @@
 		<s:RemoteObject id="ro" destination="userService" result="ro_resultHandler(event)" fault="ro_faultHandler(event)"/>
 		<!-- 将非可视元素（例如服务、值对象）放在此处 -->
 	</fx:Declarations>
-	
-	<s:Group width="100%" height="100%">
-		<s:layout>
-			<s:VerticalLayout gap="0"/>
-		</s:layout>
-		<s:Group width="100%" height="200">
-			
+	<s:Image id="img_bg" width="100%" height="100%" source="@Embed(source='assets/登录_背景.jpg')" scaleMode="{BitmapScaleMode.ZOOM}"/>
+	<s:Group verticalCenter="0" horizontalCenter="0">
+		<s:Image id="img_logo" x="0" source="@Embed(source='assets/LOGO.png')" verticalCenter="0"/>
+		<s:Group x="280" width="271" height="290" verticalCenter="0">
+			<s:Rect left="0" right="0" top="0" bottom="0" >
+				<s:fill>
+					<s:LinearGradient rotation="90">
+						<s:GradientEntry color="0xFFFFFF" alpha="0"/>
+						<s:GradientEntry color="0xFFFFFF" alpha="0.8"/>
+						<s:GradientEntry color="0xFFFFFF" alpha="1"/>
+						<s:GradientEntry color="0xFFFFFF" alpha="0.7"/>
+						<s:GradientEntry color="0xFFFFFF" alpha="0"/>
+					</s:LinearGradient>
+				</s:fill>
+			</s:Rect>
+			<s:Label left="24" top="66" fontSize="14" text="用户名"/>
+			<s:TextInput id="txt_username" left="72" top="60" width="162" prompt="请输入用户名" borderColor="0x9999aa"/>
+			<s:Label left="27" top="101" fontSize="14" text="密  码"/>
+			<s:TextInput id="txt_password" left="71" top="96" width="163" displayAsPassword="true" 
+						 borderColor="0x9999aa" prompt="请输入密码"/>
+			<s:Button id="btn_login" left="42" top="141" width="185" label="登录"
+					  click="btn_login_clickHandler(event)"/>
 		</s:Group>
-		<s:HGroup width="100%" height="350" gap="0">
-			<s:Group width="100%" height="100%">
-				
-			</s:Group>
-			<s:Group width="600" height="100%">
-				<s:layout>
-					<s:BasicLayout/>
-				</s:layout>
-				<s:Label left="33" top="66" fontSize="14" text="用户名"/>
-				<s:TextInput id="txt_username" left="87" top="60" width="194" prompt="请输入用户名"
-							 text=""/>
-				<s:Label left="37" top="94" fontSize="14" text="密  码"/>
-				<s:TextInput id="txt_password" left="87" top="90" width="194" displayAsPassword="true"
-							 prompt="请输入密码" text=""/>
-				<s:Button id="btn_login" left="69" top="124" width="185" label="登录"
-						  click="btn_login_clickHandler(event)"/>
-				
-			</s:Group>
-		</s:HGroup>
-		<s:Group width="100%" height="100%">
-			
-		</s:Group>
+		
 	</s:Group>
 	<UI:LabelProgress id="progressLabel" visible="false" label="正在登录"/>
 </s:Group>

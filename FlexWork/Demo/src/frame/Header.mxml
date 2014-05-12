@@ -60,18 +60,48 @@
 	<fx:Declarations>
 		<!-- 将非可视元素（例如服务、值对象）放在此处 -->
 	</fx:Declarations>
-	<s:BorderContainer width="100%" height="100%" backgroundColor="#cccccc" borderVisible="false">
-		<s:Image source="@Embed('assets/header.png')" height="90" />
-		<s:Button id="btn_home" click="btn_home_clickHandler(event)" 
-				  height="90" width="100" right="0" label="HOME" fontSize="24"/>
-		<s:VGroup top="0" bottom="0" left="250" right="100" gap="0">
-			<s:HGroup width="100%" >
-				<s:TabBar id="tabBar" dataProvider="{menuViewStack}" height="26" maxWidth="600"/>
-				<s:Label id="lbl_runningApp" top="8" right="0" fontSize="14" fontWeight="bold" text="{runningApp}" width="35%" textAlign="left"/>
-			</s:HGroup>
-			<frame:MenuViewStack id="menuViewStack" height="100%" width="100%" 
-								 dataProvider="{appConfigList}" selectedAppId="{selectedAppId}" 
-								 menuClick="menuViewStack_menuClickHandler(event)"/>
-		</s:VGroup>
-	</s:BorderContainer>
+	<s:Rect  height="90" width="250" alpha="0.5">
+		<s:fill>
+			<s:LinearGradient rotation="90">
+				<s:GradientEntry color="0xcccccc" alpha="0.4" ratio="0"/>
+				<s:GradientEntry color="0xB0B0B0" alpha="1" ratio="0.6"/>
+				<s:GradientEntry color="0xC0C0C0" alpha="0.8" ratio="1"/>
+			</s:LinearGradient>
+		</s:fill>
+	</s:Rect>
+	<s:Image source="@Embed('assets/LOGO.png')" height="90" width="250"/>
+	<s:Rect  height="90" width="100" right="0" alpha="0.5">
+		<s:fill>
+			<s:LinearGradient rotation="90">
+				<s:GradientEntry color="0xcccccc" alpha="0.4" ratio="0"/>
+				<s:GradientEntry color="0xB0B0B0" alpha="1" ratio="0.6"/>
+				<s:GradientEntry color="0xC0C0C0" alpha="0.8" ratio="1"/>
+			</s:LinearGradient>
+		</s:fill>
+	</s:Rect>
+	<s:Button id="btn_home" click="btn_home_clickHandler(event)" icon="@Embed(source='assets/home.png')"
+			  buttonMode="true"
+			  skinClass="skins.PicButtonSkin"
+			  height="90" width="100" right="0"/>
+	<s:Group height="100%" left="250" right="100">
+		<s:Rect width="100%" height="26" alpha="0.5">
+			<s:fill>
+				<s:LinearGradient rotation="90">
+					<s:GradientEntry color="0xC0C0C0" alpha="0.4" ratio="0"/>
+					<s:GradientEntry color="0xB0B0B0" alpha="1" ratio="0.6"/>
+					<s:GradientEntry color="0xB0B0B0" alpha="0.6" ratio="0.9"/>
+					<s:GradientEntry color="0xCCCCCC" alpha="0" ratio="1"/>
+				</s:LinearGradient>
+			</s:fill>
+		</s:Rect>
+		<s:HGroup id="topMidGroup" height="26" horizontalAlign="left" verticalAlign="middle" width="100%">
+			<s:Group width="60%" height="100%">
+				<s:TabBar id="tabBar" dataProvider="{menuViewStack}" height="100%"/>
+			</s:Group>
+			<s:Label id="lbl_runningApp" fontSize="14" text="{runningApp}" width="40%" textAlign="center"/>
+		</s:HGroup>
+		<frame:MenuViewStack id="menuViewStack" top="26" bottom="0" width="100%" 
+							 dataProvider="{appConfigList}" selectedAppId="{selectedAppId}" 
+							 menuClick="menuViewStack_menuClickHandler(event)"/>
+	</s:Group>
 </s:Group>

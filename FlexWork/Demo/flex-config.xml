@@ -5,7 +5,7 @@
   <services>${DOCUMENTS}\JavaWork\Demo\WebContent\WEB-INF\flex\services-config.xml</services>
   <define append="true">
 	<name>CONFIG::Debug</name>
-	<value>false</value>
+	<value>true</value>
   </define>
   <define append="true">
 	<name>CONFIG::Deploy</name>
