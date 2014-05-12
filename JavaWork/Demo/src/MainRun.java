@@ -60,6 +60,7 @@ import org.hibernate.cfg.Configuration;
 import org.hibernate.criterion.Restrictions;
 import org.hibernate.transform.Transformers;
 
+//import flex.messaging.HttpFlexSession;;
 
 //import hrzhao.Config;
 //from bedroom
@@ -69,7 +70,15 @@ public class MainRun {
 	}
 	
 	public static void main(String[] args) {
-		getRequest("101110101");
+//		getRequest("101110101");
+		match("星期天");
+		match("星期1");
+		match("星期一增城增城增城增城增城增城");
+		match("星期日一增城");
+	}
+	public static void match(String content){
+		String reg="星期[一二三四五六日]{1}[\u4e00-\u9fa5]{0,10}";
+		System.out.println(content.matches(reg));
 	}
 	
 	public static String getRequest(String cityCode){
