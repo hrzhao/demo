@@ -1,0 +1,172 @@
+<?xml version="1.0" encoding="utf-8"?>
+<frame:EWModule xmlns:fx="http://ns.adobe.com/mxml/2009" 
+				xmlns:s="library://ns.adobe.com/flex/spark" 
+				xmlns:mx="library://ns.adobe.com/flex/mx" xmlns:frame="frame.*" width="100%" height="100%" xmlns:components="components.*" xmlns:common="common.*" xmlns:UI="common.UI.*"
+				creationComplete="ewmodule1_creationCompleteHandler(event)"
+				>
+	<fx:Script>
+		<![CDATA[
+			import components.OrderPanel;
+			
+			import entities.ResultObject;
+			
+			import events.DgcMenuEvent;
+			
+			import mx.collections.ArrayCollection;
+			import mx.controls.Alert;
+			import mx.controls.Menu;
+			import mx.events.FlexEvent;
+			import mx.rpc.events.FaultEvent;
+			
+			import utils.MessageBox;
+			import utils.RemoteExt;
+			[Bindable]
+			private var title:String = "订单查询";
+			[Bindable]
+			private var ordersList:ArrayCollection;
+			private var ro:RemoteExt = new RemoteExt("orderService");
+			
+			protected function ewmodule1_creationCompleteHandler(event:FlexEvent):void
+			{
+				// TODO Auto-generated method stub
+				var menuItems:Array = [
+					{label:"处理订单",enabled:true,needSelected:true},
+					{label:"配送",enabled:true,needSelected:true}]
+				dg_Order.customMenu = Menu.createMenu(dg_Order,menuItems);
+			}
+			
+			
+			protected function btn_search_clickHandler(event:MouseEvent):void
+			{
+				// TODO Auto-generated method stub
+				progressLabel.visible = true;
+				var item:Object = ddl_status.selectedItem;
+				var status:int = item.value;
+				var orderNo:String = txt_orderNo.text;
+				ro.call("getOrdersList",getOrdersList_handler,faultHandler,status,orderNo);
+			}
+			private function getOrdersList_handler(result:ResultObject):void{
+				progressLabel.visible = false;
+				if(result.state == ResultObject.SUCCESS && result.data != null && result.data is ArrayCollection){
+					ordersList = result.data as ArrayCollection;
+				}else{
+					ordersList = null;
+				}
+			}
+			private function faultHandler(event:FaultEvent):void{
+				progressLabel.visible = false;
+				MessageBox.show(event.message.toString());
+			}
+			[Bindable]
+			private var ddl_status_list:ArrayCollection = new ArrayCollection([
+				{"label":"新建","value":0},
+				{"label":"正在配送","value":1},
+				{"label":"配送完成","value":2},
+				{"label":"已确认","value":3},
+				{"label":"已丢弃","value":4}]);
+			private function dateformate(item:Object, column:AdvancedDataGridColumn):String  
+			{
+				return df.format(item[column.dataField]);
+			}
+			private function statusTrans(item:Object, column:AdvancedDataGridColumn):String  
+			{
+				if(item[column.dataField] >= 0 && item[column.dataField] < ddl_status_list.length){
+					return ddl_status_list.getItemAt(item[column.dataField]).label;
+				}
+				return "";
+			}
+			
+			
+			protected function dg_Order_dgcMenuClickHandler(event:DgcMenuEvent):void
+			{
+				var item:Object = dg_Order.selectedItem;
+				if(event.menuItem.label == "处理订单"){
+					openOrderPanel(item.orderNo);
+				}else if(event.menuItem.label == "配送"){
+					//打印，改状态
+					Alert.show("功能未实现...");
+				}
+			}
+			private var labelCount:int = 0;
+			private  function openOrderPanel(orderNo:String):void{
+				if(viewStack.numElements ==1 ){
+					labelCount = 0;
+				}
+				if(orderNo != null && orderNo != ""){
+					var naviCont:NavigatorContent = findNaviContByName(orderNo);
+					if(naviCont == null){
+//						var label:String = "充值窗口" + (++labelCount);
+						var label:String = orderNo;
+						naviCont = buildPanelNaviCont(label,orderNo);
+						viewStack.addElement(naviCont);
+					}
+					viewStack.selectedChild = naviCont;
+				}
+			}
+			private function buildPanelNaviCont(label:String,name:String = null):NavigatorContent{
+				var naviCont:NavigatorContent = new NavigatorContent();
+				naviCont.percentWidth = 100;
+				naviCont.percentHeight = 100;
+				naviCont.label = label;
+				naviCont.name = name;
+				var panel:OrderPanel = new OrderPanel();
+				naviCont.addElement(panel);
+				return naviCont;
+			}
+			private function findNaviContByName(name:String):NavigatorContent{
+				var result:NavigatorContent = null;
+				if(name == null) return result;
+				for each(var naviCont:NavigatorContent in viewStack.getChildren()){
+					if(naviCont.name == name){
+						result = naviCont;
+					}
+				}
+				return result;
+			}
+			
+		]]>
+	</fx:Script>
+	<fx:Declarations>
+		<!-- 将非可视元素（例如服务、值对象）放在此处 -->
+		<s:DateTimeFormatter id="df" dateTimePattern="yyyy-MM-dd HH:mm:ss"/>
+	</fx:Declarations>
+	<s:Line top="27" right="0" left="0">
+		<s:stroke>
+			<s:SolidColorStroke color="0xb4cadc" weight="1" />
+		</s:stroke>
+	</s:Line>
+	<common:CloseableTabBar id="tabbar" left="5" top="3" maxWidth="955" dataProvider="{viewStack}" 
+							lockedTabCount="1" height="25" buttonMode="true" labelField="label">
+	</common:CloseableTabBar>
+	<mx:ViewStack id="viewStack" width="100%" top="28" height="100%">
+		<s:NavigatorContent width="100%" height="100%" label="{title}">
+			<s:BorderContainer top="8" left="15" right="15" height="30">
+				<s:Label left="28" top="8" text="订单号："/>
+				<s:TextInput id="txt_orderNo" left="88" top="3" width="120"/>
+				<s:Button id="btn_search" right="10" top="3" width="70" label="查询"
+						  click="btn_search_clickHandler(event)"/>
+				<s:DropDownList id="ddl_status" left="263" top="3" dataProvider="{ddl_status_list}" labelField="label" selectedIndex="0"/>
+				<s:Label left="221" top="8" text="状态："/>
+			</s:BorderContainer>
+			<components:SuperAdvancedDataGrid id="dg_Order" top="43" left="15" right="15" bottom="10" dataProvider="{ordersList}"
+											  sortExpertMode="true"
+											  borderVisible="true" 
+											  horizontalScrollPolicy="auto" verticalScrollPolicy="auto"
+											  dgcMenuClick="dg_Order_dgcMenuClickHandler(event)"
+											  >
+				<components:columns>
+					<mx:AdvancedDataGridColumn width="100" headerText="序号" dataField="id" textAlign="left" headerWordWrap="true"/>
+					<mx:AdvancedDataGridColumn width="120" headerText="订单号" dataField="orderNo" textAlign="left" headerWordWrap="true"/>
+					<mx:AdvancedDataGridColumn width="100" headerText="产品名称" dataField="productName" textAlign="left" headerWordWrap="true"/>
+					<mx:AdvancedDataGridColumn width="140" headerText="生成时间" dataField="intime"  labelFunction="{dateformate}" textAlign="left" headerWordWrap="true"/>
+					<mx:AdvancedDataGridColumn width="100" headerText="状态" dataField="status" labelFunction="statusTrans" textAlign="left" headerWordWrap="true"/>
+					<mx:AdvancedDataGridColumn width="100" headerText="数量" dataField="amount" textAlign="left" headerWordWrap="true"/>
+					<mx:AdvancedDataGridColumn width="100" headerText="工人" dataField="workerId" textAlign="left" headerWordWrap="true"/>
+					<mx:AdvancedDataGridColumn width="140" headerText="确认时间" dataField="confirmTime" labelFunction="{dateformate}" textAlign="left" headerWordWrap="true"/>
+					<mx:AdvancedDataGridColumn/>
+				</components:columns>
+			</components:SuperAdvancedDataGrid>
+		</s:NavigatorContent>
+	</mx:ViewStack>
+	<UI:LabelProgress id="progressLabel" width="100%" height="100%" visible="false"/>
+</frame:EWModule>

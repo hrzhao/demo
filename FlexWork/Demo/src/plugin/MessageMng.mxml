@@ -8,16 +8,17 @@
 		<![CDATA[
 			import components.MsgDetailPanel;
 			
+			import entities.ResultObject;
+			
 			import events.DgcMenuEvent;
-			import events.StateEvent;
 			
 			import mx.collections.ArrayCollection;
 			import mx.events.FlexEvent;
-			import mx.rpc.AbstractOperation;
 			import mx.rpc.events.FaultEvent;
 			import mx.rpc.events.ResultEvent;
 			
 			import utils.MessageBox;
+			import utils.RemoteExt;
 			[Bindable]
 			public var title:String = "消息列表";
 			[Bindable]
@@ -41,37 +42,20 @@
 			protected function ewmodule1_creationCompleteHandler(event:FlexEvent):void
 			{
 				// TODO Auto-generated method stub
-				this.addEventListener(StateEvent.WAITINGRESULT,waittingResultHandler,false,0,true);
-				this.addEventListener(StateEvent.GOTRESULT,gotResultHandler,false,0,true);
 			}
-			private function waittingResultHandler(event:StateEvent):void{
-				showLoading(event.msg);
-			}
-			private function gotResultHandler(event:StateEvent):void{
+			private var ro:RemoteExt = new RemoteExt("messageServices");
+			private function op_getMessageList_resultHandler(result:ResultObject):void{
 				hideLoading();
-			}
-			private var op_getMessageList:AbstractOperation = null;
-			private function getMessageList():void{
-				if(op_getMessageList == null){
-					op_getMessageList = ro.getOperation("getMessageBeanList");
-					op_getMessageList.addEventListener(FaultEvent.FAULT,faultHandler,false,0,true);
-					op_getMessageList.addEventListener(ResultEvent.RESULT,op_getMessageList_resultHandler,false,0,true);
-				}
-				op_getMessageList.send();
-				showLoading("正在查询...");
-			}
-			private function op_getMessageList_resultHandler(event:ResultEvent):void{
-				if(event.result.state == "success"){
-					if(event.result.data is ArrayCollection){
-						messageList = event.result.data;
-						hideLoading();
+				if(result.state == "success"){
+					if(result.data is ArrayCollection){
+						messageList = result.data as ArrayCollection;
 					}
 				}
 			}
 			protected function btn_search_clickHandler(event:MouseEvent):void
 			{
-				// TODO Auto-generated method stub
-				getMessageList();
+				showLoading("正在查询...");
+				ro.call("getMessageBeanList",op_getMessageList_resultHandler,faultHandler);
 			}
 			private function dateformate(item:Object, column:AdvancedDataGridColumn):String  
 			{
@@ -121,7 +105,6 @@
 	</fx:Script>
 	<fx:Declarations>
 		<!-- 将非可视元素（例如服务、值对象）放在此处 -->
-		<s:RemoteObject id="ro" destination="messageServices"/> 
 		<s:DateTimeFormatter id="df" dateTimePattern="yyyy-MM-dd HH:mm:ss"/>
 	</fx:Declarations>
 	<s:Line top="27" right="0" left="0">
@@ -145,6 +128,7 @@
 									 horizontalScrollPolicy="auto" verticalScrollPolicy="auto"
 									 dataProvider="{messageList}"
 									 sortExpertMode="true"
+									 menuEnable="false"
 									 unselectedMenuItem="0" selectedMenuItem="0"
 									 >
 					<components:columns>

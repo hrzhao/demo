@@ -10,6 +10,8 @@
 		<![CDATA[
 			import components.ChargePanel;
 			
+			import entities.ResultObject;
+			
 			import events.CustomEvent;
 			import events.DgcMenuEvent;
 			
@@ -18,11 +20,11 @@
 			import mx.collections.ArrayCollection;
 			import mx.controls.Menu;
 			import mx.events.FlexEvent;
-			import mx.rpc.AbstractOperation;
 			import mx.rpc.events.FaultEvent;
 			import mx.rpc.events.ResultEvent;
 			
 			import utils.MessageBox;
+			import utils.RemoteExt;
 			
 			import windows.ViewAcountWnd;
 			public function dateformate(item:Object, column:AdvancedDataGridColumn):String  
@@ -32,7 +34,7 @@
 			[Bindable]
 			private var title:String = "查找用户";
 			
-			private var op_getCustomerList:AbstractOperation = null;
+			private var ro:RemoteExt = new RemoteExt("customerService")
 			protected function ewmodule1_creationCompleteHandler(event:FlexEvent):void
 			{
 				// TODO Auto-generated method stub
@@ -41,30 +43,26 @@
 				dg_customer.customMenu = Menu.createMenu(dg_customer,menuItems);
 			}
 			private function getCustomerList():void{
-				if(op_getCustomerList == null){
-					op_getCustomerList = ro.getOperation("getCustomerList");
-					op_getCustomerList.addEventListener(FaultEvent.FAULT,faultHandler,false,0,true);
-					op_getCustomerList.addEventListener(ResultEvent.RESULT,getCustomerList_resulttHandler,false,0,true);
-				}
 				showProgress(null);
-				op_getCustomerList.send(txt_customerName.text ==""?null:txt_customerName.text,
+				ro.call("getCustomerList",getCustomerList_resulttHandler,faultHandler,
+					txt_customerName.text ==""?null:txt_customerName.text,
 					txt_realname.text == "" ?null:txt_realname.text);
 			}
 			
 			[Bindable]
 			private var customerList:ArrayCollection = new ArrayCollection();
 			
-			private function getCustomerList_resulttHandler(event:ResultEvent):void{
+			private function getCustomerList_resulttHandler(result:ResultObject):void{
 				hideProgress();
-				if(event.result.state == "success"){
-					customerList = event.result.data;
+				if(result.state == "success" && result.data && result.data is ArrayCollection){
+					customerList = result.data as ArrayCollection;
 				}
 			}
 			protected function faultHandler(event:FaultEvent):void{
 				hideProgress();
 				MessageBox.show("请求失败\n" + event.message.toString());
 			}
-			protected function showProgress(msg:String):void{
+			protected function showProgress(msg:String = null):void{
 				if(msg != null){
 					progressLabel.label = msg;
 				}
@@ -85,16 +83,12 @@
 			}
 
 			
-			private var op_getCustomerAcounts:AbstractOperation = null;
 			private function getCustomerAcounts(customerName:String):void{
-				if(op_getCustomerAcounts == null){
-					op_getCustomerAcounts = ro.getOperation("getCustomerAcounts");
-					op_getCustomerAcounts.addEventListener(ResultEvent.RESULT,getCustomerAcounts_resultHandler,false,0,true);
-					op_getCustomerAcounts.addEventListener(FaultEvent.FAULT,faultHandler,false,0,true);
-				}
-				op_getCustomerAcounts.send(customerName);
+				showProgress();
+				ro.call("getCustomerAcounts",getCustomerAcounts_resultHandler,faultHandler,customerName);
 			}
 			private function getCustomerAcounts_resultHandler(event:ResultEvent):void{
+				hideProgress();
 				if(event.result.state == "success" && event.result.data is ArrayCollection){
 					showViewAcountWnd(event.result.data as ArrayCollection);
 				}else{
@@ -223,7 +217,6 @@
 		]]>
 	</fx:Script>
 	<fx:Declarations>
-		<s:RemoteObject id="ro" destination="customerService"/> 
 		<s:DateTimeFormatter id="df" dateTimePattern="yyyy-MM-dd HH:mm:ss"/>
 		<!-- 将非可视元素（例如服务、值对象）放在此处 -->
 	</fx:Declarations>

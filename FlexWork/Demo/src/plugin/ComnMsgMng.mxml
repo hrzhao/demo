@@ -8,6 +8,8 @@
 		<![CDATA[
 			import components.msg.ComnMsgReply;
 			
+			import entities.ResultObject;
+			
 			import events.CustomEvent;
 			
 			import mx.collections.ArrayCollection;
@@ -22,6 +24,9 @@
 			import spark.events.TextOperationEvent;
 			
 			import utils.MessageBox;
+			import utils.RemoteExt;
+
+
 			protected function mouseWheelChangingHandler(event:FlexMouseEvent):void
 			{
 				event.preventDefault();
@@ -36,20 +41,18 @@
 					scroller.viewport.verticalScrollPosition = Math.max(vPos - delta, 0);
 			}
 			
-			
+			private static const DayBefore:int = 30;
+			private var ro:RemoteExt = new RemoteExt("comnmsgService");
 			protected function ewmodule1_creationCompleteHandler(event:FlexEvent):void
 			{
 				// TODO Auto-generated method stub
 				msgGroup.addEventListener("replyMsg",replyMsgHandler,true,0,false);
-				var op_getComnMsgList:AbstractOperation = ro.getOperation("getComnMsgList");
-				op_getComnMsgList.addEventListener(FaultEvent.FAULT,faultHandler);
-				op_getComnMsgList.addEventListener(ResultEvent.RESULT,op_getComnMsgList_resultHandler);
-				
-				var begin:Date = new Date(); 
-				begin.time = begin.time - 3 * 86401000;//用现在时间毫秒数减去一天毫秒数
-				//customerName,beginTime,endTime,start,size,status,reverse
-				op_getComnMsgList.send(null,begin,null,0,500,0,true);//获取后一百条 
 				showProgress(null);
+				var begin:Date = new Date(); 
+				begin.time = begin.time - DayBefore * 86401000;//用现在时间毫秒数减去一天毫秒数
+				//customerName,beginTime,endTime,start,size,status,reverse
+				ro.call("getComnMsgList",op_getComnMsgList_resultHandler,faultHandler,
+					null,begin,null,0,500,0,true);
 			}
 			//回复消息
 			private var labelCount:int = 0;
@@ -100,13 +103,30 @@
 				hideProgress();
 				MessageBox.show("请求失败\n" + event.message.toString());
 			}
+			private var _data:ArrayCollection = new ArrayCollection();
+			
 			[Bindable]
-			private var data:ArrayCollection = new ArrayCollection();
-			protected function op_getComnMsgList_resultHandler(event:ResultEvent):void{
+			public function get data():ArrayCollection
+			{
+				return _data;
+			}
+			
+			public function set data(value:ArrayCollection):void
+			{
+				_data = value;
+				if( value == null || value.length < 1){
+					lbl_rs_text = "没有需显示内容";
+				}else{
+					lbl_rs_text = "";
+				}
+			}
+			[Bindable]
+			private var lbl_rs_text:String = "";
+			protected function op_getComnMsgList_resultHandler(result:ResultObject):void{
 				hideProgress();
-				if(event.result != null){
-					if(event.result.hasOwnProperty("data")){
-						data = event.result.data;
+				if(result != null){
+					if(result.hasOwnProperty("data")){
+						data = result.data as ArrayCollection;
 					}
 				}
 				msgGroup.callLater(toTheEnd);
@@ -129,7 +149,6 @@
 		]]>
 	</fx:Script>
 	<fx:Declarations>
-		<s:RemoteObject id="ro" destination="comnmsgService"/>
 		<!-- 将非可视元素（例如服务、值对象）放在此处 -->
 	</fx:Declarations>
 	
@@ -149,13 +168,17 @@
 				<s:Button id="btn_search" right="10" top="3" label="查询" />
 			</s:BorderContainer>
 			<s:BorderContainer top="43" left="15" right="15" bottom="10">
-				<s:Scroller width="60%" height="100%" left="0" mouseWheelChanging="mouseWheelChangingHandler(event)" id="scroller">
-					<s:DataGroup id="msgGroup" width="100%" height="100%" itemRenderer="itemrenderer.ComnMsgRenderer" dataProvider="{data}">
-						<s:layout>
-							<s:VerticalLayout id="msgGroupVerticalLayout"/>
-						</s:layout>
-					</s:DataGroup>
-				</s:Scroller>
+				<s:BorderContainer right="380" left="10" top="10" bottom="10"
+								   borderVisible="false" backgroundColor="#CC99FF" backgroundAlpha="0.6" cornerRadius="15">
+					<s:Scroller right="15" left="0" height="100%" mouseWheelChanging="mouseWheelChangingHandler(event)" id="scroller">
+						<s:DataGroup id="msgGroup" width="100%" height="100%" itemRenderer="itemrenderer.ComnMsgRenderer" dataProvider="{data}">
+							<s:layout>
+								<s:VerticalLayout id="msgGroupVerticalLayout"/>
+							</s:layout>
+						</s:DataGroup>
+					</s:Scroller>
+				</s:BorderContainer>	
+				<s:Label id="lbl_rs" right="10" top="10" width="198" height="86"/>
 			</s:BorderContainer>		
 		</s:NavigatorContent>
 	</mx:ViewStack>

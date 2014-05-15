@@ -2,9 +2,11 @@
 <s:Group xmlns:fx="http://ns.adobe.com/mxml/2009" 
 		 xmlns:s="library://ns.adobe.com/flex/spark" 
 		 xmlns:mx="library://ns.adobe.com/flex/mx" width="100%" height="100%" xmlns:components="components.*"
-		 creationComplete="group1_creationCompleteHandler(event)">
+		 creationComplete="group1_creationCompleteHandler(event)" xmlns:UI="common.UI.*">
 	<fx:Script>
 		<![CDATA[
+			import entities.ResultObject;
+			
 			import events.StateEvent;
 			
 			import mx.collections.ArrayCollection;
@@ -15,6 +17,7 @@
 			import mx.rpc.events.ResultEvent;
 			
 			import utils.MessageBox;
+			import utils.RemoteExt;
 			private var _dataProvider:Object;
 
 			[Bindable]
@@ -47,25 +50,22 @@
 			}
 			[Bindable]
 			private var msgList:ArrayCollection = new ArrayCollection();
-			private var op_getMsgList:AbstractOperation = null;
+			private var ro:RemoteExt = new RemoteExt("messageServices");
 			private function getMsgList(fromUserName:String,toUserName:String):void{
-				if(op_getMsgList == null){
-					op_getMsgList = ro.getOperation("getMessageBeanList");
-					op_getMsgList.addEventListener(ResultEvent.RESULT,getMsgList_resultHandler,false,0,true);
-					op_getMsgList.addEventListener(FaultEvent.FAULT,faultHandler,false,0,true);
-				}
-				op_getMsgList.send(fromUserName,toUserName,pagingBar.firstResultIndex,pagingBar.pageSize);
-				this.dispatchEvent(new StateEvent(StateEvent.WAITINGRESULT,"正在查询...",true,true));
+				ro.call("getMessageBeanList",getMsgList_resultHandler,faultHandler,
+					fromUserName,toUserName,pagingBar.firstResultIndex,pagingBar.pageSize);
+				progressLabel.visible = true;
 			}
-			private function getMsgList_resultHandler(event:ResultEvent):void{
-				if(event.result.state == "success"){
+			private function getMsgList_resultHandler(result:ResultObject):void{
+				progressLabel.visible = false;
+				if(result.state == "success"){
 					this.dispatchEvent(new StateEvent(StateEvent.GOTRESULT,null,true,true));
-					msgList = event.result.data.data;
-					pagingBar.totalRow = event.result.data.total;
+					msgList = result.data.data as ArrayCollection;
+					pagingBar.totalRow = result.data.total;
 				}
 			}
 			private function faultHandler(event:FaultEvent):void{
-				this.dispatchEvent(new StateEvent(StateEvent.GOTRESULT,null,true,true));
+				progressLabel.visible = false;
 				MessageBox.show(event.message.toString());
 			}
 			
@@ -80,11 +80,12 @@
 	<fx:Declarations>
 		<!-- 将非可视元素（例如服务、值对象）放在此处 -->
 		<s:DateTimeFormatter id="df" dateTimePattern="yyyy-MM-dd HH:mm:ss"/>
-		<s:RemoteObject id="ro" destination="messageServices"/> 
 	</fx:Declarations>
 	<s:BorderContainer top="8" left="15" right="15" height="65">
 		<components:SuperAdvancedDataGrid id="customerInfo" dataProvider="{this.dataProvider}" 
-										  width="100%" height="100%" borderVisible="false" menuEnable="false" >
+										  width="100%" height="100%" 
+										  borderVisible="false" menuEnable="false"
+										  sortExpertMode="true">
 			<components:columns>
 				<mx:AdvancedDataGridColumn dataField="name" headerText="微信客户ID" width="250"/>
 				<mx:AdvancedDataGridColumn dataField="realname" headerText="客户名称" width="120"/>
@@ -101,7 +102,8 @@
 			
 		</s:Scroller>
 		-->
-		<components:SuperAdvancedDataGrid id="dg_msgList" dataProvider="{msgList}" width="100%" height="100%" menuEnable="false">
+		<components:SuperAdvancedDataGrid id="dg_msgList" dataProvider="{msgList}" width="100%" height="100%" 
+										  sortExpertMode="true" menuEnable="false">
 			
 		</components:SuperAdvancedDataGrid>
 		
@@ -109,4 +111,5 @@
 	<s:BorderContainer bottom="8" left="15" right="15" height="30">
 		<components:PagingBar id="pagingBar" top="3" pageChange="paginBar_pageChangeHandler(event)"/>
 	</s:BorderContainer>
+	<UI:LabelProgress id="progressLabel" visible="false" label="正在查询..."/>
 </s:Group>

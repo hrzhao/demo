@@ -12,6 +12,7 @@ package utils
 		}
 		public static function show(message:String):void{
 			var  msgWindow:MsgTitleWindow = new MsgTitleWindow();
+			msgWindow.title = "提示"
 			msgWindow.message = message;
 			PopUpManager.addPopUp(msgWindow,DisplayObject(FlexGlobals.topLevelApplication),true);
 			PopUpManager.centerPopUp(msgWindow);

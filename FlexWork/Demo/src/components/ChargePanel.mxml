@@ -9,12 +9,13 @@
 	</fx:Metadata>
 	<fx:Script>
 		<![CDATA[
+			import entities.ResultObject;
+			
 			import events.CustomEvent;
 			
 			import mx.collections.ArrayCollection;
 			import mx.controls.Alert;
 			import mx.events.FlexEvent;
-			import mx.rpc.AbstractOperation;
 			import mx.rpc.events.FaultEvent;
 			import mx.rpc.events.ResultEvent;
 			
@@ -22,25 +23,18 @@
 			import spark.events.TextOperationEvent;
 			
 			import utils.MessageBox;
+			import utils.RemoteExt;
 			[Bindable]
 			public var customerName:String;
-			
-			private var op_getCustomer:AbstractOperation = null;
+			private var ro:RemoteExt = new RemoteExt("customerService");
 			protected function group1_creationCompleteHandler(event:FlexEvent):void
 			{
-				// TODO Auto-generated method stub
-				if(op_getCustomer == null){		
-					op_getCustomer = ro.getOperation("getCustomerByName");
-					op_getCustomer.addEventListener(FaultEvent.FAULT,faultHandler,false,0,true);
-					op_getCustomer.addEventListener(ResultEvent.RESULT,getCustomer_resultHandler,false,0,true);
-				}
 				progressLabel.visible = true;
-				op_getCustomer.send(customerName);
-				
+				ro.call("getCustomerByName",getCustomer_resultHandler,faultHandler,customerName);
 			}
-			private function getCustomer_resultHandler(event:ResultEvent):void{
+			private function getCustomer_resultHandler(result:ResultObject):void{
 				progressLabel.visible = false;
-				var data:Object = event.result.data;
+				var data:Object = result.data;
 				if(data != null){
 					txt_realname.text = data.realname;
 					txt_address.text = data.address;
@@ -50,20 +44,15 @@
 					MessageBox.show("查询用户信息失败");
 				}
 			}
-			private var op_getProductList:AbstractOperation = null;
 			private function getProductList():void{
-				if(op_getProductList == null){
-					op_getProductList = ro.getOperation("getProductList");
-					op_getProductList.addEventListener(FaultEvent.FAULT,faultHandler,false,0,true);
-					op_getProductList.addEventListener(ResultEvent.RESULT,op_getProductList_resultHandler,false,0,true);
-				}
-				op_getProductList.send();
+				progressLabel.visible = true;
+				ro.call("getProductList",op_getProductList_resultHandler,faultHandler);
 			}
 			[Bindable]
 			private var productList:ArrayCollection = new ArrayCollection();
-			private function op_getProductList_resultHandler(event:ResultEvent):void{
+			private function op_getProductList_resultHandler(result:ResultObject):void{
 				progressLabel.visible = false;
-				var data:ArrayCollection = event.result.data as ArrayCollection;
+				var data:ArrayCollection = result.data as ArrayCollection;
 				if(data != null){
 					productList = data;
 				}else{
@@ -96,17 +85,13 @@
 					addCharge(item.id,nstp_amount.value as int,Number(txt_finalTotal.text));
 				}
 			}
-			private var op_addCharge :AbstractOperation = null;
+			
 			private function addCharge(productId:int,amount:int,totalPrice:Number):void{
-				if(op_addCharge == null){
-					op_addCharge = ro.getOperation("addCharge");
-					op_addCharge.addEventListener(FaultEvent.FAULT,faultHandler,false,0,true);
-					op_addCharge.addEventListener(ResultEvent.RESULT,addCharge_resultHandler,false,0,true);
-				}
-				op_addCharge.send(customerName,productId,amount,totalPrice);
+				ro.call("addCharge",addCharge_resultHandler,faultHandler,
+					customerName,productId,amount,totalPrice);
 			}
-			private function addCharge_resultHandler(event:ResultEvent):void{
-				if(event.result.state == "success"){
+			private function addCharge_resultHandler(result:ResultObject):void{
+				if(result.state == "success"){
 					ddl_product.selectedIndex = -1;
 					Alert.yesLabel = "好";
 					Alert.show("添加成功","",Alert.YES);
@@ -172,7 +157,6 @@
 		]]>
 	</fx:Script>
 	<fx:Declarations>
-		<s:RemoteObject id="ro" destination="customerService"/> 
 		<!-- 将非可视元素（例如服务、值对象）放在此处 -->
 	</fx:Declarations>
 	<s:BorderContainer top="8" left="15" right="15" height="30">

@@ -1,25 +1,20 @@
 package utils
 {
-//	import MTNOH.AppFx.Frame.IAppFrame;
-//	import MTNOH.AppFx.Frame.User;
-//	
+	import entities.ResultObject;
 	import entities.UserBean;
 	
-	import flash.display.DisplayObject;
 	import flash.events.Event;
-	import flash.net.NetConnection;
 	import flash.net.URLRequest;
 	
 	import frame.IAppFrame;
+	import frame.LoginAuth;
 	
 	import mx.controls.Alert;
-	import mx.core.IContainer;
+	import mx.core.FlexGlobals;
 	import mx.core.IVisualElement;
 	import mx.core.IVisualElementContainer;
 	import mx.events.CloseEvent;
 	import mx.managers.SystemManager;
-	import mx.messaging.Channel;
-	import mx.messaging.ChannelSet;
 	import mx.rpc.AbstractOperation;
 	import mx.rpc.AsyncResponder;
 	import mx.rpc.AsyncToken;
@@ -28,20 +23,14 @@ package utils
 	import mx.rpc.events.ResultEvent;
 	import mx.rpc.remoting.RemoteObject;
 	
-	import spark.components.Application;
 	
-	public class RemoteObjectExt extends RemoteObject
+	public class RemoteExt extends RemoteObject
 	{
-		public function RemoteObjectExt(source:String, destination:String=null)
+		public function RemoteExt(destination:String=null)
 		{
 			super(destination);
 		}
-		
-		/**
-		 * 是否取消，取消后接后函数不返回任何信息
-		 */
 		public var cancle:Boolean = false;
-		
 		/**
 		 * 调用后台的方法
 		 * @param methodName 调用的后台方法名
@@ -54,7 +43,6 @@ package utils
 		{
 			callByArray(methodName, resultCallback, faultCallback, args);
 		}
-		
 		private function callByArray(methodName:String, resultCallback:Function, faultCallback:Function, args:Array):void
 		{
 			var method:AbstractOperation = getOperation(methodName); 
@@ -66,7 +54,6 @@ package utils
 			call.arguments = args;//
 			call.addResponder(new Responder(resultCallbackHandler, faultCallbackHandler));
 		}
-		
 		protected function resultCallbackHandler(event:ResultEvent):void
 		{
 			if(!cancle)
@@ -74,16 +61,6 @@ package utils
 				var resultCallback:Function = event.token.resultCallback as Function;
 				
 				var retObj:Object = event.result;
-				if (retObj != null && retObj.hasOwnProperty("OrigResult"))
-				{
-					// 检查结果
-					if (retObj.hasOwnProperty(RemoteErrMessage.property_error_msg))
-					{
-						RemoteErrMessage.showRemoteErrMessage(retObj);
-					}
-					retObj = event.result.OrigResult;
-				}
-				
 				if (resultCallback != null) 
 					resultCallback(retObj);
 			}
@@ -93,18 +70,18 @@ package utils
 				cancle = false;
 			}
 		}
-		
-		private var appFrame:IAppFrame;
-		private static var wattingCallArray:Array=[];
-		private static var islogining:Boolean = false;
 		protected function faultCallbackHandler(event:FaultEvent):void 
 		{
 			if(!cancle)
 			{
 				var faltCallback:Function = event.token.faultCallback as Function;   
-				if(event.fault.faultCode == "Client.Authorization" || event.fault.faultCode == "Client.Authentication" 
-					|| event.fault.faultCode == "Channel.Call.Failed" || event.fault.faultCode == "Client.Error.MessageSend")
-				{
+				if(    event.fault.faultCode == "Client.Authorization" 
+					|| event.fault.faultCode == "Client.Authentication" 
+					|| event.fault.faultCode == "Channel.Call.Failed" 
+					|| event.fault.faultCode == "Client.Error.MessageSend"
+					|| event.fault.faultCode == "Channel.Authentication.Error"
+				)
+				{//登录出错
 					appFrame = getAppFrame();
 					if(appFrame)
 					{
@@ -116,6 +93,7 @@ package utils
 					{//没有找到IFrame时刷新页面
 						Alert.show("请重新登陆！", "登录超时", Alert.OK, null, logoutActionListner);
 					}
+//					MessageBox.show(event.message.toString());//
 				}
 				else if(faltCallback != null)
 				{
@@ -123,7 +101,7 @@ package utils
 				}
 				else
 				{
-					MessageBox.show("获取数据时发生错误",
+					MessageBox.show("获取数据时发生错误"+
 						"调用方法" + event.token.methodName +"时发生错误。"
 						+"\n[faultCode]: " + event.fault.faultCode + "\n[faultString]: " + event.fault.faultString
 						+ "\n[faultDetail]: " + event.fault.faultDetail);
@@ -135,62 +113,79 @@ package utils
 				cancle = false;
 			}
 		}
-		
+		private static var wattingCallArray:Array=[];
+		private static var islogining:Boolean = false;//正在登录
+//		private static var isNologin:Boolean = false;//状态为没有登录
+		private static var curCount:int = 0;//自动登录次数
 		private function reLogin():void
 		{
 			if(!islogining) //不是正在自动登录中...
 			{
-				if(isNologin) //但是如果是还没登录成功的状态
-				{
-					appFrame.popupLoginPanel(); //登录超时处理
-					appFrame.addEventListener("LoginSuccess", loginSuccess, false, 0, true);
-				}
-				else
-				{
+//				if(isNologin) //但是如果是还没登录成功的状态
+//				{
+//					logoutActionListner(null);
+//				}else{
 					islogining = true;
-					if (this.channelSet)
-					{
+					if (this.channelSet){
 						var token:AsyncToken = this.channelSet.logout();
 						token.addResponder(new AsyncResponder(doLogout_ResultHandler, doLogout_ResultHandler));
+					}else{
+						doLogin();	
 					}
-					else
-					{
-						doLogout_ResultHandler.apply();
-					}
-				}
+//				}
 			}
 		}
-		
 		private function doLogout_ResultHandler(event:Event, token:Object=null):void
 		{
+			doLogin();
+			
+		}
+		//byHRZhao
+		private var loginAuth:LoginAuth = null;
+		private function doLogin():void{
 			if(appFrame)
 			{
 				var user:UserBean = appFrame.user;
-				if(this.channelSet.authenticated)
-				{
-					loginSuccess(event);
-				}
-				else
-				{
-					var token1:AsyncToken = this.channelSet.login(user.username, user.password, "UTF-8");
-					token1.addResponder(new AsyncResponder(LoginResultEvent, onLoginFault));
+				if(this.channelSet && this.channelSet.authenticated){
+					loginSuccess();
+				}else{
+					if(loginAuth == null){
+						loginAuth = new LoginAuth();
+						loginAuth.onReceive_LogIn = LoginResultEvent;
+						loginAuth.onErrorFunction = onLoginFault;
+					}
+					loginAuth.login(user.username, user.password);
 				}
 			}
 		}
 		
-		private function LoginResultEvent(event:ResultEvent, token:Object=null):void
+		private function LoginResultEvent(result:ResultObject):void
 		{
-			switch(event.result) {
-				case "success":
-					loginSuccess(event);
-					break;
-				default:
-					onLoginFault(null);
-					break;
+			//登录完成了
+			islogining = false;
+			var data:Object = result.data;
+			if(result.state == "success" && data != null){
+				loginSuccess();
+			}else{
+				onLoginFault(null);
 			}
 		}
-		
-		private function loginSuccess(event:Event):void
+		private function onLoginFault(event:FaultEvent):void
+		{
+			islogining = false;
+			if(curCount < 3) //重试次数
+			{
+				curCount++;
+				reLogin();
+			}
+			else
+			{//超过3次刷新
+//				isNologin = true;
+				Alert.show("请重新登陆！", "登录超时", Alert.OK, null, logoutActionListner);
+			}
+		}
+		//成功后调用wattingCallArray
+		private function loginSuccess():void
 		{
 			var n:int = wattingCallArray.length;
 			for(var i:int=0; i<n; i++)
@@ -200,11 +195,10 @@ package utils
 			}
 			wattingCallArray.splice(0);
 			islogining = false;
-			isNologin = false;
+//			isNologin = false;
 			curCount = 0;
 		}
-		
-		private function callFunction(remoteObj:RemoteObjectExt, funcName:String, resultCall:Function, faultCall:Function, argument:Array):void
+		private function callFunction(remoteObj:RemoteExt, funcName:String, resultCall:Function, faultCall:Function, argument:Array):void
 		{
 			if(argument && argument.length != 0)
 				remoteObj.callByArray(funcName, resultCall, faultCall, argument);
@@ -212,50 +206,24 @@ package utils
 				remoteObj.call(funcName, resultCall, faultCall);
 		}
 		
-		//自动登录失败后弹出登录窗口
-		private static var isNologin:Boolean = false;
-		private static var curCount:int = 0;
-		private function onLoginFault(event:FaultEvent, token:Object=null):void
-		{
-			islogining = false;
-			if(curCount < 3) //重试次数
-			{
-				curCount++;
-				reLogin();
-			}
-			else
-			{
-				if(appFrame)
-				{
-					curCount = 0;
-					isNologin = true;
-					appFrame.popupLoginPanel();
-					appFrame.addEventListener("LoginSuccess", loginSuccess, false, 0, true);
-				}
-			}
-		}
 		
+		private var  appFrame:IAppFrame = null;
 		private function getAppFrame():IAppFrame
 		{
-			var sysMng:SystemManager = SystemManager.getSWFRoot(this) as SystemManager;
-			if(sysMng != null)
+			var app:IVisualElementContainer = FlexGlobals.topLevelApplication as IVisualElementContainer;
+			if(app != null)
 			{
-				var app:IVisualElementContainer = sysMng.application as IVisualElementContainer;
-				if(app != null)
+				var n:uint = app.numElements;
+				for (var i:int=0; i<n; i++)
 				{
-					var n:uint = app.numElements;
-					for (var i:int=0; i<n; i++)
-					{
-						var ele:IVisualElement = app.getElementAt(i);
-						if(ele is IAppFrame)
-							return IAppFrame(ele);
-					}
+					var ele:IVisualElement = app.getElementAt(i);
+					if(ele is IAppFrame)
+						return IAppFrame(ele);
 				}
 			}
 			return null;
 		}
-		
-		private static function logoutActionListner(eventObj:CloseEvent):void {
+		private static function logoutActionListner(event:CloseEvent):void {
 			flash.net.navigateToURL(new URLRequest("javascript:location.reload();"), "_self");
 		}
 	}

@@ -6,6 +6,8 @@
 		 >
 	<fx:Script>
 		<![CDATA[
+			import entities.ResultObject;
+			
 			import events.CustomEvent;
 			
 			import frame.IModule;
@@ -21,6 +23,7 @@
 			import spark.events.TextOperationEvent;
 			
 			import utils.MessageBox;
+			import utils.RemoteExt;
 			public var customerName:String;
 			public var realname:String;
 			
@@ -42,7 +45,7 @@
 				customerLabel = realname +"("+customerName+")";
 				getComnList();
 			}
-			
+			private static const DayBefore:int = 30;
 			private var op_getComnMsgList:AbstractOperation;
 			private function getComnList():void{
 				data = null;
@@ -53,7 +56,7 @@
 				}
 				
 				var date:Date = new Date(); 
-				date.time = date.time - 7 * 86401000;//用现在时间毫秒数减去一天毫秒数
+				date.time = date.time - DayBefore * 86401000;//用现在时间毫秒数减去一天毫秒数
 				//customerName,beginTime,endTime,start,size,status,reverse
 				op_getComnMsgList.send(customerName,date,null,0,100,null,true);//获取后一百条 
 				showProgress(null);
@@ -86,7 +89,7 @@
 			public var module:IModule;
 			[Bindable]
 			private var customerNames:ArrayCollection = new ArrayCollection();
-			private var op_sendMsg:AbstractOperation = null;
+			private var ro:RemoteExt = new RemoteExt("comnmsgService");
 			protected function btn_send_clickHandler(event:MouseEvent):void
 			{
 				var userId:int = this.module.appFrame.user.id;
@@ -97,22 +100,15 @@
 					return;
 				}
 				//加判断
-				if(op_sendMsg == null){
-					op_sendMsg = ro.getOperation("sendMsg");
-					op_sendMsg.addEventListener(ResultEvent.RESULT,sendMsg_resultHandler,false,0,true);
-					op_sendMsg.addEventListener(FaultEvent.FAULT,faultHandler,false,0,true);
-					
-				}
-				
+				ro.call("sendMsg",sendMsg_resultHandler,faultHandler,customerName,userId,content);
 				txt_Msg4Send.errorString = null;
 				showProgress("正在发送...");
-				op_sendMsg.send(customerName,userId,content);
 			}
-			private function sendMsg_resultHandler(event:ResultEvent):void{
+			private function sendMsg_resultHandler(result:ResultObject):void{
 				hideProgress();
 				//发送结果
-				if(event.result.data != null){
-					data.addItem(event.result.data);
+				if(result.data != null){
+					data.addItem(result.data);
 					txt_Msg4Send.text = null;
 					msgGroup.callLater(toTheEnd);
 				}else{
@@ -153,22 +149,26 @@
 		]]>
 	</fx:Script>
 	<fx:Declarations>
-		<s:RemoteObject id="ro" destination="comnmsgService"/>
 		<!-- 将非可视元素（例如服务、值对象）放在此处 -->
 	</fx:Declarations>
 	<s:BorderContainer top="8" left="15" right="15" height="30">
 		<s:Button id="btn_refresh" right="10" top="3" label="刷新" click="btn_refresh_clickHandler(event)" />
 	</s:BorderContainer>
 	<s:BorderContainer top="43" left="15" right="15" bottom="10">
-		<s:Scroller width="60%" height="100%" left="0" mouseWheelChanging="mouseWheelChangingHandler(event)" id="scroller">
-			<s:DataGroup id="msgGroup" width="100%" height="100%" itemRenderer="itemrenderer.ComnMsgRenderer" dataProvider="{data}">
-				<s:layout>
-					<s:VerticalLayout id="msgGroupVerticalLayout"/>
-				</s:layout>
-			</s:DataGroup>
-		</s:Scroller>
+		
+		<s:BorderContainer right="380" left="10" top="10" bottom="10"
+						   borderVisible="false" backgroundColor="#CC99FF" backgroundAlpha="0.6" cornerRadius="15">
+			<s:Scroller right="15" left="0" height="100%" mouseWheelChanging="mouseWheelChangingHandler(event)" id="scroller" >
+				<s:DataGroup id="msgGroup" width="100%" height="100%" itemRenderer="itemrenderer.ComnMsgRenderer" dataProvider="{data}">
+					<s:layout>
+						<s:VerticalLayout id="msgGroupVerticalLayout"/>
+					</s:layout>
+				</s:DataGroup>
+			</s:Scroller>
+			
+		</s:BorderContainer>
 		<s:Label text="只显示最近7天100条以内的留言" top="50" right="50"/>
-		<s:BorderContainer id="sendMsgCont" right="10" bottom="10" maxHeight="200" width="38%" borderVisible="false" cornerRadius="15"
+		<s:BorderContainer id="sendMsgCont" right="10" bottom="10" maxHeight="200" width="350" borderVisible="false" cornerRadius="15"
 						   backgroundColor="#CC99CC"
 						   >
 			<s:TextInput top="12" right="20" left="20" editable="false" text="{customerLabel}"/>

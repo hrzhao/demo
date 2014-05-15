@@ -50,5 +50,10 @@
   			<source>hrzhao.services.ComnMsgService</source>
   		</properties>  
     </destination>
+    <destination id="orderService">
+ 		<properties>
+ 			<source>hrzhao.services.OrderService</source>
+ 		</properties>  
+    </destination>
 
 </service>

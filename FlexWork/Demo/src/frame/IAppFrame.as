@@ -31,5 +31,18 @@ package frame
 		 * 
 		 */
 		function popupLoginPanel():void
+		/**
+		 *添加事件监听 
+		 * @param type
+		 * @param listener
+		 * @param useCapture
+		 * @param priority
+		 * @param useWeakReference
+		 * 
+		 */
+		function addEventListener(type:String, listener:Function,
+								  useCapture:Boolean = false, priority:int = 0,
+								  useWeakReference:Boolean = false):void;
+		
 	}
 }

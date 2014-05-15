@@ -6,6 +6,7 @@
 		 >
 	<fx:Script>
 		<![CDATA[
+			import entities.ResultObject;
 			import entities.UserBean;
 			
 			import events.LoginEvent;
@@ -20,21 +21,24 @@
 			
 			import utils.MD5;
 			import utils.MessageBox;
-			protected function ro_faultHandler(event:FaultEvent):void
+			protected function faultHandler(event:FaultEvent):void
 			{
 				// TODO Auto-generated method stub
 				progressLabel.visible = false;
-				MessageBox.show(event.message.toString());
+				if(event.fault.faultCode == "Channel.Authentication.Error")
+					MessageBox.show("用户名或密码错误.");
+				else
+					MessageBox.show(event.message.toString());
 			}
-			protected function ro_resultHandler(event:ResultEvent):void
+			protected function login_resultHandler(result:ResultObject):void
 			{
 				txt_password.removeEventListener(KeyboardEvent.KEY_DOWN, tbxPwd_keyDownHandler);
 				progressLabel.visible = false;
 				// TODO Auto-generated method stub
-				var data:Object = event.result.data;
-				if(event.result.state == "success" && data != null){
-					if(event.result.data is UserBean){
-						var user:UserBean = UserBean(event.result.data);
+				var data:Object = result.data;
+				if(result.state == "success" && data != null){
+					if(result.data is UserBean){
+						var user:UserBean = UserBean(result.data);
 						this.dispatchEvent(new LoginEvent("loginSuccess",user));
 					}
 				}else{
@@ -50,20 +54,32 @@
 				if(event.keyCode == 13 && btn_login.enabled)
 					btn_login_clickHandler(null);
 			}
+			private var loginAuth:LoginAuth = null;
 			protected function btn_login_clickHandler(event:MouseEvent):void
 			{
-				// TODO Auto-generated method stub
 				if(!progressLabel.visible ){
 					progressLabel.visible  = true;
-					var username:String = StringUtil.trim(txt_username.text);
-					var password:String = MD5.getMD5(txt_password.text);
-					ro.checkUser(username,password);
+					loginAuth.logout(logout_resutlHandler,faultHandler);
 				}
+			}
+			private function doLogout_FaltHandler(event:FaultEvent, token:Object=null):void
+			{
+				faultHandler(event);
+			}
+			private function logout_resutlHandler(event:ResultEvent, token:Object=null):void{
+				var username:String = StringUtil.trim(txt_username.text);
+				var password:String = MD5.getMD5(txt_password.text);
+				loginAuth.login(username,password);
 			}
 			
 			protected function creationCompleteHandler(event:FlexEvent):void
 			{
 				// TODO Auto-generated method stub
+				if(loginAuth == null){
+					loginAuth = new LoginAuth();
+					loginAuth.onReceive_LogIn =  login_resultHandler;
+					loginAuth.onErrorFunction = faultHandler;
+				}
 				//开发时用
 				CONFIG::Debug
 				{
@@ -80,22 +96,12 @@
 					btn_login_clickHandler(null);
 				}
 			}
-//			private function method():void{
-//				var myShape:Shape = new Shape();
-//				var gradientBoxMatrix:Matrix = new Matrix();
-//				gradientBoxMatrix.createGradientBox(200, 200, Math.PI*0.5, 0, 0);//Math.PI*0.5是设置渐变转动９０度为垂直（默认为水平,也可设任意角度)
-//				//参数填充类型，颜色数组，alpha数组，渐变比率
-//				myShape.graphics.beginGradientFill(GradientType.LINEAR, [0xFF0000, 0x00FF00], [0, 1], [0, 128], gradientBoxMatrix);
-//				myShape.graphics.drawRect(0, 0, 200, 200);
-//				myShape.graphics.endFill();
-//			}
 		]]>
 	</fx:Script>
 	<fx:Metadata>
 		[Event(name="loginSuccess", type="events.LoginEvent")]
 	</fx:Metadata>
 	<fx:Declarations>
-		<s:RemoteObject id="ro" destination="userService" result="ro_resultHandler(event)" fault="ro_faultHandler(event)"/>
 		<!-- 将非可视元素（例如服务、值对象）放在此处 -->
 	</fx:Declarations>
 	<s:Image id="img_bg" width="100%" height="100%" source="@Embed(source='assets/登录_背景.jpg')" scaleMode="{BitmapScaleMode.ZOOM}"/>

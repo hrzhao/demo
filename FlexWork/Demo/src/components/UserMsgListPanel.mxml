@@ -10,16 +10,18 @@
 	</fx:Metadata>
 	<fx:Script>
 		<![CDATA[
+			import entities.ResultObject;
 			
 			import events.DgcMenuEvent;
 			
 			import mx.collections.ArrayCollection;
 			import mx.events.FlexEvent;
-			import mx.rpc.AbstractOperation;
 			import mx.rpc.events.FaultEvent;
 			import mx.rpc.events.ResultEvent;
 			
 			import utils.MessageBox;
+			import utils.RemoteExt;
+			private var ro:RemoteExt = new RemoteExt("messageServices");
 			private function dateformate(item:Object, column:AdvancedDataGridColumn):String  
 			{
 				return df.format(item[column.dataField]);
@@ -59,21 +61,15 @@
 				
 				
 			}
-			private var op_getUserMsgList:AbstractOperation = null;
 			private function getUserMsgList():void{
-				if(op_getUserMsgList == null){
-					op_getUserMsgList = ro.getOperation("getUserMsgList");
-					op_getUserMsgList.addEventListener(FaultEvent.FAULT,faultHandler,false,0,true);
-					op_getUserMsgList.addEventListener(ResultEvent.RESULT,op_getUserMsgList_resultHandler,false,0,true);
-				}
-				op_getUserMsgList.send();
 				showLoading("正在查询...");
+				ro.call("getUserMsgList",op_getUserMsgList_resultHandler,faultHandler);
 			}
-			private function op_getUserMsgList_resultHandler(event:ResultEvent):void{
-				if(event.result.state == "success"){
-					if(event.result.data is ArrayCollection){
-						userMsgList = event.result.data;
-						hideLoading();
+			private function op_getUserMsgList_resultHandler(result:ResultObject):void{
+				hideLoading();
+				if(result.state == "success"){
+					if(result.data is ArrayCollection){
+						userMsgList = result.data as ArrayCollection;
 					}
 				}
 			}
@@ -91,7 +87,6 @@
 	</fx:Script>
 	<fx:Declarations>
 		<!-- 将非可视元素（例如服务、值对象）放在此处 -->
-		<s:RemoteObject id="ro" destination="messageServices"/> 
 		<s:DateTimeFormatter id="df" dateTimePattern="yyyy-MM-dd HH:mm:ss"/>
 	</fx:Declarations>
 	<s:BorderContainer backgroundColor="#DDDDDD" borderColor="#808080" 

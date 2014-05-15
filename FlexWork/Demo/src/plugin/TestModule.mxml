@@ -7,12 +7,30 @@
 				>
 	<fx:Script>
 		<![CDATA[
+			import entities.ResultObject;
+			
+			import flash.sampler.NewObjectSample;
+			
 			import flexlib.mdi.containers.MDIWindow;
 			import flexlib.mdi.managers.MDIManager;
 			
+			import frame.IAppFrame;
+			
+			import mx.controls.Alert;
+			import mx.core.FlexGlobals;
+			import mx.core.IVisualElement;
+			import mx.core.IVisualElementContainer;
 			import mx.events.FlexEvent;
+			import mx.messaging.Channel;
+			import mx.messaging.ChannelSet;
+			import mx.rpc.events.FaultEvent;
+			import mx.rpc.events.ResultEvent;
+			import mx.rpc.remoting.RemoteObject;
 			
 			import spark.components.Image;
+			
+			import utils.MessageBox;
+			import utils.RemoteExt;
 			
 			protected function ewmodule1_creationCompleteHandler(event:FlexEvent):void
 			{
@@ -22,21 +40,36 @@
 //				loader.contentLoaderInfo.addEventListener(Event.COMPLETE,completeHandler);
 			}
 			private var mdi:MDIWindow = null;
-			
+			private var ro:RemoteExt = new RemoteExt("helloWorld");
+			private var ro2:RemoteExt = new RemoteExt("helloWorld");
 			protected function btn_show_clickHandler(event:MouseEvent):void
 			{
-				// TODO Auto-generated method stub
-//				if(mdi== null){
-//					mdi = new MDIWindow();
-//					mdi.width = 400;
-//					mdi.height = 300;
-//					mdiCanvasHolder.windowManager.add(mdi);
-//				}
-//				mdi.visible = true;
-				var obj:Object = {"bb":"bbb","aa":"aaa"};
+				var roo:RemoteObject = new RemoteObject("helloWorld");
 				
-				rs.text = JSON.stringify(obj);
+//				roo.setCredentials("administrator","abcde","UTF-8");
+//				rs.text = roo.getHello("flexHello");
+//				roo.addEventListener(ResultEvent.RESULT,resultHandler);
+//				roo.addEventListener(FaultEvent.FAULT,resultHandler);
 				
+			}
+			
+			private function resultHandler(obj:Object):void{
+				rs.text = obj.toString();
+			}
+			private function faultHandler(event:FaultEvent):void{
+				MessageBox.show(event.message.toString());
+				
+			}
+			
+			protected function button2_clickHandler(event:MouseEvent):void
+			{
+				var cs:ChannelSet = new ChannelSet(["my-amf"]);
+				cs.logout();
+				
+			}
+			protected function button3_clickHandler(event:MouseEvent):void
+			{
+				ro2.call("getHello",resultHandler,faultHandler,"flexhello");
 			}
 			
 		]]>
@@ -44,13 +77,11 @@
 	<fx:Declarations>
 		<!-- 将非可视元素（例如服务、值对象）放在此处 -->
 	</fx:Declarations>
-	<s:HGroup width="100%" height="100%" id="mainGroup">
+	<s:VGroup width="100%" height="100%" id="mainGroup">
 		<s:TextArea id="rs" />
 		<s:Button label="Show" id="btn_show" click="btn_show_clickHandler(event)"/>
-	</s:HGroup>
-	<ns:MDICanvas id="mdiCanvasHolder" visible="true" top="26" bottom="0" width="100%"
-				  enforceBoundaries="true">
-	</ns:MDICanvas>
-	
+		<s:Button label="注销" id="button2" click="button2_clickHandler(event)"/>
+		<s:Button label="helloworld" id="button3" click="button3_clickHandler(event)"/>
+	</s:VGroup>
 	
 </frame:EWModule>

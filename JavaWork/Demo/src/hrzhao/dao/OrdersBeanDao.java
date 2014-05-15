@@ -7,6 +7,7 @@ import org.hibernate.SQLQuery;
 import org.hibernate.Session;
 import org.hibernate.Transaction;
 import org.hibernate.criterion.Restrictions;
+import org.hibernate.transform.Transformers;
 
 import hrzhao.beans.OrdersBean;
 import hrzhao.utils.HiberHelper;
@@ -15,6 +16,24 @@ public class OrdersBeanDao {
 
 	public OrdersBeanDao() {
 		// TODO Auto-generated constructor stub
+	}
+	public List<?> getOrdersByStatus(int status,String orderNo){
+		Session session = HiberHelper.getSession();
+		//setResultTransformer(Transformers.ALIAS_TO_ENTITY_MAP);
+		String sql = "Select * from v_orders Where 1=1 ";
+		sql += " and status = :status ";
+		if(orderNo != null && !orderNo.equals("")){
+			sql += " and orderNo like :orNo ";
+		}
+		SQLQuery q = session.createSQLQuery(sql);
+		q.setResultTransformer(Transformers.ALIAS_TO_ENTITY_MAP);
+		q.setInteger("status", status);
+		if(orderNo != null && !orderNo.equals("")){
+			q.setString("orNo", "%"+orderNo+"%");
+		}
+		List<?> list =  q.list();
+		session.close();
+		return list;
 	}
 	public void saveOrder(OrdersBean order){
 		Session session = HiberHelper.getSession();
@@ -45,11 +64,13 @@ public class OrdersBeanDao {
 		cr.add(Restrictions.le("status", 2));//已配送及之前的
 		@SuppressWarnings("unchecked")
 		List<OrdersBean> list = cr.list();
+		session.close();
 		return list;
 	}
 	public OrdersBean getOrderById(int id){
 		Session session = HiberHelper.getSession();
 		OrdersBean order = (OrdersBean) session.get(OrdersBean.class,id);
+		session.close();
 		return order;
 	}
 

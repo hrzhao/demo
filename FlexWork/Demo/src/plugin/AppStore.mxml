@@ -14,6 +14,7 @@
 			import components.DgcMenu;
 			
 			import entities.AppConfig;
+			import entities.ResultObject;
 			
 			import events.CustomEvent;
 			
@@ -24,36 +25,29 @@
 			import mx.controls.listClasses.IListItemRenderer;
 			import mx.events.FlexEvent;
 			import mx.events.MenuEvent;
-			import mx.rpc.AbstractOperation;
 			import mx.rpc.events.FaultEvent;
 			import mx.rpc.events.ResultEvent;
 			
 			import utils.MessageBox;
+			import utils.RemoteExt;
 			
 			protected function creationCompleteHandler(event:FlexEvent):void
 			{
 				// TODO Auto-generated method stub
-				getAppConfigList();
+				showLoading("正在查询...");
+				roExt.call("getAppConfigBeanList",getAppConfigBeanList_handler,faultEvent)
 			}
 			
 			[Bindable]
 			private var appConfigList:ArrayCollection = new ArrayCollection();
-			private var op_getList:AbstractOperation = null;
-			private function getAppConfigList():void{
-				if(op_getList == null){
-					op_getList = ro.getOperation("getAppConfigBeanList");
-					op_getList.addEventListener(ResultEvent.RESULT,function(event:ResultEvent):void{
-						if(event.result.state == "success"){
-							if(event.result.data is ArrayCollection){
-								appConfigList = event.result.data;
-								hideLoading();
-							}
-						}
-					},false,0,true);//设为弱引用，让垃圾机制回收
-					op_getList.addEventListener(FaultEvent.FAULT,faultEvent,false,0,true);//设为弱引用，让垃圾机制回收
+			private var roExt:RemoteExt = new RemoteExt("frameService");
+			private function getAppConfigBeanList_handler(result:ResultObject):void{
+				if(result.state == "success"){
+					if(result.data is ArrayCollection){
+						appConfigList = result.data as ArrayCollection;
+						hideLoading();
+					}
 				}
-				op_getList.send();
-				showLoading("正在查询...");
 			}
 			protected function faultEvent(event:FaultEvent):void{
 				hideLoading();
@@ -63,7 +57,8 @@
 			protected function btn_search_clickHandler(event:MouseEvent):void
 			{
 				// TODO Auto-generated method stub
-				getAppConfigList()
+				showLoading("正在查询...");
+				roExt.call("getAppConfigBeanList",getAppConfigBeanList_handler,faultEvent);
 			}
 			
 			protected function dg_appConfig_rightClickHandler(event:MouseEvent):void
@@ -170,36 +165,34 @@
 				return naviCont;
 			}
 			
-			private var op_getAppConfig:AbstractOperation = null;
 			private function getAppConfigFromDB(appId:String):void{
-				if(op_getAppConfig == null){
-					op_getAppConfig = ro.getOperation("getAppConfigBean");
-					op_getAppConfig.addEventListener(ResultEvent.RESULT,function(event:ResultEvent):void{
-						if(event.result.state == "success"){
-							var appConfig:AppConfig = event.result.data;
-							if(curAppPanel.mode == DgcMenu.ADD){
-								if(appConfig){
-									hideLoading();
-									MessageBox.show("模块Id已存在，不可添加相同ID的模块");
-									return;
-								}
-							}else if(curAppPanel.mode == DgcMenu.EDIT){
-								if(!appConfig){
-									hideLoading();
-									MessageBox.show("模块Id不存在或已被删除，请先检查再修改");
-									return;
-								}
-							}
-							saveOrAddAppConfig(curAppPanel.appConfig);
-						}
-					},false,0,true);//设为弱引用，让垃圾机制回收
-					op_getAppConfig.addEventListener(FaultEvent.FAULT,function(event:FaultEvent):void{
-						MessageBox.show(event.message.toString());
-						curAppPanel = null;
-					},false,0,true);//设为弱引用，让垃圾机制回收
-				}
-				op_getAppConfig.send(appId);
 				showLoading("查询记录已存在否，再保存...");
+				roExt.call("getAppConfigBean",getAppConfigFromDB_handler,getAppConfigFromDB_fault,appId);
+			}
+			private function getAppConfigFromDB_fault(event:FaultEvent):void{
+				hideLoading();
+				MessageBox.show(event.message.toString());
+				curAppPanel = null;
+			}
+			
+			private function getAppConfigFromDB_handler(result:ResultObject):void{
+				if(result.state == "success"){
+					var appConfig:AppConfig = result.data as AppConfig;
+					if(curAppPanel.mode == DgcMenu.ADD){
+						if(appConfig){
+							hideLoading();
+							MessageBox.show("模块Id已存在，不可添加相同ID的模块");
+							return;
+						}
+					}else if(curAppPanel.mode == DgcMenu.EDIT){
+						if(!appConfig){
+							hideLoading();
+							MessageBox.show("模块Id不存在或已被删除，请先检查再修改");
+							return;
+						}
+					}
+					saveOrAddAppConfig(curAppPanel.appConfig);
+				}
 			}
 			
 			private var curAppPanel:AppPanel = null;
@@ -207,35 +200,29 @@
 				curAppPanel = event.target as AppPanel;
 				var appId:String = event.data as String;
 				getAppConfigFromDB(appId);
-				
-				
 			}
 			
 			
-			private var op_saveAppConfig:AbstractOperation = null;
 			private function saveOrAddAppConfig(appConfig:AppConfig):void{
-				if(op_saveAppConfig == null){
-					op_saveAppConfig = ro.getOperation("saveOrAddAppConfigBean");
-					op_saveAppConfig.addEventListener(ResultEvent.RESULT,function(event:ResultEvent):void{
-						if(event.result.state == "success"){
-							hideLoading();
-							MessageBox.show("保存成功");
-							if(curAppPanel != null){
-								if(curAppPanel.mode == DgcMenu.ADD){
-									curAppPanel.mode = DgcMenu.EDIT;
-								}
-								curAppPanel = null;
-							}
+				showLoading("正在保存...");
+				roExt.call("saveOrAddAppConfigBean",saveOrAddAppConfigBean_handler,saveOrAddAppConfigBean_fault,appConfig);
+			}
+			private function saveOrAddAppConfigBean_handler(result:ResultObject):void{
+				if(result.state == "success"){
+					hideLoading();
+					MessageBox.show("保存成功");
+					if(curAppPanel != null){
+						if(curAppPanel.mode == DgcMenu.ADD){
+							curAppPanel.mode = DgcMenu.EDIT;
 						}
-					},false,0,true);//设为弱引用，让垃圾机制回收
-					op_saveAppConfig.addEventListener(FaultEvent.FAULT,function(event:FaultEvent):void{
+						curAppPanel = null;
+					}
+				}
+			}
+			private function saveOrAddAppConfigBean_fault(event:FaultEvent):void{
 						hideLoading();
 						MessageBox.show("保存失败\r\n"+event.message.toString());
 						curAppPanel = null;
-					},false,0,true);//设为弱引用，让垃圾机制回收
-				}
-				op_saveAppConfig.send(appConfig);
-				showLoading("正在保存...");
 			}
 			
 			private function appPanelCancelHandler(event:CustomEvent):void{
@@ -272,23 +259,20 @@
 				progressLabel.visible = false;
 			}
 			
-			private var op_del:AbstractOperation;
 			private function delAppConfigBeanByAppId(appId:String):void{
-				if(op_del == null){
-						op_del = ro.getOperation("delAppConfigBeanByAppId");
-					op_del.addEventListener(ResultEvent.RESULT,function(event:ResultEvent):void{
-						if(event.result.state == "success"){
-							hideLoading();
-							MessageBox.show("删除成功");
-							appConfigList.removeItemAt(dg_appConfig.selectedIndex);
-						}
-					},false,0,true);
-					op_del.addEventListener(FaultEvent.FAULT,function(event:FaultEvent):void{
-						hideLoading();
-						MessageBox.show("删除失败\r\n"+event.message.toString());
-					},false,0,true);
+				showLoading("正在删除...")
+				roExt.call("delAppConfigBeanByAppId",delAppConfigBeanByAppId_handler,delAppConfigBeanByAppId_fault,appId);
+			}
+			private function delAppConfigBeanByAppId_handler(result:ResultObject):void{
+				if(result.state == "success"){
+					hideLoading();
+					MessageBox.show("删除成功");
+					appConfigList.removeItemAt(dg_appConfig.selectedIndex);
 				}
-				op_del.send(appId);
+			}
+			private function delAppConfigBeanByAppId_fault(event:FaultEvent):void{
+				hideLoading();
+				MessageBox.show("删除失败\r\n"+event.message.toString());
 			}
 			
 			protected function dg_appConfig_clickHandler(event:MouseEvent):void
@@ -309,7 +293,6 @@
 	</fx:Script>
 	<fx:Declarations>
 		<!-- 将非可视元素（例如服务、值对象）放在此处 -->
-		<s:RemoteObject id="ro" destination="frameService" />
 	</fx:Declarations>
 	<s:Line top="27" right="0" left="0">
 		<s:stroke>
