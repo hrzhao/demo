@@ -31,7 +31,10 @@ import java.lang.reflect.Method;
 import java.net.MalformedURLException;
 import java.net.URL;
 import java.net.URLConnection;
+import java.text.DateFormat;
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.Calendar;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.Iterator;
@@ -70,11 +73,28 @@ public class MainRun {
 	}
 	
 	public static void main(String[] args) {
+		DateFormat dateFormate = new SimpleDateFormat("yyyy-MM-dd hh:mm:ss");
+		int month = 0;
+		 Calendar cal = Calendar.getInstance();
+		 cal.setTime(new Date());
+		 cal.set(Calendar.MONTH, month);
+		 cal.set(Calendar.DAY_OF_MONTH, 0);
+		 cal.set(Calendar.HOUR_OF_DAY, 0);
+		 cal.set(Calendar.MINUTE, 0);
+		 cal.set(Calendar.SECOND, 0);
+		 System.out.print( dateFormate.format(cal.getTime()));
+		
+		 cal.set(Calendar.MONTH, month==11?1:month +1);
+		 cal.set(Calendar.DAY_OF_MONTH, 0);
+		 cal.set(Calendar.HOUR_OF_DAY, 0);
+		 cal.set(Calendar.MINUTE, 0);
+		 cal.set(Calendar.SECOND, 0);
+		 System.out.print( dateFormate.format(cal.getTime()));
 //		getRequest("101110101");
-		match("星期天");
-		match("星期1");
-		match("星期一增城增城增城增城增城增城");
-		match("星期日一增城");
+//		match("星期天");
+//		match("星期1");
+//		match("星期一增城增城增城增城增城增城");
+//		match("星期日一增城");
 	}
 	public static void match(String content){
 		String reg="星期[一二三四五六日]{1}[\u4e00-\u9fa5]{0,10}";

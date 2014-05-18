@@ -55,5 +55,10 @@
  			<source>hrzhao.services.OrderService</source>
  		</properties>  
     </destination>
+    <destination id="statisticsService">
+ 		<properties>
+ 			<source>hrzhao.services.StatisticsService</source>
+ 		</properties>  
+    </destination>
 
 </service>

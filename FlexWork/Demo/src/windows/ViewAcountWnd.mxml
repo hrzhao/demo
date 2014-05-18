@@ -50,6 +50,7 @@
 									  horizontalScrollPolicy="auto" verticalScrollPolicy="auto"
 									  sortExpertMode="true"
 									  right="0" left="0" top="0" bottom="36"
+									  menuEnable="false"
 									  >
 		<components:columns>
 			<mx:AdvancedDataGridColumn dataField="realname" headerText="客户名称" width="80"/>

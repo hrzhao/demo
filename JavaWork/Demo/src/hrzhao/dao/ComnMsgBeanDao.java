@@ -48,8 +48,7 @@ public class ComnMsgBeanDao {
 		Criteria cr = session.createCriteria(ComnMsgBean.class);
 		cr.add(Restrictions.eq("customerName", customerName))
 			.add(Restrictions.eq("status",1))//1是回复的信息
-			.addOrder(Order.asc("intime"))
-			.setMaxResults(1);
+			.addOrder(Order.asc("intime"));
 		@SuppressWarnings("unchecked")
 		List<ComnMsgBean> list =cr.list();
 		if(list != null && list.size() >0 ){

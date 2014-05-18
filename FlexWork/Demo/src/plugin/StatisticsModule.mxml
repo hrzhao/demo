@@ -1,0 +1,142 @@
+<?xml version="1.0" encoding="utf-8"?>
+<frame:EWModule xmlns:fx="http://ns.adobe.com/mxml/2009" 
+				xmlns:s="library://ns.adobe.com/flex/spark" 
+				xmlns:mx="library://ns.adobe.com/flex/mx" xmlns:frame="frame.*" width="100%" height="100%" xmlns:common="common.*" xmlns:components="components.*" xmlns:UI="common.UI.*">
+	<fx:Style>
+		@namespace s "library://ns.adobe.com/flex/spark";
+		@namespace mx "library://ns.adobe.com/flex/mx";
+		#bubblechart,#barchart,#pieChart
+		{
+			fontFamily:Arial;
+			fontSize:15;
+			color:#FF0033;
+		}
+		#colChart
+		{
+			gutterLeft:80;
+			gutterRight:50;
+			gutterBottom:50;
+			paddingTop:20;
+		}
+	</fx:Style>
+	
+	<fx:Script>
+		<![CDATA[
+			import entities.ResultObject;
+			
+			import mx.collections.ArrayCollection;
+			import mx.rpc.events.FaultEvent;
+			
+			import utils.MessageBox;
+			import utils.RemoteExt;
+			[Bindable]
+			private var arr:ArrayCollection=new ArrayCollection([
+				{xname:'1月',yField1:2000,yField2:800},
+				{xname:'2月',yField1:1000,yField2:500},
+				{xname:'3月',yField1:3000,yField2:700},
+				{xname:'4月',yField1:4000,yField2:800},
+				{xname:'5月',yField1:1300,yField2:800}]);
+			[Bindable]
+			private var chartData:ArrayCollection;
+			
+			private var ro:RemoteExt = new RemoteExt("statisticsService");
+			protected function btn_search_clickHandler(event:MouseEvent):void
+			{
+				// TODO Auto-generated method stub
+				var month:int = ddl_month.selectedItem.value;
+				progressLabel.visible = true;
+				ro.call("getMonthStat",getMonthStat_handler,faultHandler,month);
+			}
+			private function getMonthStat_handler(result:ResultObject):void{
+				progressLabel.visible = false;
+				if(result.state == ResultObject.SUCCESS){
+					chartData = result.data as ArrayCollection;
+				}else{
+					chartData = null;
+				}
+			}
+			private function faultHandler(event:FaultEvent):void{
+				progressLabel.visible = false;
+				MessageBox.show(event.message.toString());
+			}
+			[Bindable]
+			private var monthArr:ArrayCollection =  new ArrayCollection([
+				{"label":"一月","value":1},
+				{"label":"二月","value":2},
+				{"label":"三月","value":3},
+				{"label":"四月","value":4},
+				{"label":"五月","value":5},
+				{"label":"六月","value":6},
+				{"label":"七月","value":7},
+				{"label":"八月","value":8},
+				{"label":"九月","value":9},
+				{"label":"十月","value":10},
+				{"label":"十一月","value":11},
+				{"label":"十二月","value":12},
+			]);
+			
+		]]>
+	</fx:Script>
+	<fx:Declarations>
+		<!-- 将非可视元素（例如服务、值对象）放在此处 -->
+	</fx:Declarations>
+	<s:Line top="27" right="0" left="0">
+		<s:stroke>
+			<s:SolidColorStroke color="0xb4cadc" weight="1" />
+		</s:stroke>
+	</s:Line>
+	<common:CloseableTabBar id="tabbar" left="5" top="3" maxWidth="955" dataProvider="{viewStack}" 
+							lockedTabCount="1" height="25" buttonMode="true" labelField="label">
+	</common:CloseableTabBar>
+	<mx:ViewStack id="viewStack" width="100%" top="28" height="100%">
+		<s:NavigatorContent width="100%" height="100%" label="销量统计">
+			<s:BorderContainer top="8" left="15" right="15" height="30">
+				<s:Label left="28" top="8" text="订单号："/>
+				<s:DropDownList id="ddl_month" left="88" top="3" selectedIndex="0" dataProvider="{monthArr}" labelField="label"/>
+				<s:Button id="btn_search" right="10" top="3" width="70" label="查询"
+						  click="btn_search_clickHandler(event)"/>
+				
+			</s:BorderContainer>
+			<s:BorderContainer top="43" left="15" right="15" bottom="10">
+				<mx:Panel title="订单统计" width="80%" height="90%" verticalCenter="0" horizontalCenter="0" layout="horizontal">
+					<mx:LineChart id="orderChart" seriesFilters="[]" 
+								  dataProvider="{chartData}" 
+								  showDataTips="true"
+								  width="100%"
+								  height="100%">
+						<mx:horizontalAxis>
+							<mx:CategoryAxis id="h1"  categoryField="xname" title="订单统计"/>
+						</mx:horizontalAxis>
+						<mx:horizontalAxisRenderers>
+							<mx:AxisRenderer placement="bottom" axis="{h1}" />
+						</mx:horizontalAxisRenderers>
+						<mx:verticalAxisRenderers>
+							<mx:AxisRenderer placement="left" axis="{v1}" />
+							<mx:AxisRenderer placement="right" axis="{v2}" />
+						</mx:verticalAxisRenderers>
+						<mx:series>
+							<mx:LineSeries id="cs1" horizontalAxis="{h1}" yField="amount" displayName="订水桶数">
+								<mx:verticalAxis>
+									<mx:LinearAxis id="v1" title="订水桶数"/>
+								</mx:verticalAxis>
+							</mx:LineSeries>
+							<mx:LineSeries id="cs2" horizontalAxis="{h1}" yField="price" displayName="金额">
+								<mx:verticalAxis>
+									<mx:LinearAxis id="v2" title="金额"/>
+								</mx:verticalAxis>
+							</mx:LineSeries>
+						</mx:series>
+					</mx:LineChart>
+					<mx:Legend dataProvider="{orderChart}"/>
+				</mx:Panel>
+			</s:BorderContainer>
+		</s:NavigatorContent>
+		<s:NavigatorContent width="100%" height="100%" label="会员操作量统计">
+				
+				
+		</s:NavigatorContent>
+		<s:NavigatorContent width="100%" height="100%" label="Demo样例">
+		</s:NavigatorContent>
+	</mx:ViewStack>
+	<UI:LabelProgress id="progressLabel" visible="false"/>
+</frame:EWModule>

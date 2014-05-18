@@ -38,6 +38,7 @@
 		<mapping resource="hrzhao/beans/LocationBean.hbm.xml"/>
 		<mapping resource="hrzhao/beans/ReMessageBean.hbm.xml"/>
 		<mapping resource="hrzhao/beans/ChargeBean.hbm.xml"/>
+		<mapping resource="hrzhao/beans/WorkerBean.hbm.xml"/>
 		<!-- 
         <property name="hbm2ddl.auto">validate</property>
 		<class-cache

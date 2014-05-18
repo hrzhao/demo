@@ -12,7 +12,6 @@
 			import com.siloon.plugin.rightClick.RightClickManager;
 			
 			import events.LoginEvent;
-			
 			import frame.MFrame;
 			
 			import mx.events.FlexEvent;

@@ -58,7 +58,7 @@
 				MessageBox.show(event.message.toString());
 			}
 			[Bindable]
-			private var ddl_status_list:ArrayCollection = new ArrayCollection([
+			public static var ddl_status_list:ArrayCollection = new ArrayCollection([
 				{"label":"新建","value":0},
 				{"label":"正在配送","value":1},
 				{"label":"配送完成","value":2},
@@ -110,6 +110,11 @@
 				naviCont.label = label;
 				naviCont.name = name;
 				var panel:OrderPanel = new OrderPanel();
+				var data:Object = dg_Order.selectedItem;
+				panel.dg_Order = dg_Order;
+				if(data != null){
+					panel.data = data;
+				}
 				naviCont.addElement(panel);
 				return naviCont;
 			}
@@ -161,7 +166,7 @@
 					<mx:AdvancedDataGridColumn width="140" headerText="生成时间" dataField="intime"  labelFunction="{dateformate}" textAlign="left" headerWordWrap="true"/>
 					<mx:AdvancedDataGridColumn width="100" headerText="状态" dataField="status" labelFunction="statusTrans" textAlign="left" headerWordWrap="true"/>
 					<mx:AdvancedDataGridColumn width="100" headerText="数量" dataField="amount" textAlign="left" headerWordWrap="true"/>
-					<mx:AdvancedDataGridColumn width="100" headerText="工人" dataField="workerId" textAlign="left" headerWordWrap="true"/>
+					<mx:AdvancedDataGridColumn width="100" headerText="工人" dataField="workerName" textAlign="left" headerWordWrap="true"/>
 					<mx:AdvancedDataGridColumn width="140" headerText="确认时间" dataField="confirmTime" labelFunction="{dateformate}" textAlign="left" headerWordWrap="true"/>
 					<mx:AdvancedDataGridColumn/>
 				</components:columns>

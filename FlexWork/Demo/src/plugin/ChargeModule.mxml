@@ -87,10 +87,10 @@
 				showProgress();
 				ro.call("getCustomerAcounts",getCustomerAcounts_resultHandler,faultHandler,customerName);
 			}
-			private function getCustomerAcounts_resultHandler(event:ResultEvent):void{
+			private function getCustomerAcounts_resultHandler(result:ResultObject):void{
 				hideProgress();
-				if(event.result.state == "success" && event.result.data is ArrayCollection){
-					showViewAcountWnd(event.result.data as ArrayCollection);
+				if(result.state == "success" && result.data is ArrayCollection){
+					showViewAcountWnd(result.data as ArrayCollection);
 				}else{
 					showViewAcountWnd(null);
 				}

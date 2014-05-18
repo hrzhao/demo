@@ -26,7 +26,7 @@ public class PcsWeather extends PcsBase {
 		
 	}
 	private static String[] weekDays = {"星期日", "星期一", "星期二", "星期三", "星期四", "星期五", "星期六"};
-	private String getWeekOfDate(String day) {
+	public String getWeekOfDate(String day) {
 		int iday = 0;
 		for(int i =0;i<weekDays.length;i++ ){
 			if(weekDays[i] == day){

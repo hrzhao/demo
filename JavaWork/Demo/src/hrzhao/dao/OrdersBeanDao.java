@@ -20,6 +20,7 @@ public class OrdersBeanDao {
 	public List<?> getOrdersByStatus(int status,String orderNo){
 		Session session = HiberHelper.getSession();
 		//setResultTransformer(Transformers.ALIAS_TO_ENTITY_MAP);
+		session.beginTransaction();
 		String sql = "Select * from v_orders Where 1=1 ";
 		sql += " and status = :status ";
 		if(orderNo != null && !orderNo.equals("")){
@@ -32,8 +33,23 @@ public class OrdersBeanDao {
 			q.setString("orNo", "%"+orderNo+"%");
 		}
 		List<?> list =  q.list();
+		session.getTransaction().commit();
 		session.close();
 		return list;
+	}
+	public Object getVOrders(int id){
+		Session session = HiberHelper.getSession();
+		//setResultTransformer(Transformers.ALIAS_TO_ENTITY_MAP);
+		String sql = "Select * from v_orders Where  id = :id  ";
+		SQLQuery q = session.createSQLQuery(sql);
+		q.setResultTransformer(Transformers.ALIAS_TO_ENTITY_MAP);
+		q.setInteger("id", id);
+		List<?> list =  q.list();
+		session.close();
+		if(list != null && list.size() >0){
+			return list.get(0);
+		}
+		return null;
 	}
 	public void saveOrder(OrdersBean order){
 		Session session = HiberHelper.getSession();

@@ -47,8 +47,8 @@ public class PcsReComnMsg extends PcsBase {
 			tips += "-------------\n";
 			tips += comnMsg.getUser().getRealname()+"["+dataFormate.format(comnMsg.getIntime())+"]：\n" 
 					+ comnMsg.getContent();
-			tips += "-------------\n";
-			tips += "\n"+super.getTips();
+			tips += "\n-------------";
+			tips += super.getTips();
 		}else{
 			tips += "没有未读回复";
 		}
